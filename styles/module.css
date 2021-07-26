@@ -1,0 +1,31 @@
+.package-list .package .tag.url {
+    background-color: rgb(33 37 41);
+    border-color: rgb(33 37 41);
+    color: rgb(255 255 255);
+}
+.package-list .package .tag.url:hover {
+    background-color: rgb(28 31 35);
+    border-color: rgb(26 30 33);
+    color: rgb(255 255 255);
+	cursor: pointer;
+}
+
+.package-list .package .tag.author {
+    background-color: rgb(0 150 136);
+    border-color: rgb(0 150 136);
+    color: rgb(255 255 255);
+}
+.package-list .package .tag.author:hover {
+    background-color: rgb(0 121 107);
+    border-color: rgb(0 121 107);
+    color: rgb(255 255 255);
+	cursor: pointer;
+}
+
+.package-list .package .tag.url > i.fa-external-link-alt {
+	margin-right: 0.3rem;
+}
+
+html > body .package-list .package .package-overview .package-title {
+	flex: auto;
+}

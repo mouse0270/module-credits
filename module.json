@@ -1,17 +1,17 @@
 {
-  "name": "module",
-  "title": "New Module",
-  "description": "",
+  "name": "module-credits",
+  "title": "Module Credits",
+  "description": "Lists the authors of projects on the Manage Modules Window. If a url is provided in the module.json file, it will make the version tag link to the module url.",
   "version": "This is auto replaced",
   "library": "false",
-  "manifestPlusVersion": "1.0.0",
+  "manifestPlusVersion": "0.0.1",
   "minimumCoreVersion": "0.8.8",
   "compatibleCoreVersion": "0.8.8",
   "authors": [
     {
-      "name": "The League of Extraordinary FVTT Developers",
-      "url": "https://github.com/League-of-Foundry-Developers",
-      "discord": "discordID#0001"
+      "name": "Mouse0270",
+      "url": "https://github.com/mouse0270/module-credits",
+      "discord": "Mouse0270#0270"
     }
   ],
   "dependencies": [
@@ -24,17 +24,10 @@
     "/scripts/module.js"
   ],
   "scripts": [
-    "/scripts/lib/lib.js"
+    "/scripts/lib/MousesLib.js"
   ],
   "styles": [
     "/styles/module.css"
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "languages/en.json"
-    }
   ],
   "url": "This is auto replaced",
   "manifest": "This is auto replaced",
