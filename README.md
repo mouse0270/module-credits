@@ -10,7 +10,6 @@ Module Credits now also includes an option to display a local `changelog.md` fil
 
 ![image](https://user-images.githubusercontent.com/564874/127723920-7f135dea-4677-42a9-90d9-c273463e0735.png)
 
-
 #### Credits
 Libraries used in creating Module Credits
 - [Marked.js](https://github.com/markedjs/marked) 

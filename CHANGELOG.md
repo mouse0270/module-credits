@@ -5,7 +5,7 @@ In this update the module has added the option to add a tag for bugs/issues, wik
 
 This version also include an option to display a local `changelog.md` file within foundry as well. If both `module.json > changelog` and a local `changelog.md` file exists, it will load the local changelog in a window in foundry.
 
-*Testing out a feature that allows you to use markdown/html within localization for settings. This may be moved into its own library*
+Module Credits now uses [Marked.js](https://github.com/markedjs/marked) and [DOMPurify](https://github.com/cure53/DOMPurify) to allow for local `changelog.md` parsing. This feature is also used to allow users to use markdown and html within their localization for module settings. This feature will most likely be moved into its own library in a future release.
 
 - Added Setting to allow you to show Wiki/Readme tag
 - Added Setting to allow you to show Bugs/Issues tag
