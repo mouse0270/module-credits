@@ -8,9 +8,10 @@ Now with more tags, module credits now provides tags for bugs/issues, wiki/readm
 
 Module Credits now also includes an option to display a local `changelog.md` file within foundry as well. If both `module.json > changelog` and a local `changelog.md` file exists, it will load the local changelog in a window in foundry.
 
+![image](https://user-images.githubusercontent.com/564874/127723920-7f135dea-4677-42a9-90d9-c273463e0735.png)
+
+
 #### Credits
 Libraries used in creating Module Credits
 - [Marked.js](https://github.com/markedjs/marked) 
 - [DOMPurify](https://github.com/cure53/DOMPurify) 
-
-![image](https://user-images.githubusercontent.com/564874/127038290-85aa3962-5597-4391-923d-e89e6529cec8.png)
