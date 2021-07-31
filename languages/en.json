@@ -1,0 +1,14 @@
+{
+	"module-credits.settings.allowHTMLforAllSettings.name": "Allow HTML Parse to parse all Module Settings",
+	"module-credits.settings.allowHTMLforAllSettings.hint": "If this is enabled, Module Credits will parse all Module Settings, titles and notes/hints and format them.",
+
+	"module-credits.settings.showWiki.name": "Add Wiki Tag",
+	"module-credits.settings.showWiki.hint": "If the module contains the `readme` property, this will add a clickable tag that will take you to that url",
+	"module-credits.settings.showIssues.name": "Add Issues Tag",
+	"module-credits.settings.showIssues.hint": "If the module contains the `bugs` property, this will add a clickable tag that will take you to that url",
+	"module-credits.settings.showChangelog.name": "Add Changelog Tag",
+	"module-credits.settings.showChangelog.hint": "If the module contains the `changelog` property, this will add a clickable tag that will take you to that url",	
+	
+	"module-credits.settings.fetchLocalChangelogs.name": "Fetch Local Changelog",
+	"module-credits.settings.fetchLocalChangelogs.hint": "Allow module credits to search module directories for local `changelog.md` files."
+}

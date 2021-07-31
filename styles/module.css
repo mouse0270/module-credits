@@ -1,31 +1,91 @@
+.package-list .package .tag {
+    transform: all 0.3s ease-in-out;
+}
 .package-list .package .tag.url {
     background-color: rgb(33 37 41);
-    border-color: rgb(33 37 41);
     color: rgb(255 255 255);
 }
 .package-list .package .tag.url:hover {
     background-color: rgb(28 31 35);
-    border-color: rgb(26 30 33);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
 .package-list .package .tag.author {
     background-color: rgb(0 150 136);
-    border-color: rgb(0 150 136);
     color: rgb(255 255 255);
 }
 .package-list .package .tag.author:hover {
-    background-color: rgb(0 121 107);
-    border-color: rgb(0 121 107);
+    background-color: rgb(51 201 187);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag.url > i.fa-external-link-alt {
+.package-list .package .tag.changelog {
+    background-color: rgb(15 121 233);
+    color: rgb(255 255 255);
+}
+.package-list .package .tag.changelog:hover {
+    background-color: rgb(66 172 255);
+    color: rgb(255 255 255);
+	cursor: pointer;
+}
+
+.package-list .package .tag.issues {
+    background-color: rgb(255 59 22);
+    color: rgb(255 255 255);
+}
+.package-list .package .tag.issues:hover {
+    background-color: rgb(255  110  73);
+    color: rgb(255 255 255);
+	cursor: pointer;
+}
+
+.package-list .package .tag.wiki {
+    background-color: rgb(108 46 196);
+    color: rgb(255 255 255);
+}
+.package-list .package .tag.wiki:hover {
+    background-color: rgb(159  97  247);
+    color: rgb(255 255 255);
+	cursor: pointer;
+}
+
+.package-list .package .tag > i.fas {
 	margin-right: 0.3rem;
 }
 
 html > body .package-list .package .package-overview .package-title {
 	flex: auto;
+}
+
+.module-credits-parsed code {
+    background-color: rgb(33 37 41);
+    border-radius: .2rem;
+    color: rgb(255 255 255);
+    font-size: .75em;
+    padding: .1rem .2rem;
+}
+.module-credits-parsed .alert {
+    border: 1px solid rgb(0 0 0 / 0%);
+    border-radius: .25rem;
+    font-size: 14px;
+    padding: 0.75rem;
+    position: relative;
+}
+.module-credits-parsed .alert-danger {
+    background-color: rgb(248 215 218);
+    border-color: rgb(245 194 199);
+    color: rgb(132 32 41);
+}
+.module-credits-parsed .alert p {
+    margin: 0rem 0rem 0.5rem;
+}
+.module-credits-parsed .alert p:last-child {
+    margin: 0rem;
+}
+
+/* ACCOUNT FOR TIDY UI - GAME SETTINGS */
+[data-sort-name] .module-credits-parsed  .alert {
+    margin-left: calc(-13px - 1rem);
 }

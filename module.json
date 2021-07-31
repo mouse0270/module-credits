@@ -14,17 +14,25 @@
       "discord": "Mouse0270#0270"
     }
   ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json"
+    }
+  ],
   "dependencies": [
 
   ],
   "conflicts": [
     
   ],
-  "esmodules": [
-    "/scripts/module.js"
-  ],
   "scripts": [
-    "/scripts/lib/MousesLib.js"
+    "/scripts/lib/purify.min.js",
+    "/scripts/lib/marked.min.js",
+    "/scripts/lib/MousesLib.js",
+    "/scripts/hooks.js",
+    "/scripts/module.js"
   ],
   "styles": [
     "/styles/module.css"
