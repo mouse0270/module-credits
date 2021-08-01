@@ -1,11 +1,14 @@
 .package-list .package .tag {
-    transform: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
-.package-list .package .tag.url {
+
+.package-list .package .tag.action {
+    align-items: center;
     background-color: rgb(33 37 41);
     color: rgb(255 255 255);
+    display: flex;
 }
-.package-list .package .tag.url:hover {
+.package-list .package .tag.action:hover {
     background-color: rgb(28 31 35);
     color: rgb(255 255 255);
 	cursor: pointer;
@@ -41,19 +44,104 @@
 	cursor: pointer;
 }
 
-.package-list .package .tag.wiki {
+.package-list .package .tag.readme {
     background-color: rgb(108 46 196);
     color: rgb(255 255 255);
 }
-.package-list .package .tag.wiki:hover {
+.package-list .package .tag.readme:hover {
     background-color: rgb(159  97  247);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag > i.fas {
-	margin-right: 0.3rem;
+.package-list .package .tag:before {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 900;
+    line-height: 1;
+    margin-right: 0.3rem;
+    text-rendering: auto;
 }
+.package-list .package .tag.action.readme:before{
+    content: '\f05a';
+}
+.package-list .package .tag.action.issues:before{
+    content: '\f188';
+}
+.package-list .package .tag.action.changelog:before{
+    content: '\f362';
+}
+/* IF EXTERNAL ALLWAYS DISPLAY THIS ICON */
+.package-list .package .tag.action.url:before {
+    content: '\f35d';
+}
+
+/* ADD ICONS FOR DEFAULT TAGS */
+.package-list .package.condense-compatibility-risk .tag.unknown:before {
+    content: '\f071';
+}
+.package-list .package.default-icons .tag.compendium:before,
+.package-list .package.condense-default-tags .tag.compendium:before {
+    content: '\f07c';
+}
+.package-list .package.default-icons .tag.javascript:before,
+.package-list .package.condense-default-tags .tag.javascript:before {
+    content: '\f3b9';
+    font-family: "Font Awesome 5 Brands";
+    font-weight: 400;
+}
+.package-list .package.default-icons .tag.css:before,
+.package-list .package.condense-default-tags .tag.css:before {
+    content: '\f13c';
+    font-family: "Font Awesome 5 Brands";
+    font-weight: 400;
+}
+
+#module-management .package-list .package.condense-tags .tag.action:not(.url):not(.author),
+#module-management .package-list .package.condense-default-tags .tag:not(.action):not(.unknown) {
+    align-items: center;
+    display: flex;
+    font-size: 0rem;
+}
+#module-management .package-list .package.condense-tags .tag.action:not(.url):not(.author):before,
+#module-management .package-list .package.condense-default-tags .tag:not(.action):not(.unknown):before {
+    font-size: 11px;
+    margin-right: 0rem;
+}
+
+/* ORDER TAGS */
+.package-list .package .tag.author {
+    order: 1;
+}
+.package-list .package .tag.unknown {
+    order: 2;
+}
+.package-list .package .tag.javascript {
+    order: 3;
+}
+.package-list .package .tag.css {
+    order: 4;
+}
+.package-list .package .tag.compendium {
+    order: 5;
+}
+.package-list .package .tag.readme {
+    order: 6;
+}
+.package-list .package .tag.issues {
+    order: 7;
+}
+.package-list .package .tag.changelog {
+    order: 8;
+}
+.package-list .package .tag.version {
+    order: 9;
+}
+
 
 html > body .package-list .package .package-overview .package-title {
 	flex: auto;
@@ -88,4 +176,121 @@ html > body .package-list .package .package-overview .package-title {
 /* ACCOUNT FOR TIDY UI - GAME SETTINGS */
 [data-sort-name] .module-credits-parsed  .alert {
     margin-left: calc(-13px - 1rem);
+}
+
+
+#moduleCreditsDialog .window-content {
+    font-size: 16px;
+    padding: 0px;
+    position: relative;
+}
+#moduleCreditsDialog .window-content nav {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: rgb(0 0 0 );
+    height: 100%;
+    overflow-y: auto;
+    position: absolute;
+    width: 206px;
+}
+#moduleCreditsDialog .window-content nav ul {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+#moduleCreditsDialog .window-content nav ul li {
+    border-bottom: 1px solid rgba(0 0 0 / 70%);
+}
+#moduleCreditsDialog .window-content nav ul li:hover,
+#moduleCreditsDialog .window-content nav ul li:active,
+#moduleCreditsDialog .window-content nav ul li:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+#moduleCreditsDialog .window-content nav ul li.active {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+#moduleCreditsDialog .window-content nav ul li a {
+    align-items: center;
+    display: flex;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+}
+#moduleCreditsDialog .window-content nav ul li a:hover,
+#moduleCreditsDialog .window-content nav ul li a:active,
+#moduleCreditsDialog .window-content nav ul li a:focus,
+#moduleCreditsDialog .window-content nav ul li a.active {
+    text-shadow: none;
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-has-seen-true a:before,
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-has-seen-false a:before {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    padding-right: 0.5rem;
+
+    content: '\f070'
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-has-seen-true a:before {
+    content: '\f06e'
+}
+
+#moduleCreditsDialog .window-content main {
+    background: url(../../../ui/parchment.jpg) repeat;
+    box-shadow: 0px 0px 10px rgba(0 0 0 / 70%);
+    height: 100%;
+    padding: 0;
+    position: absolute;
+    right: 0px;
+    transition: width 0.3s ease-in-out;
+    width: calc(100% - 200px);
+}
+#moduleCreditsDialog .window-content main > .module-credits-dialog-title {
+    align-items: center;
+    display: flex;
+    font-weight: 600;
+    margin-bottom: 0px;;
+    min-height: 58px;
+}
+#moduleCreditsDialog .window-content main > .module-credits-dialog-title.has-shadow {
+    box-shadow: 10px 0px 10px rgb(0 0 0 / 70%);
+}
+#moduleCreditsDialog .window-content main > .module-credits-dialog-title > div {
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 1rem;
+}
+#moduleCreditsDialog .window-content main > .module-credits-dialog-title i.fas {
+    transform: rotate(90deg);
+    transition: all 0.3s ease-in-out;
+}
+#moduleCreditsDialog .window-content main .module-credits-dialog-content {
+    font-size: 14px;
+    height: calc(100% - 58px - 0.5rem);
+    overflow-y: auto;
+    padding: 1rem;
+}
+#moduleCreditsDialog .window-content .module-credits-collapse-sidebar main,
+#moduleCreditsDialog .window-content .module-credits-hide-sidebar-true main {
+    width: calc(100%);
+}
+#moduleCreditsDialog .window-content .module-credits-hide-sidebar-true main {
+    transition: none;
+}
+#moduleCreditsDialog .window-content .module-credits-hide-sidebar-true main > .module-credits-dialog-title {
+    padding: 0rem 1rem;
+}
+#moduleCreditsDialog .window-content .module-credits-hide-sidebar-true main > .module-credits-dialog-title .module-credits-dialog-toggle {
+    display: none;
+}
+#moduleCreditsDialog .window-content .module-credits-collapse-sidebar main > .module-credits-dialog-title i.fas {
+    transform: rotate(270deg);
+}
+
+/* FIXES FOR MARKDOWN STYLING */
+.module-credits-dialog-content #hud {
+    position: relative;
 }

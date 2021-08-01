@@ -46,6 +46,10 @@ class MousesLib {
 		}
 
 		this.MODULE = {...defaults, ...module};
+
+		Handlebars.registerHelper('markdown', (stringId, options) => {
+			return DOMPurify.sanitize(marked(game.i18n.localize(`${this.MODULE.name}.${stringId}`)), {USE_PROFILES: {html: true}});
+		});
 	}
 
 	LOG() {
@@ -53,13 +57,11 @@ class MousesLib {
 	}
 
 	localize() {
-		return game.i18n.localize(`${this.MODULE.name}.${args[0]}`)
+		return game.i18n.localize(`${this.MODULE.name}.${arguments[0]}`);
 	}
 
 	setting() {
 		let args = arguments;
-
-		let returnValue = null;
 
 		// Are we registering a new setting
 		if (args[0].toLowerCase() == 'register') {
@@ -67,8 +69,8 @@ class MousesLib {
 			let setting = args[1]; // This is the name of the setting
 			let value = args[2]; // This is the settings of the setting
 			let settingDefaults = {
-				name: game.i18n.localize(`${this.MODULE.name}.settings.${setting}.name`),
-				hint: game.i18n.localize(`${this.MODULE.name}.settings.${setting}.hint`),
+				name: this.localize(`settings.${setting}.name`),
+				hint: this.localize(`settings.${setting}.hint`),
 				scope: 'client',
 				config: true
 			}

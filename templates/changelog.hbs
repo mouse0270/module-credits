@@ -1,3 +1,20 @@
-<form action="#" class="module-credits-parsed">
-	{{{changelog}}}
+<form action="#" class="module-credits-parsed module-credits-dialog">
+	<nav>
+		<ul>
+			{{#each modules}}
+				<li class="module-credits-dialog-has-seen-{{hasSeen}}">
+					<a class="module-credits-dialog-link" data-load="{{name}}">{{title}}</a>
+				</li>
+			{{/each}}
+		</ul>
+	</nav>
+	<main>
+		<h2 class="module-credits-dialog-title">
+			<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>
+			MODULE CREDITS TITLE
+		</h2>
+		<div class="module-credits-dialog-content">
+			{{{markdown 'settings.showChangelog.hint'}}}
+		</div>
+	</main>
 </form>
