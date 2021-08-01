@@ -42,7 +42,12 @@ if (!Object.prototype.hasOwnProperty('extend')) {
 class MousesLib {
 	constructor(module) {
 		let defaults = {
-			primaryColor: '#673ab7;'
+			primaryColor: '#673ab7;',
+			secondaryColor: '#8AB73A',
+			successColor: '#00B74A',
+			dangerColor: '#F93154',
+			warningColor: '#FFA900',
+			infoColor: '#39C0ED'
 		}
 
 		this.MODULE = {...defaults, ...module};
@@ -52,9 +57,20 @@ class MousesLib {
 		});
 	}
 
-	LOG() {
-		console.log.apply(console, [`%c${this.MODULE.title}`, `background-color: ${this.MODULE.primaryColor}; color: rgb(255 255 255);font-weight: 700;padding: 3px 5px;`, ...arguments]);
+	logger(type) {
+		let color = this.MODULE.primaryColor;
+		switch (type.toLowerCase()) {
+			case 'warn':	color = this.MODULE.warningColor;	break;
+			case 'info':	color = this.MODULE.infoColor;		break;
+			case 'error':	color = this.MODULE.dangerColor;	break;
+		}
+		console.log.apply(console, [`%c${this.MODULE.title}`, `background-color: ${color}; color: rgb(255 255 255);font-weight: 700;padding: 3px 5px;`, ...arguments[1]]);
 	}
+
+	LOG() { this.logger('log', arguments); }
+	WARN() { this.logger('warn', arguments); }
+	INFO() { this.logger('info', arguments); }
+	ERROR() { this.logger('error', arguments); }
 
 	localize() {
 		return game.i18n.localize(`${this.MODULE.name}.${arguments[0]}`);

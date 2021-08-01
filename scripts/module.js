@@ -273,8 +273,9 @@ class ModuleCredits extends MousesLib {
 					text: 'text.author.name',
 					isLocal: typeof author?.url?.length == 'undefined',
 					onclick: () =>  {
+						this.LOG()
 						if (author?.url?.length > 0) {
-							window.open(moduleData?.data?.changelog, '_blank')
+							window.open(author?.url, '_blank')
 						}
 					}
 				});
