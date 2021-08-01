@@ -1,3 +1,6 @@
+# Version 0.0.3.2 - Links to Authors
+- Fixed behavior when clicking on author. It will now take you the the authors url when clicked.
+
 # Version 0.0.3.1 - Linux Case Sensitive File System
 - Fixed an issue with Linux where the file system is case sensitive. Module Credits now uses `FilePicker` to get the correct path. Thank you LorduFreeman for helping me fix this issue
 
