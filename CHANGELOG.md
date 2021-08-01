@@ -11,6 +11,7 @@ Added the ability to load local `readme.md` files within foundry if they are pro
 
 ## Version Tracker
 Module Credits will now track version and `changelog.md` files, so if a modules update and they include a `changelog.md` file, module credits will display a list of all updated mods including a `changelog.md` file. Please note that this feature requires module developers to soft opt in by providing a `changelog.md` file with there modules.
+- Added Module Changelogs button to **Help and Documentation** section of the side bar, to see all changelogs for all supported modules.
 
 # Version 0.0.2 - MORE TAGS
 In this update the module has added the option to add a tag for bugs/issues, wiki/readme and changelog. If the `module.json > [readme, bugs, changelog]` url is setup the module will add colored tags for these options.
