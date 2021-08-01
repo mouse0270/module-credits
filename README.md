@@ -21,10 +21,12 @@ Those of you with keen eyes, will have noticed that the issues tag for Bug Repor
 #### Local Readme.md Support
 Clicking on the wiki icon or the purple tag with an circle information will open the `readme.md` file within foundry now.
 **WARNING** Depending on how module authors added images to their `readme.md` file the images may or may not appear
+
 ![image](https://user-images.githubusercontent.com/564874/127776803-4fa3f278-7a3a-4f9f-9fa5-e4f64147b0ad.png)
 
 #### Version Tracker Support
 Have you updated a module recently but no idea what actually changed between versions. Module Credits will now show you a changlelog window of all modules you have that have recently updated. *Please note this feature requires the module to soft opt in by providiing a `changelog.md` file with their module. If the module does not include this file, it will not be tracked*
+
 ![image](https://user-images.githubusercontent.com/564874/127776931-968120f0-469a-4135-908e-2b25f18a692e.png)
 
 
