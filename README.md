@@ -1,4 +1,5 @@
 ![logo](https://user-images.githubusercontent.com/564874/127776144-f0290fce-4c10-473e-afff-dab763ba9f9d.png)
+
 This module adds a tag to the **Manage Modules** window that list the authors of the module. If the author has a url, it will make the tag a clickable link to that url.
 
 This Module also checks to see if the module has a link listed in the, if it does, it will make the version tag of the module a clickable element as well. Click on this element will open the `module.json > url` property in a new browser tab.
