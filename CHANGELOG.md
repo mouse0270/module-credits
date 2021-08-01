@@ -1,4 +1,4 @@
-# Version 0.0.3.2 - Links to Authors
+# Version 0.0.3.2 - Supporting Authors Again
 - Fixed behavior when clicking on author. It will now take you the the authors url when clicked.
 
 # Version 0.0.3.1 - Linux Case Sensitive File System
