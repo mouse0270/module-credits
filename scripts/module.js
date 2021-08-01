@@ -385,7 +385,7 @@ class ModuleCreditsDialog extends FormApplication {
 		return {
 			modules: this.modules.map(module => ({
 				...module, 
-				hasSeen: moduleCredits.setting('trackedChangelogs')[module?.name].hasSeen
+				hasSeen: module.type == 'changelog' ? moduleCredits.setting('trackedChangelogs')[module?.name].hasSeen : false
 			}))
 		};
 	}
@@ -424,9 +424,11 @@ class ModuleCreditsDialog extends FormApplication {
 					$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
 					
 					// Updated Tracked Modules!!
-					let trackedModules = moduleCredits.setting('trackedChangelogs');
-					trackedModules[module.name].hasSeen = true;
-					moduleCredits.setting('trackedChangelogs', trackedModules);
+					if (module.type == 'changelog') {
+						let trackedModules = moduleCredits.setting('trackedChangelogs');
+						trackedModules[module.name].hasSeen = true;
+						moduleCredits.setting('trackedChangelogs', trackedModules);
+					}
 				}).catch(error => {
 					moduleCredits.LOG('ERROR', error);
 				})
