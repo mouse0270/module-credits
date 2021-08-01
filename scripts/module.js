@@ -3,10 +3,6 @@ class ModuleCredits extends MousesLib {
 		super(module)
 	}
 
-	async getModuleMD(module, file) {
-		return await FilePicker.browse('user', `./modules/${module}/${file}.md`, { extensions: ['.md'] });
-	}
-
 	init = () => {
 		// Add Changelog Button to Help and Documentation
 		$('#sidebar #settings #settings-documentation').append(`<button data-action="changelog">
@@ -44,14 +40,6 @@ class ModuleCredits extends MousesLib {
 			return 0;
 		};
 
-		const waitFor = (ms) => new Promise(r => setTimeout(r, ms))
-		const asyncForEach = async (array, callback) => {
-			this.LOG(array, array.length);
-			for (let index = 0; index < array.length; index++) {
-				await callback(array[index], index, array)
-			}
-		}
-
 		let tracker = this.setting('trackedChangelogs');
 
 		// Remove Modules that Don't Exists
@@ -68,23 +56,35 @@ class ModuleCredits extends MousesLib {
 			if (typeof tracker[module?.data?.name] != 'undefined') {
 				// Check if Module has Updated
 				if (compareVersion(module?.data?.version, tracker[module?.data?.name].version)) {
-					await this.getModuleMD(module?.data?.name, 'CHANGELOG').then(response => {
+					await FilePicker.browse('user', `./modules/${module?.data?.name}/`, { extensions: ['.md'] }).then(response => {
+						let files = response.files.filter(file => file.toLowerCase().includes(`changelog.md`))
+						if (files.length > 0) {
+							return files[0];
+						}
+						throw TypeError(`${module?.data?.title} did not provide a changelog.md file`);
+					}).then(file => {
 						tracker[module?.data?.name] = {
 							version: module?.data?.version,
 							hasSeen: false
 						}
 					}).catch((error) => {
-						this.LOG(`${module?.data?.title} did not provide a changelog.md file`);
+						//this.LOG(error);
 					});
 				}
 			}else{
-				await this.getModuleMD(module?.data?.name, 'CHANGELOG').then(response => {
+				await FilePicker.browse('user', `./modules/${module?.data?.name}/`, { extensions: ['.md'] }).then(response => {
+					let files = response.files.filter(file => file.toLowerCase().includes(`changelog.md`))
+					if (files.length > 0) {
+						return files[0];
+					}
+					throw TypeError(`${module?.data?.title} did not provide a changelog.md file`);
+				}).then(file => {
 					tracker[module?.data?.name] = {
 						version: module?.data?.version,
 						hasSeen: false
 					}
 				}).catch((error) => {
-					this.LOG(`${module?.data?.title} did not provide a changelog.md file`);
+					//this.LOG(error);
 				});
 			}
 		};
@@ -181,7 +181,13 @@ class ModuleCredits extends MousesLib {
 					onclick: () =>  window.open(moduleData?.data?.readme, '_blank')
 				});
 				if (moduleCredits.setting('fetchLocalReadme')) {
-					this.getModuleMD(moduleData.data.name, 'README').then(response => {
+					FilePicker.browse('user', `./modules/${moduleData?.data?.name}/`, { extensions: ['.md'] }).then(response => {
+						let files = response.files.filter(file => file.toLowerCase().includes(`readme.md`))
+						if (files.length > 0) {
+							return files[0];
+						}
+						throw TypeError(`${moduleData?.data?.title} did not provide a readme.md file`);
+					}).then(file => {
 						$tag = tag({
 							text: 'text.readme.name',
 							isLocal: true,
@@ -223,7 +229,13 @@ class ModuleCredits extends MousesLib {
 					onclick: () =>  window.open(moduleData?.data?.changelog, '_blank')
 				});
 				if (moduleCredits.setting('fetchLocalChangelogs')) {
-					this.getModuleMD(moduleData?.data?.name, 'CHANGELOG').then(response => {
+					FilePicker.browse('user', `./modules/${moduleData?.data?.name}/`, { extensions: ['.md'] }).then(response => {
+						let files = response.files.filter(file => file.toLowerCase().includes(`changelog.md`))
+						if (files.length > 0) {
+							return files[0];
+						}
+						throw TypeError(`${moduleData?.data?.title} did not provide a changelog.md file`);
+					}).then(file => {
 						$tag = tag({
 							text: 'text.changelog.name',
 							isLocal: true,
@@ -383,10 +395,15 @@ class ModuleCreditsDialog extends FormApplication {
 
 	getData() {
 		return {
-			modules: this.modules.map(module => ({
-				...module, 
-				hasSeen: module.type == 'changelog' ? moduleCredits.setting('trackedChangelogs')[module?.name].hasSeen : false
-			}))
+			modules: this.modules.map(module => {
+				let hasSeen = false;
+				if (typeof moduleCredits.setting('trackedChangelogs')[module?.name]?.hasSeen) hasSeen = moduleCredits.setting('trackedChangelogs')[module?.name]?.hasSeen
+
+				return {
+					...module, 
+					hasSeen: hasSeen || false
+				}
+			})
 		};
 	}
 	activateListeners(html) {
@@ -412,26 +429,37 @@ class ModuleCreditsDialog extends FormApplication {
 				// Deactivate current Item
 				$element.closest('ul').find('li.active').removeClass('active');
 
-				fetch(`./modules/${module.name}/${module.type}.md`).then(response => {
-					if (response.status >= 200 && response.status <= 299) {
-						return response.text();
+				FilePicker.browse('user', `./modules/${module.name}/`, { extensions: ['.md'] }).then(response => {
+					let files = response.files.filter(file => file.toLowerCase().includes(`${module.type}.md`));
+					if (files.length > 0) {
+						return files[0];
 					}
-				}).then(data => {
-					let changelog = DOMPurify.sanitize(marked(data), {USE_PROFILES: {html: true}});
-					let toggle = `<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>`
-					$(html).find('main > .module-credits-dialog-title').html(`${toggle} ${module.title}`);
-					$(html).find('main .module-credits-dialog-content').html(changelog);
-					$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
-					
-					// Updated Tracked Modules!!
-					if (module.type == 'changelog') {
-						let trackedModules = moduleCredits.setting('trackedChangelogs');
-						trackedModules[module.name].hasSeen = true;
-						moduleCredits.setting('trackedChangelogs', trackedModules);
-					}
+					throw TypeError(`no file matching ${module.type}.md`);
+				}).then(file => {
+					fetch(`./${file}`).then(response => {
+						if (response.status >= 200 && response.status <= 299) {
+							return response.text();
+						}
+						throw TypeError("did not provide a changelog.md file");
+					}).then(data => {
+						let changelog = DOMPurify.sanitize(marked(data), {USE_PROFILES: {html: true}});
+						let toggle = `<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>`
+						$(html).find('main > .module-credits-dialog-title').html(`${toggle} ${module.title}`);
+						$(html).find('main .module-credits-dialog-content').html(changelog);
+						$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
+						
+						// Updated Tracked Modules!!
+						if (module.type == 'changelog') {
+							let trackedModules = moduleCredits.setting('trackedChangelogs');
+							trackedModules[module.name].hasSeen = true;
+							moduleCredits.setting('trackedChangelogs', trackedModules);
+						}
+					}).catch(error => {
+						//moduleCredits.LOG('ERROR', error);
+					})
 				}).catch(error => {
-					moduleCredits.LOG('ERROR', error);
-				})
+					//moduleCredits.LOG('ERROR', error);
+				});
 			}
 		});
 		// Activate first item in list

@@ -4,7 +4,7 @@
   "description": "Lists the authors of projects on the Manage Modules Window. If a url is provided in the module.json file, it will make the version tag link to the module url.",
   "version": "This is auto replaced",
   "library": "false",
-  "manifestPlusVersion": "0.0.1",
+  "manifestPlusVersion": "0.0.0.1",
   "minimumCoreVersion": "0.8.8",
   "compatibleCoreVersion": "0.8.8",
   "authors": [

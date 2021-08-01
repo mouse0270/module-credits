@@ -1,3 +1,6 @@
+# Version 0.0.3.1 - Linux Case Sensitive File System
+- Fixed an issue with Linux where the file system is case sensitive. Module Credits now uses `FilePicker` to get the correct path. Thank you LorduFreeman for helping me fix this issue
+
 # Version 0.0.3 - All the Customization
 Added Option to add font awesome icon to default tags such as Javascript, CSS and Compendium.
 Added Option to condense tags. Condensing a tag will remove the text from the tag and only show the icon for that tag.
