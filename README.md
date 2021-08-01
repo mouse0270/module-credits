@@ -1,4 +1,4 @@
-![logo](https://user-images.githubusercontent.com/564874/127776144-f0290fce-4c10-473e-afff-dab763ba9f9d.png)
+![logo-rectangle](https://user-images.githubusercontent.com/564874/127776193-bbaecf18-9567-400c-a6c3-7bec66137645.png)
 
 This module adds a tag to the **Manage Modules** window that list the authors of the module. If the author has a url, it will make the tag a clickable link to that url.
 
