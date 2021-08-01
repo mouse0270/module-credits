@@ -317,6 +317,20 @@ class ModuleCredits extends MousesLib {
 			$hint.html(DOMPurify.sanitize(marked($hint.text()), {USE_PROFILES: {html: true}}))
 		});
 
+		// Handle Change Event for Condense Default Tags
+		$(html).find(`[name="${this.MODULE.name}.defaultIcons"]`).on('change', (event) => {
+			let $element = $(event.currentTarget);
+			let $fetchLocalChangelog = $(html).find(`[name="${this.MODULE.name}.condenseDefaultTags"]`);
+
+			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
+		});
+		$(html).find(`[name="${this.MODULE.name}.condenseDefaultTags"]`).on('change', (event) => {
+			let $element = $(event.currentTarget);
+			let $defaultIcons = $(html).find(`[name="${this.MODULE.name}.defaultIcons"]`);
+
+			if ($element.is(':checked')) $defaultIcons.prop('checked', true);
+		});
+
 		// Handle Change Event for Fetch Local Readme
 		$(html).find(`[name="${this.MODULE.name}.showReadme"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
@@ -330,7 +344,7 @@ class ModuleCredits extends MousesLib {
 
 			if ($element.is(':checked')) $showReadme.prop('checked', true);
 		});
-		
+
 		// Handle Change Event for Fetch Local Changelog
 		$(html).find(`[name="${this.MODULE.name}.showChangelog"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);

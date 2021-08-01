@@ -23,11 +23,11 @@ Hooks.once('init', async () => {
 		type: Boolean,
 		default: true
 	});
-	moduleCredits.setting('register', 'condenseTags', {
+	moduleCredits.setting('register', 'condenseDefaultTags', {
 		type: Boolean,
 		default: true
 	});
-	moduleCredits.setting('register', 'condenseDefaultTags', {
+	moduleCredits.setting('register', 'condenseTags', {
 		type: Boolean,
 		default: true
 	});
