@@ -1,60 +1,60 @@
-.package-list .package .tag {
+.package-list .package .package-overview .tag {
     transition: all 0.3s ease-in-out;
 }
 
-.package-list .package .tag.action {
+.package-list .package .package-overview .tag.action {
     align-items: center;
     background-color: rgb(33 37 41);
     color: rgb(255 255 255);
     display: flex;
 }
-.package-list .package .tag.action:hover {
+.package-list .package .package-overview .tag.action:hover {
     background-color: rgb(28 31 35);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag.author {
+.package-list .package .package-overview .tag.author {
     background-color: rgb(0 150 136);
     color: rgb(255 255 255);
 }
-.package-list .package .tag.author:hover {
+.package-list .package .package-overview .tag.author:hover {
     background-color: rgb(51 201 187);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag.changelog {
+.package-list .package .package-overview .tag.changelog {
     background-color: rgb(15 121 233);
     color: rgb(255 255 255);
 }
-.package-list .package .tag.changelog:hover {
+.package-list .package .package-overview .tag.changelog:hover {
     background-color: rgb(66 172 255);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag.issues {
+.package-list .package .package-overview .tag.issues {
     background-color: rgb(255 59 22);
     color: rgb(255 255 255);
 }
-.package-list .package .tag.issues:hover {
+.package-list .package .package-overview .tag.issues:hover {
     background-color: rgb(255  110  73);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag.readme {
+.package-list .package .package-overview .tag.readme {
     background-color: rgb(108 46 196);
     color: rgb(255 255 255);
 }
-.package-list .package .tag.readme:hover {
+.package-list .package .package-overview .tag.readme:hover {
     background-color: rgb(159  97  247);
     color: rgb(255 255 255);
 	cursor: pointer;
 }
 
-.package-list .package .tag:before {
+.package-list .package .package-overview .tag:before {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     display: inline-block;
@@ -66,79 +66,79 @@
     margin-right: 0.3rem;
     text-rendering: auto;
 }
-.package-list .package .tag.action.readme:before{
+.package-list .package .package-overview .tag.action.readme:before{
     content: '\f05a';
 }
-.package-list .package .tag.action.issues:before{
+.package-list .package .package-overview .tag.action.issues:before{
     content: '\f188';
 }
-.package-list .package .tag.action.changelog:before{
+.package-list .package .package-overview .tag.action.changelog:before{
     content: '\f362';
 }
 /* IF EXTERNAL ALLWAYS DISPLAY THIS ICON */
-.package-list .package .tag.action.url:before {
+.package-list .package .package-overview .tag.action.url:before {
     content: '\f35d';
 }
 
 /* ADD ICONS FOR DEFAULT TAGS */
-.package-list .package.condense-compatibility-risk .tag.unknown:before {
+.package-list .package.condense-compatibility-risk .package-overview .tag.unknown:before {
     content: '\f071';
 }
-.package-list .package.default-icons .tag.compendium:before,
-.package-list .package.condense-default-tags .tag.compendium:before {
+.package-list .package.default-icons .package-overview .tag.compendium:before,
+.package-list .package.condense-default-tags .package-overview .tag.compendium:before {
     content: '\f07c';
 }
-.package-list .package.default-icons .tag.javascript:before,
-.package-list .package.condense-default-tags .tag.javascript:before {
+.package-list .package.default-icons .package-overview .tag.javascript:before,
+.package-list .package.condense-default-tags .package-overview .tag.javascript:before {
     content: '\f3b9';
     font-family: "Font Awesome 5 Brands";
     font-weight: 400;
 }
-.package-list .package.default-icons .tag.css:before,
-.package-list .package.condense-default-tags .tag.css:before {
+.package-list .package.default-icons .package-overview .tag.css:before,
+.package-list .package.condense-default-tags .package-overview .tag.css:before {
     content: '\f13c';
     font-family: "Font Awesome 5 Brands";
     font-weight: 400;
 }
 
-#module-management .package-list .package.condense-tags .tag.action:not(.url):not(.author),
-#module-management .package-list .package.condense-default-tags .tag:not(.action):not(.unknown) {
+#module-management .package-list .package.condense-tags .package-overview .tag.action:not(.url):not(.author),
+#module-management .package-list .package.condense-default-tags .package-overview .tag:not(.action):not(.unknown) {
     align-items: center;
     display: flex;
     font-size: 0rem;
 }
-#module-management .package-list .package.condense-tags .tag.action:not(.url):not(.author):before,
-#module-management .package-list .package.condense-default-tags .tag:not(.action):not(.unknown):before {
+#module-management .package-list .package.condense-tags .package-overview .tag.action:not(.url):not(.author):before,
+#module-management .package-list .package.condense-default-tags .package-overview .tag:not(.action):not(.unknown):before {
     font-size: 11px;
     margin-right: 0rem;
 }
 
 /* ORDER TAGS */
-.package-list .package .tag.author {
+.package-list .package .package-overview .tag.author {
     order: 1;
 }
-.package-list .package .tag.unknown {
+.package-list .package .package-overview .tag.unknown {
     order: 2;
 }
-.package-list .package .tag.javascript {
+.package-list .package .package-overview .tag.javascript {
     order: 3;
 }
-.package-list .package .tag.css {
+.package-list .package .package-overview .tag.css {
     order: 4;
 }
-.package-list .package .tag.compendium {
+.package-list .package .package-overview .tag.compendium {
     order: 5;
 }
-.package-list .package .tag.readme {
+.package-list .package .package-overview .tag.readme {
     order: 6;
 }
-.package-list .package .tag.issues {
+.package-list .package .package-overview .tag.issues {
     order: 7;
 }
-.package-list .package .tag.changelog {
+.package-list .package .package-overview .tag.changelog {
     order: 8;
 }
-.package-list .package .tag.version {
+.package-list .package .package-overview .tag.version {
     order: 9;
 }
 
@@ -239,8 +239,11 @@ html > body .package-list .package .package-overview .package-title {
 }
 
 #moduleCreditsDialog .window-content main {
-    background: url(../../../ui/parchment.jpg) repeat;
+    /*background: url(../../../ui/parchment.jpg) repeat;*/
+    background-image: none;
+    background-color: var(--palette-dialog-background, #dfddd1ff);
     box-shadow: 0px 0px 10px rgba(0 0 0 / 70%);
+    color: var(--palette-dialog-background-contrast-text, #000000);
     height: 100%;
     padding: 0;
     position: absolute;

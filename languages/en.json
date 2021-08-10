@@ -1,38 +1,42 @@
 {
-	"module-credits.settings.allowHTMLforAllSettings.name": "Allow HTML Parse to parse all Module Settings",
-	"module-credits.settings.allowHTMLforAllSettings.hint": "If this is enabled, Module Credits will parse all Module Settings, titles and notes/hints and format them.",
-
-	"module-credits.settings.showNewChangelogsOnLoad.name": "Show New Changelogs on Load",
-	"module-credits.settings.showNewChangelogsOnLoad.hint": "This will show any unseen changelogs when the wold loads up.",
-	"module-credits.settings.defaultIcons.name": "Add Default Icons",
-	"module-credits.settings.defaultIcons.hint": "Adds font icons for Javascript, CSS and Compendium",
-	"module-credits.settings.condenseDefaultTags.name": "Condense Default Tags",
-	"module-credits.settings.condenseDefaultTags.hint": "Hides the text of default tags and will only show the icon for that tag.",
-	"module-credits.settings.condenseTags.name": "Condense Module Credits Tags",
-	"module-credits.settings.condenseTags.hint": "Hides the text of tags from Module Credits if it isn't an extrenal source. *(Only show Icons)*",
-	"module-credits.settings.condenseCompatibilityRisk.name": "Condense Compatibility Risk Tag",
-	"module-credits.settings.condenseCompatibilityRisk.hint": "Replaces the text of the Compatibility Risk Tag with a Triangle Explanation Mark.",
-	"module-credits.settings.condenseVersion.name": "Condense Version Tag",
-	"module-credits.settings.condenseVersion.hint": "Replaces the Version Text with the First Character then Version Numbner. eg `V.0.0.3`",
-
-
-	"module-credits.settings.showReadme.name": "Add Wiki Tag",
-	"module-credits.settings.showReadme.hint": "If the module contains the `readme` property, this will add a clickable tag that will take you to that url",
-	"module-credits.settings.fetchLocalReadme.name": "Fetch Local Readme",
-	"module-credits.settings.fetchLocalReadme.hint": "Allow module credits to search module directories for local `readme.md` files.",
-	"module-credits.settings.showIssues.name": "Add Issues Tag",
-	"module-credits.settings.showIssues.hint": "If the module contains the `bugs` property, this will add a clickable tag that will take you to that url",
-	"module-credits.settings.showChangelog.name": "Add Changelog Tag",
-	"module-credits.settings.showChangelog.hint": "If the module contains the `changelog` property, this will add a clickable tag that will take you to that url",	
+	"module-credits": {
+		"settings": {
+			"allowHTMLforAllSettings.name": "Allow HTML Parse to parse all Module Settings",
+			"allowHTMLforAllSettings.hint": "If this is enabled, Module Credits will parse all Module Settings, titles and notes/hints and format them.",
 	
-	"module-credits.settings.fetchLocalChangelogs.name": "Fetch Local Changelog",
-	"module-credits.settings.fetchLocalChangelogs.hint": "Allow module credits to search module directories for local `changelog.md` files.",
+			"showNewChangelogsOnLoad.name": "Show New Changelogs on Load",
+			"showNewChangelogsOnLoad.hint": "This will show any unseen changelogs when the wold loads up.",
+			"defaultIcons.name": "Add Default Icons",
+			"defaultIcons.hint": "Adds font icons for Javascript, CSS and Compendium",
+			"condenseDefaultTags.name": "Condense Default Tags",
+			"condenseDefaultTags.hint": "Hides the text of default tags and will only show the icon for that tag.",
+			"condenseTags.name": "Condense Module Credits Tags",
+			"condenseTags.hint": "Hides the text of tags from Module Credits if it isn't an extrenal source. *(Only show Icons)*",
+			"condenseCompatibilityRisk.name": "Condense Compatibility Risk Tag",
+			"condenseCompatibilityRisk.hint": "Replaces the text of the Compatibility Risk Tag with a Triangle Explanation Mark.",
+			"condenseVersion.name": "Condense Version Tag",
+			"condenseVersion.hint": "Replaces the Version Text with the First Character then Version Numbner. eg `V.0.0.3`",
+	
+	
+			"showReadme.name": "Add Wiki Tag",
+			"showReadme.hint": "If the module contains the `readme` property, this will add a clickable tag that will take you to that url",
+			"fetchLocalReadme.name": "Fetch Local Readme",
+			"fetchLocalReadme.hint": "Allow module credits to search module directories for local `readme.md` files.",
+			"showIssues.name": "Add Issues Tag",
+			"showIssues.hint": "If the module contains the `bugs` property, this will add a clickable tag that will take you to that url",
+			"showChangelog.name": "Add Changelog Tag",
+			"showChangelog.hint": "If the module contains the `changelog` property, this will add a clickable tag that will take you to that url",	
+			
+			"fetchLocalChangelogs.name": "Fetch Local Changelog",
+			"fetchLocalChangelogs.hint": "Allow module credits to search module directories for local `changelog.md` files."
+		},
 
-	"module-credits.resetDialog.name": "Reset Tracked Changelogs",
-	"module-credits.resetDialog.button": "Confirm Reset",
-	"module-credits.resetDialog.hint": "Confirming this reset, will set all changelogs to unseen.",
+		"resetDialog.name": "Reset Tracked Changelogs",
+		"resetDialog.button": "Confirm Reset",
+		"resetDialog.hint": "Confirming this reset, will set all changelogs to unseen.",
 
-	"module-credits.text.readme.name": "wiki",
-	"module-credits.text.issues.name": "issues",
-	"module-credits.text.changelog.name": "changelog"
+		"text.readme.name": "wiki",
+		"text.issues.name": "issues",
+		"text.changelog.name": "changelog"
+	}
 }

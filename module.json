@@ -22,17 +22,18 @@
     }
   ],
   "dependencies": [
-
+    {
+        "name": "mouses-library",
+        "url":"https://github.com/mouse0270/mouses-library"
+    }
   ],
   "conflicts": [
     
   ],
+  "esmodules": [],
   "scripts": [
-    "/scripts/lib/purify.min.js",
-    "/scripts/lib/marked.min.js",
-    "/scripts/lib/MousesLib.js",
-    "/scripts/hooks.js",
-    "/scripts/module.js"
+    "/scripts/module.js",
+    "/scripts/hooks.js"
   ],
   "styles": [
     "/styles/module.css"

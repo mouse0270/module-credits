@@ -1,24 +1,16 @@
-let moduleCredits = null;
-
-Hooks.once('init', async () => {
-	moduleCredits = new ModuleCredits({
-			name: 'module-credits',
-			title: 'Module Credits',
-		});
-
+Hooks.once('module-creditsInit', async () => {
+	// SET MODULE SETTINGS
 	moduleCredits.setting('register', 'trackedChangelogs', {
 		type: Object,
 		default: {},
 		scope: 'world',
 		config: false
 	});
-
 	moduleCredits.setting('register', 'showNewChangelogsOnLoad', {
 		type: Boolean,
 		default: true,
 		scope: 'world',
 	});
-
 	moduleCredits.setting('register', 'defaultIcons', {
 		type: Boolean,
 		default: true
@@ -65,20 +57,16 @@ Hooks.once('init', async () => {
 		default: false
 	});
 
-	window.moduleCredits = moduleCredits || {};
-});
-
-Hooks.once('ready', async () => {
-	// Clear Has Seen
-	//moduleCredits.setting('trackedChangelogs', {})
-
-	moduleCredits.init();
-});
-
-Hooks.on("renderSettingsConfig", (app, html) => {
-	moduleCredits.renderSettingsConfig(app, html);
-});
-
-Hooks.on("renderModuleManagement", (app, html) => {
-	moduleCredits.renderModuleManagement(app, html);
+	// HOOK INTO FOUNDRY
+	Hooks.once('ready', async () => {
+		moduleCredits.init();
+	});
+	
+	Hooks.on("renderSettingsConfig", (app, html) => {
+		moduleCredits.renderSettingsConfig(app, html);
+	});
+	
+	Hooks.on("renderModuleManagement", (app, html) => {
+		moduleCredits.renderModuleManagement(app, html);
+	});
 });
