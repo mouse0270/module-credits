@@ -292,7 +292,6 @@ Hooks.once('module-creditsIsLoaded', async () => {
 
 		renderSettingsConfig = (app, html) => {
 			let $moduleSection = $(html).find('[data-tab="modules"] h2.module-header:contains("Module Credits")')
-			let $moduleSettings = $(html).find('[data-tab="modules"] h2.module-header:contains("Module Credits")').nextUntil('h2.module-header');
 			
 			// Add Support for Tidy UI - Game Settings
 			if (!game.modules.get('tidy-ui-game-settings')) $moduleSection = $moduleSection.next();
@@ -321,18 +320,6 @@ Hooks.once('module-creditsIsLoaded', async () => {
 					}, 
 					no: (event) => { return false; }
 				})
-			});
-		
-			if (moduleCredits.setting('allowHTMLforAllSettings')) {
-				$moduleSettings = $(html).find('[data-tab="modules"] .settings-list .form-group');
-			}
-			$moduleSettings.each((index, setting) => {
-				let $title = $(setting).find('label');
-				let $hint = $(setting).find('p.notes');
-				// Add setting to parsed settings to let CSS be styled correctly
-				$(setting).addClass('module-credits-parsed');
-		
-				$hint.html(DOMPurify.sanitize(marked($hint.text()), {USE_PROFILES: {html: true}}))
 			});
 
 			// Handle Change Event for Condense Default Tags

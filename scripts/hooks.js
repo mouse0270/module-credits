@@ -52,11 +52,6 @@ Hooks.once('module-creditsInit', async () => {
 		default: true
 	});
 
-	moduleCredits.setting('register', 'allowHTMLforAllSettings', {
-		type: Boolean,
-		default: false
-	});
-
 	// HOOK INTO FOUNDRY
 	Hooks.once('ready', async () => {
 		moduleCredits.init();

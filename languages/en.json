@@ -1,9 +1,6 @@
 {
 	"module-credits": {
-		"settings": {
-			"allowHTMLforAllSettings.name": "Allow HTML Parse to parse all Module Settings",
-			"allowHTMLforAllSettings.hint": "If this is enabled, Module Credits will parse all Module Settings, titles and notes/hints and format them.",
-	
+		"settings": {	
 			"showNewChangelogsOnLoad.name": "Show New Changelogs on Load",
 			"showNewChangelogsOnLoad.hint": "This will show any unseen changelogs when the wold loads up.",
 			"defaultIcons.name": "Add Default Icons",

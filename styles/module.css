@@ -147,32 +147,6 @@ html > body .package-list .package .package-overview .package-title {
 	flex: auto;
 }
 
-.module-credits-parsed code {
-    background-color: rgb(33 37 41);
-    border-radius: .2rem;
-    color: rgb(255 255 255);
-    font-size: .75em;
-    padding: .1rem .2rem;
-}
-.module-credits-parsed .alert {
-    border: 1px solid rgb(0 0 0 / 0%);
-    border-radius: .25rem;
-    font-size: 14px;
-    padding: 0.75rem;
-    position: relative;
-}
-.module-credits-parsed .alert-danger {
-    background-color: rgb(248 215 218);
-    border-color: rgb(245 194 199);
-    color: rgb(132 32 41);
-}
-.module-credits-parsed .alert p {
-    margin: 0rem 0rem 0.5rem;
-}
-.module-credits-parsed .alert p:last-child {
-    margin: 0rem;
-}
-
 /* ACCOUNT FOR TIDY UI - GAME SETTINGS */
 [data-sort-name] .module-credits-parsed  .alert {
     margin-left: calc(-13px - 1rem);
