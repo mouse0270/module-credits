@@ -5,13 +5,17 @@
   "version": "This is auto replaced",
   "library": "false",
   "manifestPlusVersion": "0.0.0.1",
-  "minimumCoreVersion": "0.8.8",
-  "compatibleCoreVersion": "0.8.8",
+  "minimumCoreVersion": "9",
+  "compatibleCoreVersion": "9",
   "authors": [
     {
       "name": "Mouse0270",
       "url": "https://github.com/mouse0270/module-credits",
-      "discord": "Mouse0270#0270"
+      "discord": "Mouse0270#0270",
+      "twitter": "Mouse0270",
+      "patreon": "Mouse0270",
+      "github": "Mouse0270",
+      "email": "rmcintosh@websitesbyfatdudes.com"
     }
   ],
   "languages": [
@@ -22,19 +26,13 @@
     }
   ],
   "dependencies": [
-    {
-        "name": "mouses-library",
-        "url":"https://github.com/mouse0270/mouses-library"
-    }
+    
   ],
   "conflicts": [
     
   ],
-  "esmodules": [],
-  "scripts": [
-    "/scripts/module.js",
-    "/scripts/hooks.js"
-  ],
+  "esmodules": [ "/scripts/_init.mjs" ],
+  "scripts": [ ],
   "styles": [
     "/styles/module.css"
   ],

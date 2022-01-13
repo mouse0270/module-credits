@@ -3,6 +3,8 @@
 		"settings": {	
 			"showNewChangelogsOnLoad.name": "Show New Changelogs on Load",
 			"showNewChangelogsOnLoad.hint": "This will show any unseen changelogs when the wold loads up.",
+			"useSourceInsteadofSchema.name": "Use Source Instead Of Schema",
+			"useSourceInsteadofSchema.hint": "The module schema by default limits author links to name, email, url and discord. Using the source file instead will pull any additional values the author has listed.",
 			"defaultIcons.name": "Add Default Icons",
 			"defaultIcons.hint": "Adds font icons for Javascript, CSS and Compendium",
 			"condenseDefaultTags.name": "Condense Default Tags",
@@ -13,6 +15,8 @@
 			"condenseCompatibilityRisk.hint": "Replaces the text of the Compatibility Risk Tag with a Triangle Explanation Mark.",
 			"condenseVersion.name": "Condense Version Tag",
 			"condenseVersion.hint": "Replaces the Version Text with the First Character then Version Numbner. eg `V.0.0.3`",
+			"condenseAuthors.name": "Condense Author Tags",
+			"condenseAuthors.hint": "If a module contains more then one author, it will display an icon instead of the name. Clicking on this icon will show all authors and their respective values in order.",
 	
 	
 			"showReadme.name": "Add Wiki Tag",

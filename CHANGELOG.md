@@ -1,3 +1,12 @@
+# Version 0.0.4.0 - Plus more Options
+- Updated to latest version of Foundry.
+- Added support for Languages Tag
+- Fixed `min-width` for condensed tags for Version and Compatibility Risk 
+- Added Popper to allow author tags to support multiple items
+- - Author tags will show a list of links or values the author of the module has included
+- Fixed compatibility issue DF Chat Enhancements and Module Credits
+- Added Option to Condense Author Tags if more then one Author
+
 # Version 0.0.3.2 - Supporting Authors Again
 - Fixed behavior when clicking on author. It will now take you the the authors url when clicked.
 

@@ -35,3 +35,4 @@ Have you updated a module recently but no idea what actually changed between ver
 Libraries used in creating Module Credits
 - [Marked.js](https://github.com/markedjs/marked) 
 - [DOMPurify](https://github.com/cure53/DOMPurify) 
+- [Popper](https://popper.js.org/) 
