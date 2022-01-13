@@ -18,7 +18,7 @@ Module Credits now tries to clean up the module management tags section by addin
 ### Plus more Options
 This version of Module credits mostly just fixes a few issues and expands on some other options. It fixes missing support for the languages tab, the `min-width` property on the version and compatibility risk tags, Fixed compatibility with other modules that happen to use the same libraries as Module Credits. The main update to the module is the new Condensed Author tags. Now if a module has more then one author, they can be condensed down to one tag. Click on an author tag will now list the email, url and discord (If provided by the author) in a small tooltip. You can click on copy these elements with your mouse.
 
-![image](https://user-images.githubusercontent.com/564874/149253149-d0a2208f-0a9b-4f9e-970d-f3a16150a579.png)
+![image](https://user-images.githubusercontent.com/564874/149253619-f33409fb-4812-4ab9-8a36-aa1c721988ef.png)
 
 #### Bug Reporter Support
 Those of you with keen eyes, will have noticed that the issues tag for Bug Reporter shows a bug icon. Module Credits now adds suppoer for [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter). If Bug Reporter is enabled and the module has opt'ed into the system, you can click that icon to quickly report an issue with that module using `Bug Reporter`. If you don't have bug reporter, don't worry the issues link will still appear as it does in the example image for `About Time` and `Alternative Rotation`
