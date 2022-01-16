@@ -1,3 +1,10 @@
+# Version 0.0.4.5 - Changelogs & Conflicts Support
+- With permission from theripper93 I've added a wrapper to support modules who use his module in Module Credits
+- Fixed Author Popover being under elements below it
+- Added the ability to define a changelog in code with `game.modules.get('module-credits').api.registerChangelog({...})`
+- Added the ability to define a conflict with `game.modules.get('module-credits').api.defineConflict({...})`
+- Added Global `conflicts.json` file that is read from github to allow conflicts to be defined before modules are enabled
+
 # Version 0.0.4.0 - Plus more Options
 - Updated to latest version of Foundry.
 - Added support for Languages Tag

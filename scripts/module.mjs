@@ -14,7 +14,6 @@ export class ModuleCredits {
 		// 🐛 Bug Reporter Support
 		let bugReporter = game.modules.get('bug-reporter') || {api: undefined};
 		// Check if Bug Reporter is Exists and Enabled
-		console.log(typeof bugReporter.api)
 		return (
 			typeof bugReporter.api != 'undefined'
 			&& (
@@ -42,17 +41,129 @@ export class ModuleCredits {
 		}
 	}
 
-	static init = () => {
-		// Add Changelog Button to Help and Documentation
-		$('#sidebar #settings #settings-documentation').append(`<button data-action="changelog">
-				<i class="fas fa-exchange-alt"></i> Module Changelogs
-			</button>`);
+	// MODULE SUPPORT FOR || Changelogs & Conflicts ||
+	static polyfillLibChangelogs = () => {
+		// Handle for lib-changelogs
+		if (!game.modules?.get('lib-changelogs')?.active ?? true) {
+			Hooks.once('ready', () => {
+				globalThis.libChangelogs = {
+					register: (moduleId, markdown, warnLevel = "minor") => {
+						this.registerChangelog({
+							moduleID: moduleId, 
+							changelog: markdown, 
+							status: warnLevel
+						})
+					},
+					registerConflict: this.defineConflict
+				};
 
-		$('#sidebar #settings #settings-documentation [data-action="changelog"]').off('click');
-		$('#sidebar #settings #settings-documentation [data-action="changelog"]').on('click', event => {
-			this.renderChangelog({ showAllModules: true })
+				Hooks.callAll('libChangelogsReady');
+			});
+		}
+	}
+
+	//Queue Registration calls
+	static queue = [];
+	static queueIsRunning = false;
+
+	static async registerChangelog({moduleID, changelog, status}) {
+		// add call to queue
+		if (moduleID != null) {
+			ModuleCredits.queue.push({ moduleID: moduleID, changelog: changelog, status: status });
+		}
+
+		// Check if queue is not running
+		if (!ModuleCredits.queueIsRunning) {
+			// Set queue to running;
+			ModuleCredits.queueIsRunning = true;
+
+			// Get Tracked Modules
+			let tracker = MODULE.setting('trackedChangelogs');
+
+			// Add Tracked Module
+			tracker[ModuleCredits.queue[0].moduleID] = {
+				version: game.modules.get(ModuleCredits.queue[0].moduleID).data.version,
+				hasSeen: tracker[ModuleCredits.queue[0].moduleID]?.hasSeen ?? false,
+				content: ModuleCredits.queue[0]?.changelog ?? null,
+				status: ModuleCredits.queue[0]?.status ?? 'minor'
+			}
+
+			await MODULE.setting('trackedChangelogs', tracker);
+
+			// Remove Module from Queue and Stop Queue;
+			ModuleCredits.queue.shift();
+			ModuleCredits.queueIsRunning = false;
+
+			// If items are in queue
+			if (ModuleCredits.queue.length > 0)  {
+				ModuleCredits.registerChangelog({moduleID: null});
+			}else{
+				this.procesStaticChangelogs();
+			}
+		} 
+	}
+
+
+	//Define variable to hold conflicts as they don't need to be stored
+	static conflicts = [];
+	static defineConflict = ({moduleID, conflictingModuleID, content, status}) => {
+		ModuleCredits.conflicts.push({
+			moduleID: moduleID,
+			conflictingModuleID: conflictingModuleID,
+			content: content,
+			status: status ?? 'minor'
 		});
 
+		$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
+		return 'conflict registered';
+	}
+
+	static api = () => {
+		game.modules.get(MODULE.name).api = {
+			registerChangelog: this.registerChangelog,
+			defineConflict: this.defineConflict
+		}
+
+		// Add Support for Changelogs & Conflicts
+		this.polyfillLibChangelogs();
+	}
+
+	static init = () => {
+		// Add Changelog Button to Help and Documentation
+		Hooks.on("renderSidebarTab", (a,b,c,d) => {
+			if ($('#sidebar #settings #settings-documentation').length >= 1) {
+				if ($('#sidebar #settings #settings-documentation button[data-action="changelog"]').length <= 0) {
+					$('#sidebar #settings #settings-documentation').append(`<button data-action="changelog">
+							<i class="fas fa-exchange-alt"></i> Module Changelogs
+						</button>`);
+
+					$('#sidebar #settings #settings-documentation [data-action="changelog"]').off('click');
+					$('#sidebar #settings #settings-documentation [data-action="changelog"]').on('click', event => {
+						this.renderChangelog({ showAllModules: true })
+					});
+				}
+
+				if (ModuleCredits.conflicts.length >= 1) {
+					$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
+				}
+			}
+			//data-action="modules"
+		});
+
+		this.registerChangelog({moduleID: MODULE.name});
+		this.defineConflict({
+			moduleID: 'module-credits',
+			conflictingModuleID: 'lib-changelogs',
+			content: 'Provides similar functionality.',
+			status: 'minor'
+		})
+
+		//if (this.queue.length == 0) this.procesStaticCahngelogs();
+
+		this.registerLibThemer();
+	}
+
+	static procesStaticChangelogs = () => {
 		// Enable Version Tracking
 		this.versionTracker().then(response => response).then((trackedModules) => {
 			// Update Setting
@@ -60,8 +171,6 @@ export class ModuleCredits {
 			if (game.user.isGM && MODULE.setting('showNewChangelogsOnLoad'))
 				this.renderChangelog({trackedModules: trackedModules});
 		});
-
-		this.registerLibThemer();
 	}
 
 	static async versionTracker() {
@@ -82,7 +191,7 @@ export class ModuleCredits {
 		};
 
 		let tracker = MODULE.setting('trackedChangelogs');
-
+		
 		// Remove Modules that Don't Exists
 		Object.entries(tracker).forEach(([key, module]) => {
 			if (typeof game.modules.get(key) == 'undefined') {
@@ -105,7 +214,8 @@ export class ModuleCredits {
 					}).then(file => {
 						tracker[module?.data?.name] = {
 							version: module?.data?.version,
-							hasSeen: false
+							hasSeen: false,
+							status: 'minor'
 						}
 					}).catch((error) => {
 						//this.LOG(error);
@@ -121,7 +231,8 @@ export class ModuleCredits {
 				}).then(file => {
 					tracker[module?.data?.name] = {
 						version: module?.data?.version,
-						hasSeen: false
+						hasSeen: false,
+						status: 'minor'
 					}
 				}).catch((error) => {
 					//this.LOG(error);
@@ -136,19 +247,30 @@ export class ModuleCredits {
 		if (typeof trackedModules == 'undefined') trackedModules = MODULE.setting('trackedChangelogs');
 		if (typeof showAllModules == 'undefined') showAllModules = false;
 
+		// Sort Modules by ModuleID
+		let sortedModules = Object.keys(trackedModules).sort().reduce((obj, key) => { 
+				obj[key] = trackedModules[key]; 
+			  	return obj;
+			}, {});
+
 		// Check if Changelog has to be shown
 		let showChangelog = false;
 		let modulesToShow = [];
-		Object.entries(trackedModules).forEach(([key, module]) => {
+		Object.entries(sortedModules).forEach(([key, module]) => {
 			// If Changelog has not been seen, show changelog
 			let moduleData = MODULE.setting('useSourceInsteadofSchema') ? game.modules.get(key).data._source : game.modules.get(key).data;
 			if (!module.hasSeen || showAllModules) {
 				showChangelog = true;
-				modulesToShow.push({
+
+				let pushData = {
 					title: moduleData?.title,
 					name: moduleData?.name,
-					type: 'changelog'
-				})
+					type: 'changelog',
+					status: module.status
+				}
+				if (module?.content ?? false) pushData.content = module.content;
+
+				modulesToShow.push(pushData)
 			}
 		});
 
@@ -429,46 +551,7 @@ export class ModuleCredits {
 					$module.find('.package-overview .package-title').after($tag)
 				});
 			}
-		})
-		//new ModuleCreditsChangelog({title: 'Changelog: Module Credits'}).render(true);
-
-		let $tooltip = $(`<div id="${MODULE.name}-tooltip" role="tooltip">
-				<ul>
-					<li>This is a test</li>
-				</ul>
-				<div id="arrow" data-popper-arrow></div>
-	  		</div>`)
-			  
-
-		//let popperInstance = null;	  
-		/*$('.tag.author').on('click', (event) => {
-			event.preventDefault();
-
-			if (popperInstance != null) {
-				popperInstance.destroy();
-				$tooltip.remove();
-			}
-
-			let $self = $(event.currentTarget);
-
-			// Get Package Details
-			let packageDetails = game.modules.get($self.closest('li.package').data('module-name')).data;
-			console.log(packageDetails);
-
-			$self.before($tooltip);
-			popperInstance = Popper.createPopper($self[0], $tooltip[0], {
-				placement: 'auto',
-				strategy: 'fixed',
-				modifiers: [
-					{
-						name: 'offset',
-						options: {
-						offset: [0, 8],
-						},
-					},
-				],
-			});
-		});*/
+		});
 
 		$('body').on('click', (event) => {
 			if (popperInstance != null) {

@@ -182,20 +182,22 @@ html > body .package-list .package .package-overview .package-title {
     width: 206px;
 }
 #moduleCreditsDialog .window-content nav ul {
+    display: flex;
+    flex-direction: column;
     list-style: none;
     margin: 0px;
     padding: 0px;
 }
-#moduleCreditsDialog .window-content nav ul li {
+#moduleCreditsDialog .window-content nav ul li a {
     border-bottom: 1px solid rgba(0 0 0 / 70%);
     color: var(--palette-dialog-background-contrast-text, #000000);
 }
-#moduleCreditsDialog .window-content nav ul li:hover,
-#moduleCreditsDialog .window-content nav ul li:active,
-#moduleCreditsDialog .window-content nav ul li:focus {
+#moduleCreditsDialog .window-content nav ul li a:hover,
+#moduleCreditsDialog .window-content nav ul li a:active,
+#moduleCreditsDialog .window-content nav ul li a:focus {
     background-color: rgba(255, 255, 255, 0.2);
 }
-#moduleCreditsDialog .window-content nav ul li.active {
+#moduleCreditsDialog .window-content nav ul li.active a {
     background-color: rgba(255, 255, 255, 0.4);
 }
 #moduleCreditsDialog .window-content nav ul li a {
@@ -226,6 +228,50 @@ html > body .package-list .package .package-overview .package-title {
 }
 #moduleCreditsDialog .window-content nav ul li.module-credits-dialog-has-seen-true a:before {
     content: '\f06e'
+}
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-minor::before,
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-major::before,
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-breaking::before,
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-critical::before {
+    align-items: center;
+    background-color: rgb(33, 149, 242);
+    border-bottom: 1px solid rgba(0 0 0 / 70%);
+    color:rgb(0, 0, 0);
+    content: 'MINOR';
+    display: flex;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-major::before {
+    background-color: rgb(255, 235, 59);
+    color:rgb(0, 0, 0);
+    content: 'MAJOR';
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-breaking::before {
+    background-color: rgb(255, 152, 0);
+    color:rgb(0, 0, 0);
+    content: 'BREAKING';
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-critical::before {
+    color:rgb(0, 0, 0);
+    content: 'CRITICAL';
+}
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-minor ~ li.module-credits-dialog-status-minor::before,
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-major ~ li.module-credits-dialog-status-major::before,
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-breaking ~ li.module-credits-dialog-status-breaking::before,
+#moduleCreditsDialog .window-content nav ul > li.module-credits-dialog-status-critical ~ li.module-credits-dialog-status-critical::before {
+    content: none;
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-critical {
+    order: 1
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-breaking {
+    order: 2
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-major {
+    order: 3
+}
+#moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-minor {
+    order: 4
 }
 
 #moduleCreditsDialog .window-content main {
@@ -296,6 +342,7 @@ html > body .package-list .package .package-overview .package-title {
     padding: 4px 8px;
     font-size: 13px;
     border-radius: 4px;
+    z-index: 1;
   }
 
   #module-credits-tooltip[data-show] {
@@ -368,4 +415,60 @@ html > body .package-list .package .package-overview .package-title {
 }
 .module-credits-list-group-item > i {
     padding-right: 0.5rem
+}
+#sidebar #settings #settings-game button[data-action="modules"][data-conflicts] {
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+}
+#sidebar #settings #settings-game button[data-action="modules"][data-conflicts]::before {
+    content: attr(data-conflicts) ' Conflicts Detected';
+    background-color: rgb(244, 67, 54);
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color:rgb(0, 0, 0);
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: .125rem;
+    margin-left: -1px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: .05rem .5rem;
+}
+#sidebar #settings #settings-game button[data-action="modules"][data-conflicts="1"]::before {
+    content: attr(data-conflicts) ' Conflict Detected'
+}
+
+#module-management #module-list .package.module-credits-conflict-minor {
+    background-color: rgb(33, 149, 242);
+    color:rgb(0, 0, 0);
+}
+#module-management #module-list .package.module-credits-conflict-major {
+    background-color: rgb(255, 235, 59);
+    color:rgb(0, 0, 0);
+}
+#module-management #module-list .package.module-credits-conflict-breaking {
+    background-color: rgb(255, 152, 0);
+    color:rgb(0, 0, 0);
+}
+#module-management #module-list .package.module-credits-conflict-critical {
+    background-color: rgb(244, 67, 54);
+    color:rgb(0, 0, 0);
+}
+#module-management #module-list .package.module-credits-conflict-minor .package-overview:before,
+#module-management #module-list .package.module-credits-conflict-major .package-overview:before,
+#module-management #module-list .package.module-credits-conflict-breaking .package-overview:before,
+#module-management #module-list .package.module-credits-conflict-critical .package-overview:before {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+
+    content: '\f071';
+    display: inline-block;
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 900;
+    font-variant: normal;
+    line-height: 1;
+    padding: 0.25rem 0.5rem;
+    text-rendering: auto;
 }

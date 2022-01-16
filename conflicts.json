@@ -1,0 +1,8 @@
+[
+	{
+		"moduleID": "module-credits",
+		"conflictingModuleID": "lib-changelogs",
+		"content": "Provides similar functionality.",
+		"status": "minor"
+	}
+]
