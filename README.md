@@ -21,7 +21,13 @@ This version of Module credits mostly just fixes a few issues and expands on som
 ![image](https://user-images.githubusercontent.com/564874/149253619-f33409fb-4812-4ab9-8a36-aa1c721988ef.png)
 
 ### The Story of Conflicts and More.
-Version 0.0.4.5 has added the ability to show conflicts on the module management screen to allow the user to see any known conflicts between modules and decide how they want to proceed. There are a few ways for a developer to define a conflict, You can do so in your module by using the api provided by module-credits, an example is provided below. **I HIGHLY SUGGEST AGAINST THIS METHOD** because it requires your module to be loaded before Module Credits can determine if there is a conflict, I **HIGHLY RECOMMEND ONE OF THE FOLLOWING INSTEAD**. The next method of registering a conflict is making a pull request on github on the `conflicts.json` file, this file will get updated and pulled by module credits when foundry loads. This means that even if your module isn't loaded the conflict will show for both modules to allow the user to see the conflict before the module is loaded. Lastly you can define a conflict in your modules `module.json` file using the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus). Module Credits will process this data and display it for all installed modules **WARNING** Package Manifest+ does not currently provide a way to provide a message about the conflict and will display as a minor conflict with the description being *No Details Provided*. If the league updates their specifications, I will update mine to include that.
+Version 0.0.4.5 has added the ability to show conflicts on the module management screen to allow the user to see any known conflicts between modules and decide how they want to proceed. There are a few ways for a developer to define a conflict, You can do so in your module by using the api provided by module-credits, an example is provided below. **I HIGHLY SUGGEST AGAINST THIS METHOD** because it requires your module to be loaded before Module Credits can determine if there is a conflict.
+
+I **HIGHLY RECOMMEND ONE OF THE FOLLOWING INSTEAD**. The next method of registering a conflict is making a pull request on github on the `conflicts.json` file, this file will get updated and pulled by module credits when foundry loads. This means that even if your module isn't loaded the conflict will show for both modules to allow the user to see the conflict before the module is loaded. Lastly you can define a conflict in your modules `module.json` file using the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus). Module Credits will process this data and display it for all installed modules 
+
+**WARNING** Package Manifest+ does not currently provide a way to provide a message about the conflict and will display as a minor conflict with the description being *No Details Provided*. If the league updates their specifications, I will update mine to include that.
+
+Lastly if your a developer and already using [Changelogs & Conflicts](https://foundryvtt.com/packages/lib-changelogs) by theripper93, then you really don't have to do anything to add support for Module Credits as Module Credits provides a polyfill for Changelogs & Conflicts so that his api calls are registered into Module Credits if his module is not enabled. However his system does require that the conflict be registered in code, meaning his conflicts will only show if your module is enabled. Switching to using either the pull request method on this github or defining your conflict using [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is **HIGHLY** recommended.
 
 #### How to define a conflict in code
 ```
@@ -32,6 +38,8 @@ game.modules.get('module-credits`).api.defineConflict({
 	status: 'minor || major || breaking || critical'
 })
 ```
+![image](https://user-images.githubusercontent.com/564874/149989069-022cac3e-5381-40a9-8a86-8264546e0bd9.png)
+
 
 #### Bug Reporter Support
 Those of you with keen eyes, will have noticed that the issues tag for Bug Reporter shows a bug icon. Module Credits now adds suppoer for [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter). If Bug Reporter is enabled and the module has opt'ed into the system, you can click that icon to quickly report an issue with that module using `Bug Reporter`. If you don't have bug reporter, don't worry the issues link will still appear as it does in the example image for `About Time` and `Alternative Rotation`
