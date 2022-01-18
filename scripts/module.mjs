@@ -54,12 +54,50 @@ export class ModuleCredits {
 							status: warnLevel
 						})
 					},
-					registerConflict: this.defineConflict
+					registerConflict: (moduleId, conflictingModule, markdown, warnLevel) => {
+						this.defineConflict({
+							moduleID: moduleId, 
+							conflictingModuleID: conflictingModule, 
+							content: markdown, 
+							status: warnLevel
+						});
+					} 
 				};
 
 				Hooks.callAll('libChangelogsReady');
 			});
 		}
+	}
+
+	// SUPPORT FOR || manifest-plus ||
+	static async maifestPlusSupport() {
+		for await (let [key, module] of game.modules) {
+			await FilePicker.browse('user', `./modules/${module?.data?.name}/module.json`).then(response => {
+				let files = response.files.filter(file => file.toLowerCase().includes(`module.json`));
+				if (files.length > 0) {
+					return files[0];
+				}
+				throw TypeError(`${module?.data?.title} did not provide a changelog.md file`);
+			}).then(file => {
+				fetch(file)
+				.then(response => response.json())
+				.then(data => {
+					if (data?.conflicts?.length > 0 ?? false) {
+						for (let conflict of data.conflicts) {
+							ModuleCredits.defineConflict({
+								moduleID: module?.data?.name,
+								conflictingModuleID: conflict.name,
+								status: 'minor'
+							})
+						}
+					}
+				}).catch(error => console.error(error))
+			}).catch((error) => {
+				console.log(error);
+			});
+		}
+
+		//this.cleanUpConflicts();
 	}
 
 	//Queue Registration calls
@@ -110,12 +148,48 @@ export class ModuleCredits {
 		ModuleCredits.conflicts.push({
 			moduleID: moduleID,
 			conflictingModuleID: conflictingModuleID,
-			content: content,
+			content: content ?? '*No Details Provided*',
 			status: status ?? 'minor'
 		});
 
+		this.cleanUpConflicts();
+
 		$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
 		return 'conflict registered';
+	}
+
+	static cleanUpConflicts() {
+		let conflictIDS = {}
+		let numberOfConflicts = ModuleCredits.conflicts.length;
+
+		while(numberOfConflicts--) {
+			let conflict = ModuleCredits.conflicts[numberOfConflicts];
+			let keys = [
+				`${conflict.moduleID}-${conflict.conflictingModuleID}`,
+				`${conflict.conflictingModuleID}-${conflict.moduleID}`
+			];
+
+			// Key Exists
+			if ((typeof conflictIDS[keys[0]] !== 'undefined' || typeof conflictIDS[keys[1]] !== 'undefined') ?? false) {
+				// Add content to existing conflict
+				ModuleCredits.conflicts[conflictIDS[keys[0]]].content += `<br /> ${conflict.content}`;
+
+				// Remove Duplicate
+				ModuleCredits.conflicts.splice(numberOfConflicts, 1);
+			}else{
+				conflictIDS[keys[0]] = numberOfConflicts;
+			}
+		}
+	}
+
+	static async fetchGlobalConflicts() {
+		fetch('http://foundryvtt.mouse0270.com/module-credits/conflicts.json')
+			.then(response => response.json())
+			.then(data => {
+				ModuleCredits.conflicts.push(...data);
+				this.cleanUpConflicts();
+				$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
+			}).catch(error => console.error(error))
 	}
 
 	static api = () => {
@@ -147,18 +221,12 @@ export class ModuleCredits {
 					$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
 				}
 			}
-			//data-action="modules"
 		});
 
 		this.registerChangelog({moduleID: MODULE.name});
-		this.defineConflict({
-			moduleID: 'module-credits',
-			conflictingModuleID: 'lib-changelogs',
-			content: 'Provides similar functionality.',
-			status: 'minor'
-		})
-
-		//if (this.queue.length == 0) this.procesStaticCahngelogs();
+			
+		this.fetchGlobalConflicts();
+		this.maifestPlusSupport();
 
 		this.registerLibThemer();
 	}
@@ -438,7 +506,7 @@ export class ModuleCredits {
 
 						// Handle if key is supported url
 						if (value != undefined) {
-							if (['twitter', 'patreon', 'github'].includes(key)) {
+							if (['twitter', 'patreon', 'github', 'reddit'].includes(key)) {
 								if (isURL(value)) {
 									$group.append(`<a href="${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
 										<i class="fab fa-${key}"></i>
@@ -447,6 +515,18 @@ export class ModuleCredits {
 								}else{
 									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
 										<i class="fab fa-${key}"></i>
+											${value}
+										</a>`);
+								}
+							}else if (['ko-fi'].includes(key)) {
+								if (isURL(value)) {
+									$group.append(`<a href="${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
+										<i class="fas fa-coffee"></i>
+											${key}
+										</a>`);
+								}else{
+									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
+										<i class="fas fa-coffee"></i>
 											${value}
 										</a>`);
 								}

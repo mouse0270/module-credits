@@ -439,6 +439,10 @@ html > body .package-list .package .package-overview .package-title {
     content: attr(data-conflicts) ' Conflict Detected'
 }
 
+
+#module-management #module-list .package .module-credits-conflict {
+    margin: 0.15rem 0.25rem 0 0;
+}
 #module-management #module-list .package.module-credits-conflict-minor {
     background-color: rgb(33, 149, 242);
     color:rgb(0, 0, 0);

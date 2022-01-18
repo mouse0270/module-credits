@@ -29,7 +29,12 @@
     
   ],
   "conflicts": [
-    
+    {
+      "name": "lib-changelogs",
+      "type": "module",
+      "versionMin": "0.0.0",
+      "versionMax": "9.9.9"
+    }
   ],
   "esmodules": [ "/scripts/_init.mjs" ],
   "scripts": [ ],
