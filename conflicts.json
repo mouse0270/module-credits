@@ -1,14 +1,8 @@
 [
 	{
-		"moduleID": "module-credits",
-		"conflictingModuleID": "lib-changelogs",
-		"versionMin": "0.6"
-	},
-	{
 		"moduleID": "sticky-sidebar",
 		"description": "Errors on latest versions of chromium web based browsers.",
-		"versionMin": "0.0.1",
-		"versionMax": "0.0.1"
+		"versionMin": "0.0.1"
 	},
 	{
 		"moduleID": "lessfog",

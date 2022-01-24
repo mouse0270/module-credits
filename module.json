@@ -1,7 +1,7 @@
 {
   "name": "module-credits",
-  "title": "Module Credits",
-  "description": "Lists the authors of projects on the Manage Modules Window. If a url is provided in the module.json file, it will make the version tag link to the module url.",
+  "title": "Module Management+",
+  "description": "Enhances the Module Management window by giving you more information when managing your packages.",
   "version": "This is auto replaced",
   "library": "false",
   "manifestPlusVersion": "0.0.0.1",
@@ -32,25 +32,14 @@
     {
       "name": "lib-changelogs",
       "type": "module",
-      "description": "Provides similar functionality. Module Credits provides a polyfill for Changelogs & Conflicts API.",
+      "description": "Provides similar functionality. Module Management+ provides a polyfill for Changelogs & Conflicts API.",
       "versionMin": "0.6"
     }
   ],
-  "deprecated": {
-    "reason": "Module has been Rebranded as Module Management+",
-    "alternatives": [
-      {
-        "name": "mmp",
-        "title": "Module Management+",
-        "manifest": "https://link.com/to/module.json"
-      }
-    ]
-  },
+  "deprecated": { },
   "esmodules": [ "/scripts/_init.mjs" ],
   "scripts": [ ],
-  "styles": [
-    "/styles/module.css"
-  ],
+  "styles": [ "/styles/module.css" ],
   "url": "This is auto replaced",
   "manifest": "This is auto replaced",
   "download": "This is auto replaced",

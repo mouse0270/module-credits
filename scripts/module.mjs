@@ -50,8 +50,7 @@ export class ModuleCredits {
 					register: (moduleId, markdown, warnLevel = "minor") => {
 						this.registerChangelog({
 							moduleID: moduleId, 
-							changelog: markdown, 
-							status: warnLevel
+							changelog: markdown
 						})
 					},
 					registerConflict: (moduleId, conflictingModule, markdown, warnLevel) => {
@@ -93,7 +92,7 @@ export class ModuleCredits {
 						}
 					}
 					// Check if module is deprecated
-					if (data?.deprecated ?? false) {
+					if ((data?.deprecated && data?.deprecated?.reason) ?? false) {
 						ModuleCredits.defineDeprecatedModule(module?.data?.name, data?.deprecated);
 					}
 				}).catch(error => console.error(error))
@@ -109,10 +108,10 @@ export class ModuleCredits {
 	static queue = [];
 	static queueIsRunning = false;
 
-	static async registerChangelog({moduleID, changelog, status}) {
+	static async registerChangelog({moduleID, changelog}) {
 		// add call to queue
 		if (moduleID != null) {
-			ModuleCredits.queue.push({ moduleID: moduleID, changelog: changelog, status: status });
+			ModuleCredits.queue.push({ moduleID: moduleID, changelog: changelog});
 		}
 
 		// Check if queue is not running
@@ -127,8 +126,7 @@ export class ModuleCredits {
 			tracker[ModuleCredits.queue[0].moduleID] = {
 				version: game.modules.get(ModuleCredits.queue[0].moduleID).data.version,
 				hasSeen: tracker[ModuleCredits.queue[0].moduleID]?.hasSeen ?? false,
-				description: ModuleCredits.queue[0]?.changelog ?? null,
-				status: ModuleCredits.queue[0]?.status ?? 'minor'
+				description: ModuleCredits.queue[0]?.changelog ?? null
 			}
 
 			await MODULE.setting('trackedChangelogs', tracker);
@@ -316,8 +314,7 @@ export class ModuleCredits {
 					}).then(file => {
 						tracker[module?.data?.name] = {
 							version: module?.data?.version,
-							hasSeen: false,
-							status: 'minor'
+							hasSeen: false
 						}
 					}).catch((error) => {
 						//this.LOG(error);
@@ -333,8 +330,7 @@ export class ModuleCredits {
 				}).then(file => {
 					tracker[module?.data?.name] = {
 						version: module?.data?.version,
-						hasSeen: false,
-						status: 'minor'
+						hasSeen: false
 					}
 				}).catch((error) => {
 					//this.LOG(error);
@@ -367,8 +363,7 @@ export class ModuleCredits {
 				let pushData = {
 					title: moduleData?.title,
 					name: moduleData?.name,
-					type: 'changelog',
-					status: module.status
+					type: 'changelog'
 				}
 				if (module?.description ?? false) pushData.description = module.description;
 
@@ -514,7 +509,6 @@ export class ModuleCredits {
 			// If not authors found, use author tag instead
 			if (authors.length == 0 && moduleData?.author?.length > 0) {
 				moduleData?.author.split(',').forEach((author, index) => {
-					console.log(author, index)
 					authors.push({ name: author, url: null })
 				})
 			}
