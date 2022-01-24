@@ -6,19 +6,19 @@ Module Management+ the module management screen and so much more. This module in
 - Add more useful tags to the module managment window, such as the bugs/issues tag and displayes the author(s) in the tags.
 - Author Tags when clicked on will show you an additional information about the author such as their email, discord, or website. Module Management+ Supports Manifest+ additional author tags via a setting and can also display: twitter, ko-fi, patreon and reddit.
 - Will show defined conflicts to the user on the module managment screen to let you know when there is known issue with another mod
-- Will show when a module has listed itself ad deprecated
+- Will show when a module has listed itself as deprecated
 
-## How do I add Support for MMP fin my module?
-The first step is to provide a `README.md` and `CHANGELOG.md` file with your package. You do not need to include both, MMP will only display the ones you include, I suggest both though. 
+## How do I add Support for MM+ in my module?
+The first step is to provide a `README.md` and `CHANGELOG.md` file with your package. You do not need to include both, MM+ will only display the ones you include, I suggest both though. 
 
-If you'd like to use the other features of MMP such as Conflicts, Known Issues or Deprecated Modules, you just have to use the Scheme provided by [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) when creating your `module.json` file and Module Management+ when read those values and display them to the user in foundry.
+If you'd like to use the other features of MM+ such as Conflicts, Known Issues or Deprecated Modules, you just have to use the Scheme provided by [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) when creating your `module.json` file and Module Management+ will read those values and display them to the user in foundry.
 
 ### Define Conflicts and Known Issues
-To Define a conflict or known issue for your module, you can do so in one of two ways. The first is to define the conflict/known issue using a schema similar to the one provided in [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) in your `module.json` file using the details below. The `conflicts` field provides a mapping of modules which are used to define a conflict or known issue. If you are aware of a conflict or known issue, I highly suggest use this method.
+To Define a conflict or known issue for your module, you can do so in one of two ways. The first is to define the conflict/known issue using a schema similar to the one provided in [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) in your `module.json` file using the details below. If you are aware of a conflict or known issue, I highly suggest you use this method.
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| name  | false    | If you do not provide a conflicting module name, MMP will register the conflict as a known issue |
+| name  | false    | If you do not provide a conflicting module name, MM+ will register the conflict as a known issue |
 | description | false | This is the text that will be displayed to the user about the conflict/known issue. If not description is defined, the module will list **No Details Provided** |
 | versionMin | true | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
 | versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
@@ -33,7 +33,7 @@ To Define a conflict or known issue for your module, you can do so in one of two
 	}
 ]
 ```
-However, you may not always be aware of a known issue or conflict when you publish your module, and pushing a whole update just to define a conflict seems a little excessive. This is why I have provided the `conflicts.json` file in my github at [Module Management+](https://github.com/mouse0270/module-credits). Simply make a pull request (or create an issue and I will do my best to manually udpate it too) defining your module's conflict/known issue and as soon as I can accept it, it will be available to everyone using Module Management+.
+However, you may not always be aware of a known issue or conflict when you publish your module, and pushing a whole update just to define a conflict seems a little excessive. This is why I have provided the `conflicts.json` file in my github at [Module Management+](https://github.com/mouse0270/module-credits). Simply make a pull request (or create an issue) defining your module's conflict/known issue and as soon as I can accept it, it will be available to everyone using Module Management+.
 | Field | Required | Description |
 |-------|----------|-------------|
 | moduleID | true | This is your modules name |
@@ -42,7 +42,7 @@ However, you may not always be aware of a known issue or conflict when you publi
 | versionMin | true | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
 | versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
 
-An example of defining aconflict would look like this:
+An example of defining a conflict would look like this:
 ```json
 [
 	{
@@ -54,7 +54,7 @@ An example of defining aconflict would look like this:
 	}
 ]
 ```
-An example of defining a know issue would look like this:
+An example of defining a known issue would look like this:
 ```json
 [
 	{
