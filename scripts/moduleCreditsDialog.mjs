@@ -56,53 +56,52 @@ export class ModuleCreditsDialog extends FormApplication {
 			if (!$listElement.hasClass('active') && typeof module != 'undefined') {
 				// Deactivate current Item
 				$element.closest('ul').find('li.active').removeClass('active');
-
-				if (module?.content ?? false) {
-					let changelog = MODULE.markup(module.content);
-					let toggle = `<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>`
-					$(html).find('main > .module-credits-dialog-title').html(`${toggle} ${module.title}`);
-					$(html).find('main .module-credits-dialog-content').html(changelog);
-					$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
-					
-					// Updated Tracked Modules!!
-					if (module.type == 'changelog') {
-						let trackedModules = MODULE.setting('trackedChangelogs');
-						trackedModules[module.name].hasSeen = true;
-						MODULE.setting('trackedChangelogs', trackedModules);
+				
+				FilePicker.browse('user', `./modules/${module.name}/`, { extensions: ['.md'] }).then(response => {
+					let files = response.files.filter(file => file.toLowerCase().includes(`${module.type}.md`));
+					if (files.length > 0) {
+						return files[0];
 					}
-				}else{
-					FilePicker.browse('user', `./modules/${module.name}/`, { extensions: ['.md'] }).then(response => {
-						let files = response.files.filter(file => file.toLowerCase().includes(`${module.type}.md`));
-						if (files.length > 0) {
-							return files[0];
+					throw TypeError(`no file matching ${module.type}.md`);
+				}).then(file => {
+					fetch(`./${file}`).then(response => {
+						if (response.status >= 200 && response.status <= 299) {
+							return response.text();
 						}
-						throw TypeError(`no file matching ${module.type}.md`);
-					}).then(file => {
-						fetch(`./${file}`).then(response => {
-							if (response.status >= 200 && response.status <= 299) {
-								return response.text();
-							}
-							throw TypeError("did not provide a changelog.md file");
-						}).then(data => {
-							let changelog = MODULE.markup(data);
-							let toggle = `<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>`
-							$(html).find('main > .module-credits-dialog-title').html(`${toggle} ${module.title}`);
-							$(html).find('main .module-credits-dialog-content').html(changelog);
-							$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
+						throw TypeError("did not provide a changelog.md file");
+					}).then(data => {
+						let changelog = MODULE.markup(data);
+						let toggle = `<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>`
+						$(html).find('main > .module-credits-dialog-title').html(`${toggle} ${module.title}`);
+						$(html).find('main .module-credits-dialog-content').html(changelog);
+						$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
 							
-							// Updated Tracked Modules!!
-							if (module.type == 'changelog') {
-								let trackedModules = MODULE.setting('trackedChangelogs');
-								trackedModules[module.name].hasSeen = true;
-								MODULE.setting('trackedChangelogs', trackedModules);
-							}
-						}).catch(error => {
-							//moduleCredits.LOG('ERROR', error);
-						})
+						// Updated Tracked Modules!!
+						if (module.type == 'changelog') {
+							let trackedModules = MODULE.setting('trackedChangelogs');
+							trackedModules[module.name].hasSeen = true;
+							MODULE.setting('trackedChangelogs', trackedModules);
+						}
 					}).catch(error => {
 						//moduleCredits.LOG('ERROR', error);
-					});
-				}
+					})
+				}).catch(error => {
+					// Unable to get local changelog.md, check if changelog defined in code.
+					if (module?.description ?? false) {
+						let changelog = MODULE.markup(module.description);
+						let toggle = `<div class="module-credits-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>`
+						$(html).find('main > .module-credits-dialog-title').html(`${toggle} ${module.title}`);
+						$(html).find('main .module-credits-dialog-content').html(changelog);
+						$listElement.addClass('active module-credits-dialog-has-seen-true').removeClass('module-credits-dialog-has-seen-false');
+						
+						// Updated Tracked Modules!!
+						if (module.type == 'changelog') {
+							let trackedModules = MODULE.setting('trackedChangelogs');
+							trackedModules[module.name].hasSeen = true;
+							MODULE.setting('trackedChangelogs', trackedModules);
+						}
+					}
+				});
 			}
 		});
 		// Activate first item in list

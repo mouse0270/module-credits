@@ -37,7 +37,7 @@ export class ModuleCredits {
 		}
 
 		if (game.modules?.get('lib-themer')?.active ?? false) {
-			game.modules.get('lib-themer').api.registerTheme(MODULE.name, theme);
+			game.modules.get('lib-themer').api.registerTheme(MODULE.ID, theme);
 		}
 	}
 
@@ -58,8 +58,7 @@ export class ModuleCredits {
 						this.defineConflict({
 							moduleID: moduleId, 
 							conflictingModuleID: conflictingModule, 
-							content: markdown, 
-							status: warnLevel
+							description: markdown
 						});
 					} 
 				};
@@ -77,7 +76,7 @@ export class ModuleCredits {
 				if (files.length > 0) {
 					return files[0];
 				}
-				throw TypeError(`${module?.data?.title} did not provide a changelog.md file`);
+				throw TypeError(`${module?.data?.title} could not find module.json file`);
 			}).then(file => {
 				fetch(file)
 				.then(response => response.json())
@@ -87,9 +86,15 @@ export class ModuleCredits {
 							ModuleCredits.defineConflict({
 								moduleID: module?.data?.name,
 								conflictingModuleID: conflict.name,
-								status: 'minor'
+								description: conflict?.description ?? null,
+								versionMin: conflict?.versionMin ?? 0,
+								versionMax: conflict?.versionMax ?? 0,
 							})
 						}
+					}
+					// Check if module is deprecated
+					if (data?.deprecated ?? false) {
+						ModuleCredits.defineDeprecatedModule(module?.data?.name, data?.deprecated);
 					}
 				}).catch(error => console.error(error))
 			}).catch((error) => {
@@ -122,7 +127,7 @@ export class ModuleCredits {
 			tracker[ModuleCredits.queue[0].moduleID] = {
 				version: game.modules.get(ModuleCredits.queue[0].moduleID).data.version,
 				hasSeen: tracker[ModuleCredits.queue[0].moduleID]?.hasSeen ?? false,
-				content: ModuleCredits.queue[0]?.changelog ?? null,
+				description: ModuleCredits.queue[0]?.changelog ?? null,
 				status: ModuleCredits.queue[0]?.status ?? 'minor'
 			}
 
@@ -141,21 +146,37 @@ export class ModuleCredits {
 		} 
 	}
 
+	static deprecated = {};
+	static defineDeprecatedModule = (moduleID, deprecatedData) => {
+		ModuleCredits.deprecated[moduleID] = deprecatedData;
+	}
+
 
 	//Define variable to hold conflicts as they don't need to be stored
 	static conflicts = [];
-	static defineConflict = ({moduleID, conflictingModuleID, content, status}) => {
-		ModuleCredits.conflicts.push({
-			moduleID: moduleID,
-			conflictingModuleID: conflictingModuleID,
-			content: content ?? '*No Details Provided*',
-			status: status ?? 'minor'
-		});
+	static defineConflict = ({moduleID, conflictingModuleID, description, versionMin, versionMax}) => {
+		// Check if modules are exists
+		if (game.modules.get(moduleID) ?? false) {
+			// Check if conflicting module exists or is null
+			if ((typeof conflictingModuleID === 'undefined' || game.modules.get(conflictingModuleID)) ?? false) {
+				// get module version
+				let moduleVersion = game.modules.get(conflictingModuleID ?? moduleID).data.version;
+				// Check version
+				if ((isNewerVersion(moduleVersion, versionMin) || moduleVersion == versionMin) && 
+					(!isNewerVersion(moduleVersion, versionMax) || versionMax == 0)) {
+					ModuleCredits.conflicts.push({
+						moduleID: moduleID,
+						conflictingModuleID: conflictingModuleID ?? null,
+						description: description ?? '*No Details Provided*',
+						versionMin: versionMin ?? null,
+						versionMax: versionMin ?? null
+					});
 
-		this.cleanUpConflicts();
-
-		$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
-		return 'conflict registered';
+					
+					this.cleanUpConflicts();
+				}
+			}
+		}
 	}
 
 	static cleanUpConflicts() {
@@ -172,7 +193,7 @@ export class ModuleCredits {
 			// Key Exists
 			if ((typeof conflictIDS[keys[0]] !== 'undefined' || typeof conflictIDS[keys[1]] !== 'undefined') ?? false) {
 				// Add content to existing conflict
-				ModuleCredits.conflicts[conflictIDS[keys[0]]].content += `<br /> ${conflict.content}`;
+				ModuleCredits.conflicts[conflictIDS[keys[0]]].description += `<br /> ${conflict.description}`;
 
 				// Remove Duplicate
 				ModuleCredits.conflicts.splice(numberOfConflicts, 1);
@@ -183,17 +204,20 @@ export class ModuleCredits {
 	}
 
 	static async fetchGlobalConflicts() {
-		fetch('http://foundryvtt.mouse0270.com/module-credits/conflicts.json')
+		fetch('http://foundryvtt.mouse0270.com/module-credits/conflicts.json?time=5')
 			.then(response => response.json())
 			.then(data => {
-				ModuleCredits.conflicts.push(...data);
-				this.cleanUpConflicts();
+				for (let conflict of data) {
+					this.defineConflict(conflict);
+				}
+
+				//this.cleanUpConflicts();
 				$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
 			}).catch(error => console.error(error))
 	}
 
 	static api = () => {
-		game.modules.get(MODULE.name).api = {
+		game.modules.get(MODULE.ID).api = {
 			registerChangelog: this.registerChangelog,
 			defineConflict: this.defineConflict
 		}
@@ -202,33 +226,43 @@ export class ModuleCredits {
 		this.polyfillLibChangelogs();
 	}
 
+	static updateSettingsTab = ($element) => {
+		if ($element.find('#settings #settings-documentation').length >= 1) {
+			if ($element.find('#settings #settings-documentation button[data-action="changelog"]').length <= 0) {
+				$element.find('#settings #settings-documentation').append(`<button data-action="changelog">
+						<i class="fas fa-exchange-alt"></i> Module Changelogs
+					</button>`);
+
+				$element.find('#settings #settings-documentation [data-action="changelog"]').off('click');
+				$element.find('#settings #settings-documentation [data-action="changelog"]').on('click', event => {
+					this.renderChangelog({ showAllModules: true })
+				});
+			}
+
+			$element.find('#settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
+		}
+	} 
+
 	static init = () => {
 		// Add Changelog Button to Help and Documentation
-		Hooks.on("renderSidebarTab", (a,b,c,d) => {
-			if ($('#sidebar #settings #settings-documentation').length >= 1) {
-				if ($('#sidebar #settings #settings-documentation button[data-action="changelog"]').length <= 0) {
-					$('#sidebar #settings #settings-documentation').append(`<button data-action="changelog">
-							<i class="fas fa-exchange-alt"></i> Module Changelogs
-						</button>`);
-
-					$('#sidebar #settings #settings-documentation [data-action="changelog"]').off('click');
-					$('#sidebar #settings #settings-documentation [data-action="changelog"]').on('click', event => {
-						this.renderChangelog({ showAllModules: true })
-					});
-				}
-
-				if (ModuleCredits.conflicts.length >= 1) {
-					$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
-				}
-			}
+		Hooks.on("renderSidebarTab", (settings, element) => {
+			this.updateSettingsTab($(element));
 		});
+		this.updateSettingsTab($('#ui-right #sidebar'));
 
-		this.registerChangelog({moduleID: MODULE.name});
+		this.registerChangelog({moduleID: MODULE.ID});
 			
 		this.fetchGlobalConflicts();
 		this.maifestPlusSupport();
 
 		this.registerLibThemer();
+
+		// dumb feature
+		$('body').on('mouseenter', 'a[href]', (event) => {
+			$('body').append(`<div class="url-link-display">${$(event.target).attr('href')}</div>`);
+		}).on('mouseleave', 'a[href]', () => {
+			$('.url-link-display').remove();
+		})
 	}
 
 	static procesStaticChangelogs = () => {
@@ -336,7 +370,7 @@ export class ModuleCredits {
 					type: 'changelog',
 					status: module.status
 				}
-				if (module?.content ?? false) pushData.content = module.content;
+				if (module?.description ?? false) pushData.description = module.description;
 
 				modulesToShow.push(pushData)
 			}
@@ -479,15 +513,18 @@ export class ModuleCredits {
 
 			// If not authors found, use author tag instead
 			if (authors.length == 0 && moduleData?.author?.length > 0) {
-				authors.push({ name: moduleData?.author, url: null })
+				moduleData?.author.split(',').forEach((author, index) => {
+					console.log(author, index)
+					authors.push({ name: author, url: null })
+				})
 			}
 
 			// Add Author tag to Module Tags
 			function buildTooltip(event, authors) {
 				let showTooltip = false;
 				let $self = $(event.currentTarget);
-				let $tooltip = $(`<div id="${MODULE.name}-tooltip" role="tooltip">
-						<div id="${MODULE.name}-arrow" data-popper-arrow></div>
+				let $tooltip = $(`<div id="${MODULE.ID}-tooltip" role="tooltip">
+						<div id="${MODULE.ID}-arrow" data-popper-arrow></div>
 					</div>`);
 
 				function isURL(text) {
@@ -500,70 +537,70 @@ export class ModuleCredits {
 				}
 
 				authors.forEach(function (author, index) {
-					$tooltip.find(`#${MODULE.name}-arrow`).before(`<div class="${MODULE.name}-list-group"></div>`)
+					$tooltip.find(`#${MODULE.ID}-arrow`).before(`<div class="${MODULE.ID}-list-group"></div>`)
 					for (const [key, value] of Object.entries(author)) {
-						let $group = $tooltip.find(`.${MODULE.name}-list-group`).last();
+						let $group = $tooltip.find(`.${MODULE.ID}-list-group`).last();
 
 						// Handle if key is supported url
 						if (value != undefined) {
 							if (['twitter', 'patreon', 'github', 'reddit'].includes(key)) {
 								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
+									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
 										<i class="fab fa-${key}"></i>
 											${key}
 										</a>`);
 								}else{
-									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
+									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
 										<i class="fab fa-${key}"></i>
 											${value}
 										</a>`);
 								}
 							}else if (['ko-fi'].includes(key)) {
 								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
+									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
 										<i class="fas fa-coffee"></i>
 											${key}
 										</a>`);
 								}else{
-									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.name}-list-group-item mc-tooltip-social">
+									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
 										<i class="fas fa-coffee"></i>
 											${value}
 										</a>`);
 								}
 							}else if (['url'].includes(key) && isURL(value)) {
-								$group.append(`<a href="${value}" target="_blank" class="${MODULE.name}-list-group-item mc-tooltip-url">
+								$group.append(`<a href="${value}" target="_blank" class="${MODULE.ID}-list-group-item mc-tooltip-url">
 									<i class="fas fa-link"></i>
 									Website
 								</a>`);
 							}else if (['discord'].includes(key)) {
 								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.name}-list-group-item mc-tooltip-discord">
+									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-discord">
 											<i class="fab fa-${key}"></i>
 											${key}
 										</a>`);
 								}else{
-									$group.append(`<div class="${MODULE.name}-list-group-item mc-tooltip-discord">
+									$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-discord">
 										<i class="fab fa-discord"></i>
 										${value}
 									</div>`)
 								}
 							}else if (['email'].includes(key)) {
-								$group.append(`<div class="${MODULE.name}-list-group-item mc-tooltip-email">
+								$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-email">
 									<i class="far fa-envelope"></i>
 									${value}
 								</div>`)
 							}else if (key == 'name') { 
-								$group.append(`<div class="${MODULE.name}-list-group-item mc-tooltip-name">
+								$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-name">
 									<strong>${value}</strong>
 								</div>`)				
 							}else{
 								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.name}-list-group-item mc-tooltip-other">
+									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-other">
 											<i class="fas fa-external-link-alt"></i>
 											${key}
 										</a>`);
 								}else{
-									$group.append(`<div class="${MODULE.name}-list-group-item mc-tooltip-other">
+									$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-other">
 										<i class="fas fa-info-circle"></i>
 										${key} - ${value}
 									</div>`)
@@ -574,12 +611,12 @@ export class ModuleCredits {
 				});
 
 				// If tag contains more then just authors name, show tooltip when clicked
-				if ($tooltip.find(`.${MODULE.name}-list-group-item`).length > 1) showTooltip = true;
+				if ($tooltip.find(`.${MODULE.ID}-list-group-item`).length > 1) showTooltip = true;
 
 				// If a tooltip already exists, destroy it.
 				if (popperInstance != null) {
 					popperInstance.destroy();
-					$(`#${MODULE.name}-tooltip`).remove();
+					$(`#${MODULE.ID}-tooltip`).remove();
 				}
 
 				if (showTooltip) {
@@ -635,9 +672,9 @@ export class ModuleCredits {
 
 		$('body').on('click', (event) => {
 			if (popperInstance != null) {
-				if ($(event.target).closest(`#${MODULE.name}-tooltip`).length == 0 && $(event.target).closest('.tag.author').length == 0) {
+				if ($(event.target).closest(`#${MODULE.ID}-tooltip`).length == 0 && $(event.target).closest('.tag.author').length == 0) {
 					popperInstance.destroy();
-					$(`#${MODULE.name}-tooltip`).remove();
+					$(`#${MODULE.ID}-tooltip`).remove();
 				}
 			}
 		})
@@ -649,7 +686,7 @@ export class ModuleCredits {
 		// Add Support for Tidy UI - Game Settings
 		if (!game.modules.get('tidy-ui-game-settings')) $moduleSection = $moduleSection.next();
 
-		// Add Rest for Tracked Changelogs
+		// Add Reset for Tracked Changelogs
 		$moduleSection.after(`<div class="form-group submenu">
 				<label>${MODULE.localize('resetDialog.name')}</label>
 				<button type="button" data-action="module-credits-reset-tracked-changelogs">
@@ -676,43 +713,43 @@ export class ModuleCredits {
 		});
 
 		// Handle Change Event for Condense Default Tags
-		$(html).find(`[name="${MODULE.name}.defaultIcons"]`).on('change', (event) => {
+		$(html).find(`[name="${MODULE.ID}.defaultIcons"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
-			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.name}.condenseDefaultTags"]`);
+			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.ID}.condenseDefaultTags"]`);
 
 			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
 		});
-		$(html).find(`[name="${MODULE.name}.condenseDefaultTags"]`).on('change', (event) => {
+		$(html).find(`[name="${MODULE.ID}.condenseDefaultTags"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
-			let $defaultIcons = $(html).find(`[name="${MODULE.name}.defaultIcons"]`);
+			let $defaultIcons = $(html).find(`[name="${MODULE.ID}.defaultIcons"]`);
 
 			if ($element.is(':checked')) $defaultIcons.prop('checked', true);
 		});
 
 		// Handle Change Event for Fetch Local Readme
-		$(html).find(`[name="${MODULE.name}.showReadme"]`).on('change', (event) => {
+		$(html).find(`[name="${MODULE.ID}.showReadme"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
-			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.name}.fetchLocalReadme"]`);
+			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.ID}.fetchLocalReadme"]`);
 
 			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
 		});
-		$(html).find(`[name="${MODULE.name}.fetchLocalReadme"]`).on('change', (event) => {
+		$(html).find(`[name="${MODULE.ID}.fetchLocalReadme"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
-			let $showReadme = $(html).find(`[name="${MODULE.name}.showReadme"]`);
+			let $showReadme = $(html).find(`[name="${MODULE.ID}.showReadme"]`);
 
 			if ($element.is(':checked')) $showReadme.prop('checked', true);
 		});
 
 		// Handle Change Event for Fetch Local Changelog
-		$(html).find(`[name="${MODULE.name}.showChangelog"]`).on('change', (event) => {
+		$(html).find(`[name="${MODULE.ID}.showChangelog"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
-			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.name}.fetchLocalChangelogs"]`);
+			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.ID}.fetchLocalChangelogs"]`);
 
 			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
 		});
-		$(html).find(`[name="${MODULE.name}.fetchLocalChangelogs"]`).on('change', (event) => {
+		$(html).find(`[name="${MODULE.ID}.fetchLocalChangelogs"]`).on('change', (event) => {
 			let $element = $(event.currentTarget);
-			let $showChangelog = $(html).find(`[name="${MODULE.name}.showChangelog"]`);
+			let $showChangelog = $(html).find(`[name="${MODULE.ID}.showChangelog"]`);
 
 			if ($element.is(':checked')) $showChangelog.prop('checked', true);
 		});

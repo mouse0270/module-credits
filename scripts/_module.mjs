@@ -4,14 +4,14 @@ import './lib/purify.min.js';
 
 let _STORE = {};
 export class MODULE {
-	static name = 'module-credits';
+	static ID = 'module-credits';
 
 	static get title() {
-		return `${this.name}.title`;
+		return `${this.ID}.title`;
 	}
 
 	static get api() {
-		return game.modules?.get(this.name)?.api;
+		return game.modules?.get(this.ID)?.api;
 	}
 
 	static get store() {
@@ -22,7 +22,7 @@ export class MODULE {
 	}
 
 	static localize() {
-		return game.i18n.localize(`${this.name}.${arguments[0]}`);
+		return game.i18n.localize(`${this.ID}.${arguments[0]}`);
 	}
 
 	static markup = (content) => {
@@ -42,17 +42,17 @@ export class MODULE {
 				config: true
 			}
 			let newSetting = foundry.utils.mergeObject(settingDefaults, value, { inplace: false });
-			game.settings.register(this.name, setting, newSetting);
+			game.settings.register(this.ID, setting, newSetting);
 
 			return newSetting;
 		} else {
 			let setting = args[0];
 			// If only one value is passed in, get setting
 			if (typeof args[1] == 'undefined') {
-				return game.settings.get(this.name, setting);
+				return game.settings.get(this.ID, setting);
 			} else { 
 				// If two values are passed in, then set setting
-				return game.settings.set(this.name, setting, args[1]);
+				return game.settings.set(this.ID, setting, args[1]);
 			}
 		}
 	}

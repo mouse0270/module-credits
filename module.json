@@ -5,7 +5,7 @@
   "version": "This is auto replaced",
   "library": "false",
   "manifestPlusVersion": "0.0.0.1",
-  "minimumCoreVersion": "9",
+  "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "9",
   "authors": [
     {
@@ -32,10 +32,20 @@
     {
       "name": "lib-changelogs",
       "type": "module",
-      "versionMin": "0.0.0",
-      "versionMax": "9.9.9"
+      "description": "Provides similar functionality. Module Credits provides a polyfill for Changelogs & Conflicts API.",
+      "versionMin": "0.6"
     }
   ],
+  "deprecated": {
+    "reason": "Module has been Rebranded as Module Management+",
+    "alternatives": [
+      {
+        "name": "mmp",
+        "title": "Module Management+",
+        "manifest": "https://link.com/to/module.json"
+      }
+    ]
+  },
   "esmodules": [ "/scripts/_init.mjs" ],
   "scripts": [ ],
   "styles": [

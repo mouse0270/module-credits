@@ -5,7 +5,9 @@
 - Added the ability to define a conflict with `game.modules.get('module-credits').api.defineConflict({...})`
 - Added Global `conflicts.json` file that is read from github to allow conflicts to be defined before modules are enabled
 - Added Support for Manifest Plus `conflicts` section
+- Added Support for Manifest Plus `deprecated` section (Support is minimum and only shows that the module is deprecated and the reason)
 - Added Ko-fi and reddit support for author credits
+- Patched modules that use the `author` tag and then do a comma seperated list
 
 # Version 0.0.4.0 - Plus more Options
 - Updated to latest version of Foundry.

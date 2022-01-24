@@ -34,7 +34,7 @@ Lastly if your a developer and already using [Changelogs & Conflicts](https://fo
 game.modules.get('module-credits`).api.defineConflict({
 	moduleID: 'YOUR MODULE NAME',
 	conflictingModuleID: 'THE MODULE NAME THAT CONFLICTS WITH YOURS',
-	content: 'MARKDOWN DESCRIPTION OF THE CONFLICT BETWEEN YOUR TWO MODULES',
+	description: 'MARKDOWN DESCRIPTION OF THE CONFLICT BETWEEN YOUR TWO MODULES',
 	status: 'minor || major || breaking || critical'
 })
 ```

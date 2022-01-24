@@ -252,6 +252,7 @@ html > body .package-list .package .package-overview .package-title {
     content: 'BREAKING';
 }
 #moduleCreditsDialog .window-content nav ul li.module-credits-dialog-status-critical::before {
+    background-color: rgb(244, 67, 54);
     color:rgb(0, 0, 0);
     content: 'CRITICAL';
 }
@@ -416,12 +417,13 @@ html > body .package-list .package .package-overview .package-title {
 .module-credits-list-group-item > i {
     padding-right: 0.5rem
 }
-#sidebar #settings #settings-game button[data-action="modules"][data-conflicts] {
+
+#settings #settings-game button[data-action="modules"][data-conflicts] {
     padding-left: 0px;
     padding-right: 0px;
     padding-top: 0px;
 }
-#sidebar #settings #settings-game button[data-action="modules"][data-conflicts]::before {
+#settings #settings-game button[data-action="modules"][data-conflicts]::before {
     content: attr(data-conflicts) ' Conflicts Detected';
     background-color: rgb(244, 67, 54);
     border-top-left-radius: 3px;
@@ -435,15 +437,19 @@ html > body .package-list .package .package-overview .package-title {
     margin-top: -1px;
     padding: .05rem .5rem;
 }
-#sidebar #settings #settings-game button[data-action="modules"][data-conflicts="1"]::before {
+#settings #settings-game button[data-action="modules"][data-conflicts="0"]::before {
+    content: none;
+}
+#settings #settings-game button[data-action="modules"][data-conflicts="1"]::before {
     content: attr(data-conflicts) ' Conflict Detected'
 }
 
 
-#module-management #module-list .package .module-credits-conflict {
+#module-management #module-list .package .module-credits-conflict,
+#module-management #module-list .package .module-credits-deprecated {
     margin: 0.15rem 0.25rem 0 0;
 }
-#module-management #module-list .package.module-credits-conflict-minor {
+/*#module-management #module-list .package.module-credits-conflict-minor {
     background-color: rgb(33, 149, 242);
     color:rgb(0, 0, 0);
 }
@@ -458,7 +464,7 @@ html > body .package-list .package .package-overview .package-title {
 #module-management #module-list .package.module-credits-conflict-critical {
     background-color: rgb(244, 67, 54);
     color:rgb(0, 0, 0);
-}
+}**/
 #module-management #module-list .package.module-credits-conflict-minor .package-overview:before,
 #module-management #module-list .package.module-credits-conflict-major .package-overview:before,
 #module-management #module-list .package.module-credits-conflict-breaking .package-overview:before,
@@ -475,4 +481,15 @@ html > body .package-list .package .package-overview .package-title {
     line-height: 1;
     padding: 0.25rem 0.5rem;
     text-rendering: auto;
+}
+
+.url-link-display {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgb(0 0 0 );
+    color:rgb(255 255 255);
+    padding: 0.25rem 0.15rem;
+    font-size: 0.8rem;
+    z-index: 9999999999;
 }

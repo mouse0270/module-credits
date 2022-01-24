@@ -28,6 +28,7 @@ Hooks.once('ready', async () => {
 	
 // FOUNDRY HOOKS -> REDNER SETTINGS CONFIG
 Hooks.on("renderSettingsConfig", (app, html) => {
+	if(!game.user.isGM) return;
 	ModuleCredits.renderSettingsConfig(app, html);
 });
 
@@ -36,28 +37,46 @@ Hooks.on("renderModuleManagement", (app, html) => {
 	ModuleCredits.renderModuleManagement(app, html);
 
 	ModuleCredits.conflicts.forEach((conflict, index) => {
+		let tooltip = '';
 		let $package = $(`#module-management #module-list .package[data-module-name="${conflict.moduleID}"]`);
 		$package.find('.package-title input').after('<i class="module-credits-conflict fas fa-exclamation-triangle"></i>');
 
-		let tooltip = `## Conflicts with ${game.modules.get(conflict.conflictingModuleID).data.title}
-${conflict.content}`;
-		$package.find('.module-credits-conflict').data('conflict', tooltip);
 
-		$package = $(`#module-management #module-list .package[data-module-name="${conflict.conflictingModuleID}"]`);
-		$package.find('.package-title input').after('<i class="module-credits-conflict fas fa-exclamation-triangle"></i>');
+		if (conflict.conflictingModuleID ?? false) {
+			tooltip = `## Conflicts with ${game.modules.get(conflict.conflictingModuleID).data.title}
+${conflict.description}`;
+		}else{
+			tooltip = `## Known Issues for ${game.modules.get(conflict.moduleID).data.title}
+${conflict.description}`;
+		}
 
-		tooltip = `## Conflicts with ${game.modules.get(conflict.moduleID).data.title}
-${conflict.content}`;
-		$package.find('.module-credits-conflict').data('conflict', tooltip);
+		$package.find('.module-credits-conflict').data('tooltip', tooltip);
+
+		if (conflict.conflictingModuleID ?? false) {
+			$package = $(`#module-management #module-list .package[data-module-name="${conflict.conflictingModuleID}"]`);
+			$package.find('.package-title input').after('<i class="module-credits-conflict fas fa-exclamation-triangle"></i>');
+
+			tooltip = `## Conflicts with ${game.modules.get(conflict.moduleID).data.title}
+${conflict.description}`;
+			$package.find('.module-credits-conflict').data('tooltip', tooltip);
+		}
 	});
 
+	for (const [key, value] of Object.entries(ModuleCredits.deprecated)) {
+		let tooltip = `## Deprecated Module
+${value.reason}`;
+		let $package = $(`#module-management #module-list .package[data-module-name="${key}"]`);
+		$package.find('.package-title input').after('<i class="module-credits-deprecated fas fa-skull-crossbones"></fas>');
+		$package.find('.module-credits-deprecated').data('tooltip', tooltip);
+	}
+
 	let popperInstance = null;
-	$('.module-credits-conflict').on('mouseenter focus', (event) => {
+	$('.module-credits-conflict, .module-credits-deprecated').on('mouseenter focus', (event) => {
 		let $self = $(event.target);
-		let $tooltip = $(`<div id="${MODULE.name}-tooltip" role="tooltip">
-				<div id="${MODULE.name}-arrow" data-popper-arrow></div>
+		let $tooltip = $(`<div id="${MODULE.ID}-tooltip" role="tooltip">
+				<div id="${MODULE.ID}-arrow" data-popper-arrow></div>
 			</div>`);
-		$tooltip.prepend(MODULE.markup($self.data('conflict')));
+		$tooltip.prepend(MODULE.markup($self.data('tooltip')));
 		$self.before($tooltip);
 
 		popperInstance = Popper.createPopper($self[0], $tooltip[0], {
@@ -73,8 +92,8 @@ ${conflict.content}`;
 	})
 
 
-	$('.module-credits-conflict').on('mouseleave blur', (event) => {
+	$('.module-credits-conflict, .module-credits-deprecated').on('mouseleave blur', (event) => {
 		popperInstance.destroy();
-		$(`#${MODULE.name}-tooltip`).remove();
+		$(`#${MODULE.ID}-tooltip`).remove();
 	});
 });
