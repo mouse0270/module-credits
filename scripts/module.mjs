@@ -431,6 +431,8 @@ export class MMP {
 	static renderModuleManagement = (ModuleManagement, element, options) => {
 		let $element = $(element);
 
+		$element.find('.window-title').text(MODULE.TITLE);
+
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		// Module Management+ Adjustments
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */

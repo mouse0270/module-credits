@@ -32,19 +32,8 @@
   "dependencies": [
     
   ],
-  "conflicts": [
-    {
-      "name": "lib-changelogs",
-      "type": "module",
-      "description": "Provides similar functionality. Module Management+ provides a polyfill for Changelogs & Conflicts API.",
-      "versionMin": "0.6"
-    }
-  ],
-  "issues": [
-    {
-      "description": "Example issue, There is a known issue related to this module, blah blah blah..."
-    }
-  ],
+  "conflicts": [],
+  "issues": [],
   "deprecated": { },
   "esmodules": [ "/scripts/init.mjs" ],
   "scripts": [ ],
