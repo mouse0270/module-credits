@@ -9,5 +9,10 @@
 		"conflictingModuleID": "levels",
 		"description": "When selecting a token, you will not be able to see other tokens outside of the selected tokens vision.",
 		"versionMin": "2.4.8"
+	},
+	{
+		"moduleID": "tidy-ui_game-settings",
+		"description": "The latest update to foundry 9.245 breaks the settings UI.",
+		"versionMax": "0.1.30"
 	}
 ]

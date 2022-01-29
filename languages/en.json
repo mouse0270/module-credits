@@ -1,43 +1,16 @@
 {
 	"module-credits": {
-		"settings": {	
-			"showNewChangelogsOnLoad.name": "Show New Changelogs on Load",
-			"showNewChangelogsOnLoad.hint": "This will show any unseen changelogs when the wold loads up.",
-			"useSourceInsteadofSchema.name": "Use Source Instead Of Schema",
-			"useSourceInsteadofSchema.hint": "The module schema by default limits author links to name, email, url and discord. Using the source file instead will pull any additional values the author has listed.",
-			"defaultIcons.name": "Add Default Icons",
-			"defaultIcons.hint": "Adds font icons for Javascript, CSS and Compendium",
-			"condenseDefaultTags.name": "Condense Default Tags",
-			"condenseDefaultTags.hint": "Hides the text of default tags and will only show the icon for that tag.",
-			"condenseTags.name": "Condense Module Credits Tags",
-			"condenseTags.hint": "Hides the text of tags from Module Credits if it isn't an extrenal source. *(Only show Icons)*",
-			"condenseCompatibilityRisk.name": "Condense Compatibility Risk Tag",
-			"condenseCompatibilityRisk.hint": "Replaces the text of the Compatibility Risk Tag with a Triangle Explanation Mark.",
-			"condenseVersion.name": "Condense Version Tag",
-			"condenseVersion.hint": "Replaces the Version Text with the First Character then Version Numbner. eg `V.0.0.3`",
-			"condenseAuthors.name": "Condense Author Tags",
-			"condenseAuthors.hint": "If a module contains more then one author, it will display an icon instead of the name. Clicking on this icon will show all authors and their respective values in order.",
-	
-	
-			"showReadme.name": "Add Wiki Tag",
-			"showReadme.hint": "If the module contains the `readme` property, this will add a clickable tag that will take you to that url",
-			"fetchLocalReadme.name": "Fetch Local Readme",
-			"fetchLocalReadme.hint": "Allow module credits to search module directories for local `readme.md` files.",
-			"showIssues.name": "Add Issues Tag",
-			"showIssues.hint": "If the module contains the `bugs` property, this will add a clickable tag that will take you to that url",
-			"showChangelog.name": "Add Changelog Tag",
-			"showChangelog.hint": "If the module contains the `changelog` property, this will add a clickable tag that will take you to that url",	
-			
-			"fetchLocalChangelogs.name": "Fetch Local Changelog",
-			"fetchLocalChangelogs.hint": "Allow module credits to search module directories for local `changelog.md` files."
-		},
-
-		"resetDialog.name": "Reset Tracked Changelogs",
-		"resetDialog.button": "Confirm Reset",
-		"resetDialog.hint": "Confirming this reset, will set all changelogs to unseen.",
-
-		"text.readme.name": "wiki",
-		"text.issues.name": "issues",
-		"text.changelog.name": "changelog"
+		"title": "Module Management+",
+		"settings": {
+			"showNewChangelogsOnLoad": {
+				"name": "Show New Changelogs on Load",
+				"hint": "If a changelog is marked as unseen and this setting is enabled a dialog will appear showing all changelogs that haven't been marked as seen."
+			},
+			"resetDialog": {
+				"name": "Reset Tracked Changelogs",
+				"button": "Confirm Reset",
+				"hint": "Confirming this reset, will set all changelogs to unseen."
+			}
+		}
 	}
 }

@@ -1,0 +1,20 @@
+<form action="#" class="{{DIALOG.ID}}-dialog">
+	<nav>
+		<ul>
+			{{#each items}}
+    			<li {{#if ../IsGM}}class="{{../DIALOG.ID}}-has-seen {{../DIALOG.ID}}-has-seen-{{this.hasSeen}}"{{/if}}>
+					<a class="{{../DIALOG.ID}}-dialog-link" data-load="{{@key}}">{{this.title}}</a>
+				</li>
+			{{/each}}
+		</ul>
+	</nav>
+	<main class="{{DIALOG.ID}}-window {{#if IsMultipleItems}}{{else}}full-width{{/if}}">
+		<h2 class="{{DIALOG.ID}}-dialog-title">
+			{{#if IsMultipleItems}}<div class="{{DIALOG.ID}}-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>{{/if}}
+			<span>DISPLAY TITLE HERE</span>
+		</h2>
+		<div class="{{DIALOG.ID}}-dialog-content">
+			DISPLAY MARKDOWN CONTENT HERE
+		</div>
+	</main>
+</form>

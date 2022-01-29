@@ -1,14 +1,21 @@
 // GET REQUIRED LIBRARIES
-import './lib/popper.min.js';
+import './libraries/popper.min.js';
+import './libraries/tippy.min.js';
 
 // GET MODULE CORE
 import { MODULE } from './_module.mjs';
+import { DIALOG } from './dialog.mjs';
 
-// IMPORT MODULE FUNCTIONALITY
-import { ModuleCreditsDialog } from './moduleCreditsDialog.mjs';
+// DEFINE MODULE CLASS
+export class MMP {
+	static packages = new Map();
+	static conflicts = {};
+	static popperInstance = null;
+	static socket;
 
-
-export class ModuleCredits {
+	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+	// MODULE SUPPORT CODE
+	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 	// MODULE SUPPORT FOR || 🐛 Bug Reporter Support ||
 	static bugReporterSupport = (moduleData) => {
 		// 🐛 Bug Reporter Support
@@ -24,728 +31,600 @@ export class ModuleCredits {
 		);
 	}
 
-	// MODULE SUPPORT FOR || libThemer ||
-	static registerLibThemer = () => {
-		let theme = {
-			"name": "Module Credits",
-			
-			"--module-credits-theme": {
-				"type": "stylesheet",
-				"default": false,
-				"style": "./modules/module-credits/styles/lib-themer.css"
+	// MODULE SUPPORT FOR || socketlib ||
+	static registerSocketLib = () => {
+		this.socket = socketlib.registerModule(MODULE.ID);
+		this.socket.register("useFilePicker", this.useFilePicker);
+	}
+
+	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+	// WHAT IS THIS?
+	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+	static get hasPermission() {
+		return game.permissions.FILES_BROWSE.includes(game.user.role) || (game.modules.get('socketlib')?.active ?? false);
+	}
+	static get isGMOnline() {
+		return game.users.find(user => user.isGM && user.active);
+	}
+
+	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+	// FUNCTIONS
+	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+	static async useFilePicker(url, options = {}) {
+		// IF URL HAS FILE EXTENSION, ASSUME WE ARE LOOKING FOR A SPECIFIC FILE
+		let getFile = url.split('/').pop().includes('.');
+
+		return await FilePicker.browse('user', url, options).then(response => {
+			let files = getFile ? [] : response.files.filter(file => file.toLowerCase().endsWith(url.split('/').pop().toLowerCase()));
+			if (files.length > 0 || !getFile) {
+				return getFile ? files[0] : response.files;
 			}
-		}
-
-		if (game.modules?.get('lib-themer')?.active ?? false) {
-			game.modules.get('lib-themer').api.registerTheme(MODULE.ID, theme);
-		}
+			throw TypeError(`unable to access ${url}`);
+		}).then(file => file).catch((error) => {
+			MODULE.debug(error);
+			return false;
+		});
+	}
+	
+	static async useFetch(url, options ={}) {
+		return await fetch(url).then(response => {
+			if (response.status >= 200 && response.status <= 299) {
+				return response;
+			}
+			throw TypeError("unable to fetch file content");
+		}).then(data => {
+			return url;
+		}).catch(error => {
+			MODULE.debug(error);
+			return false;
+		})
 	}
 
-	// MODULE SUPPORT FOR || Changelogs & Conflicts ||
-	static polyfillLibChangelogs = () => {
-		// Handle for lib-changelogs
-		if (!game.modules?.get('lib-changelogs')?.active ?? true) {
-			Hooks.once('ready', () => {
-				globalThis.libChangelogs = {
-					register: (moduleId, markdown, warnLevel = "minor") => {
-						this.registerChangelog({
-							moduleID: moduleId, 
-							changelog: markdown
-						})
-					},
-					registerConflict: (moduleId, conflictingModule, markdown, warnLevel) => {
-						this.defineConflict({
-							moduleID: moduleId, 
-							conflictingModuleID: conflictingModule, 
-							description: markdown
-						});
-					} 
-				};
+	static async checkIfFilesExists(url, options = {}) {
+		// Check if User is able to use FilePicker
+		if (!this.hasPermission) return false;
 
-				Hooks.callAll('libChangelogsReady');
-			});
+		// Use socketlib if user does not have access to `FILES_BROWSE`
+		if (!game.permissions.FILES_BROWSE.includes(game.user.role) && this.isGMOnline) {
+			return await this.socket.executeAsGM("useFilePicker", url, options).then(file => file)
 		}
+
+		// Else use file picker directly
+		return await this.useFilePicker(url, options).then(file => file);
 	}
 
-	// SUPPORT FOR || manifest-plus ||
-	static async maifestPlusSupport() {
-		for await (let [key, module] of game.modules) {
-			await FilePicker.browse('user', `./modules/${module?.data?.name}/module.json`).then(response => {
-				let files = response.files.filter(file => file.toLowerCase().includes(`module.json`));
-				if (files.length > 0) {
-					return files[0];
+	static async getFile(url) {
+		return await fetch(url).then(response => {
+			if (response.status >= 200 && response.status <= 299) {
+				if (url.split('.').pop().toLowerCase().startsWith('json')) {
+					return response.json();
+				}else{
+					return response.text();
 				}
-				throw TypeError(`${module?.data?.title} could not find module.json file`);
-			}).then(file => {
-				fetch(file)
-				.then(response => response.json())
-				.then(data => {
-					if (data?.conflicts?.length > 0 ?? false) {
-						for (let conflict of data.conflicts) {
-							ModuleCredits.defineConflict({
-								moduleID: module?.data?.name,
-								conflictingModuleID: conflict.name,
-								description: conflict?.description ?? null,
-								versionMin: conflict?.versionMin ?? 0,
-								versionMax: conflict?.versionMax ?? 0,
-							})
+			}
+			throw TypeError("unable to fetch file content");
+		}).then(data => {
+			return data;
+		}).catch(error => {
+			MODULE.debug(error);
+			return false;
+		})
+	}
+
+	static versionCompare = (versionMin, versionCurrent, versionMax = false) => {
+		if (!versionMin) {
+			return true
+		}else if (!versionMax) {
+			return (isNewerVersion(versionCurrent, versionMin) || versionCurrent == versionMin);
+		}else if (versionMax) {
+			return (isNewerVersion(versionCurrent, versionMin) || versionCurrent == versionMin) && !isNewerVersion(versionCurrent, versionMax)
+		}
+
+		return true;
+	}
+
+	// DEFINE API
+	static installAPI = () => {
+		game.modules.get(MODULE.ID).API = {
+			getContent: async (module, type) => this.getFile(this.packages.get(module)?.[type]),
+			getChangelog: async (module) => this.getFile(this.packages.get(module).changelog),
+			getReadme: async (module) => this.getFile(this.packages.get(module).readme)
+		}
+	}
+
+	static init = () => {
+		// SETUP API
+		this.installAPI();
+
+		this.getPackages().then((response) => {
+			this.updateSettingsTab({}, $('#ui-right #sidebar'), {});
+
+			// Get unseen Changelogs and Show to GM
+			if (game.user.isGM && MODULE.setting('showNewChangelogsOnLoad')) {
+				var unseenChangelogs = Object.keys(MODULE.setting('trackedChangelogs')).reduce((result, key) => {    
+					if (!MODULE.setting('trackedChangelogs')[key].hasSeen) result[key] = MODULE.setting('trackedChangelogs')[key];
+					return result;
+				}, {});
+
+				if (Object.keys(unseenChangelogs).length >= 1) {
+					new DIALOG(unseenChangelogs).render(true);
+				}
+			}
+		})
+	}
+
+	static registerConflictsAndIssues = () => {
+		let conflicts = {};
+		for (let [key, module] of this.packages) {
+			// Check if conflict exists
+			if (module?.conflicts?.length > 0 ?? false) {
+				module.conflicts.filter((conflict) => {
+					let conflictID = [
+							`${key}${(conflict?.name ?? false) ? '^'+conflict?.name : ''}`,
+							`${(conflict?.name ?? false) ? conflict?.name+'^' : ''}${key}`
+						]
+					
+					// SET CONFLICT ID
+					// This code determins if a conflict between two modules has already been defined
+					// if so, append to that conflict instead of adding a new one.
+					if (this.conflicts.hasOwnProperty(conflictID[0])) conflictID = conflictID[0];
+					else if (this.conflicts.hasOwnProperty(conflictID[1])) conflictID = conflictID[1];
+					else conflictID = conflictID[0];
+					
+					// Conflict has been registered already - Append
+					if (this.conflicts.hasOwnProperty(conflictID)) {
+						this.conflicts[conflictID].description.push(conflict?.description)
+						return false;
+
+					// Conflict has not been Registered - Create
+					}else{
+						this.conflicts[conflictID] = {
+							type: conflictID.includes('^') ? 'conflict' : 'issue',
+							description: [conflict?.description]
 						}
 					}
-					// Check if module is deprecated
-					if ((data?.deprecated && data?.deprecated?.reason) ?? false) {
-						ModuleCredits.defineDeprecatedModule(module?.data?.name, data?.deprecated);
+					return true;
+				});
+			}
+		}
+	}
+
+	static formatAuthors = (moduleData) => {
+		// Build Authors
+		let authors = [];
+		moduleData?.authors?.forEach(author => {
+			authors.push({...author});
+		});
+		
+		// If no authors found, use author tag instead
+		if (authors.length == 0 && moduleData?.author?.length > 0) {
+			moduleData?.author.split(',').forEach((author, index) => {
+				authors.push({ name: author})
+			})
+		}
+
+		return authors;
+	}
+
+	static async getTrackedChangelogs() {
+		for await (const [key, module] of this.packages) {
+			// Track Changelogs
+			// Check if version is newer then saved.
+			if (module.changelog && game.user.isGM) {
+				let hasSeen = MODULE.setting('trackedChangelogs')?.[key]?.hasSeen ?? false;
+				if (isNewerVersion(module?.version ?? '0.0.0', MODULE.setting('trackedChangelogs')?.[key]?.version ?? '0.0.0')) {
+					MODULE.debug(`${key} is newer then last seen, set hasSeen to false`);
+					hasSeen = false;
+				}
+				await MODULE.setting('trackedChangelogs', mergeObject(MODULE.setting('trackedChangelogs'), {
+					[key]: {
+						title: game.modules.get(key).data.title,
+						version: module?.version ?? '0.0.0',
+						hasSeen: hasSeen
 					}
-				}).catch(error => console.error(error))
-			}).catch((error) => {
-				console.log(error);
-			});
+				}));
+			}
 		}
 
-		//this.cleanUpConflicts();
+		return MODULE.setting('trackedChangelogs');
 	}
 
-	//Queue Registration calls
-	static queue = [];
-	static queueIsRunning = false;
+	static async formatPackage(moduleData) {
+		// Get README and CHANGELOG Files
+		let getFiles = await this.checkIfFilesExists(`./modules/${moduleData.name}/`, { extensions: ['.md'] });
+		// Required as Foundry Does not Load All Required Information from module.json file
+		let moduleJSON = await this.getFile(`./modules/${moduleData.name}/module.json`);
+		// Assign Files to Variables
+		let readme = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('README.md'.toLowerCase()))[0] : false;
+		let changelog = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('CHANGELOG.md'.toLowerCase()))[0] : false;
+		// Get License File
+		let license = false; // Foundry File Picker Does not Display this File
 
-	static async registerChangelog({moduleID, changelog}) {
-		// add call to queue
-		if (moduleID != null) {
-			ModuleCredits.queue.push({ moduleID: moduleID, changelog: changelog});
+		// Format MMP Package
+		let formatedData = {
+			authors: this.formatAuthors(moduleData),
+			version: moduleData?.version != 'This is auto replaced' ? moduleData?.version : '0.0.0' ?? false,
+			readme: readme,
+			changelog: changelog,
+			license: license,
+			bugs: moduleData?.bugs ?? false,
+			conflicts: [], //moduleJSON?.conflicts ?? false,
+			issues: [], //moduleJSON?.conflicts ?? false,
+			deprecated: moduleJSON?.deprecated ?? false,
+			attributions: moduleJSON?.attributions ?? false,
+			allowBugReporter: moduleData?.allowBugReporter ?? moduleData?.flags?.allowBugReporter ?? false
 		}
 
-		// Check if queue is not running
-		if (!ModuleCredits.queueIsRunning) {
-			// Set queue to running;
-			ModuleCredits.queueIsRunning = true;
-
-			// Get Tracked Modules
-			let tracker = MODULE.setting('trackedChangelogs');
-
-			// Add Tracked Module
-			tracker[ModuleCredits.queue[0].moduleID] = {
-				version: game.modules.get(ModuleCredits.queue[0].moduleID).data.version,
-				hasSeen: tracker[ModuleCredits.queue[0].moduleID]?.hasSeen ?? false,
-				description: ModuleCredits.queue[0]?.changelog ?? null
+		// Track Changelogs
+		// Check if version is newer then saved.
+		if (changelog && game.user.isGM) {
+			let hasSeen = MODULE.setting('trackedChangelogs')?.[moduleData.name]?.hasSeen ?? false;
+			if (isNewerVersion(formatedData?.version ?? '0.0.0', MODULE.setting('trackedChangelogs')?.[moduleData.name]?.version ?? '0.0.0')) {
+				MODULE.debug(`${moduleData.name} is newer then last seen, set hasSeen to false`);
+				hasSeen = false;
 			}
-
-			await MODULE.setting('trackedChangelogs', tracker);
-
-			// Remove Module from Queue and Stop Queue;
-			ModuleCredits.queue.shift();
-			ModuleCredits.queueIsRunning = false;
-
-			// If items are in queue
-			if (ModuleCredits.queue.length > 0)  {
-				ModuleCredits.registerChangelog({moduleID: null});
-			}else{
-				this.procesStaticChangelogs();
-			}
-		} 
-	}
-
-	static deprecated = {};
-	static defineDeprecatedModule = (moduleID, deprecatedData) => {
-		ModuleCredits.deprecated[moduleID] = deprecatedData;
-	}
-
-
-	//Define variable to hold conflicts as they don't need to be stored
-	static conflicts = [];
-	static defineConflict = ({moduleID, conflictingModuleID, description, versionMin, versionMax}) => {
-		// Check if modules are exists
-		if (game.modules.get(moduleID) ?? false) {
-			// Check if conflicting module exists or is null
-			if ((typeof conflictingModuleID === 'undefined' || game.modules.get(conflictingModuleID)) ?? false) {
-				// get module version
-				let moduleVersion = game.modules.get(conflictingModuleID ?? moduleID).data.version;
-				// Check version
-				if ((isNewerVersion(moduleVersion, versionMin) || moduleVersion == versionMin) && 
-					(!isNewerVersion(moduleVersion, versionMax) || versionMax == 0)) {
-					ModuleCredits.conflicts.push({
-						moduleID: moduleID,
-						conflictingModuleID: conflictingModuleID ?? null,
-						description: description ?? '*No Details Provided*',
-						versionMin: versionMin ?? null,
-						versionMax: versionMin ?? null
-					});
-
-					
-					this.cleanUpConflicts();
+			await MODULE.setting('trackedChangelogs', Object.assign(MODULE.setting('trackedChangelogs'), {
+				[moduleData.name]: {
+					title: moduleData?.title,
+					version: formatedData?.version ?? '0.0.0',
+					hasSeen: hasSeen
 				}
-			}
+			}));
 		}
-	}
 
-	static cleanUpConflicts() {
-		let conflictIDS = {}
-		let numberOfConflicts = ModuleCredits.conflicts.length;
-
-		while(numberOfConflicts--) {
-			let conflict = ModuleCredits.conflicts[numberOfConflicts];
-			let keys = [
-				`${conflict.moduleID}-${conflict.conflictingModuleID}`,
-				`${conflict.conflictingModuleID}-${conflict.moduleID}`
-			];
-
-			// Key Exists
-			if ((typeof conflictIDS[keys[0]] !== 'undefined' || typeof conflictIDS[keys[1]] !== 'undefined') ?? false) {
-				// Add content to existing conflict
-				ModuleCredits.conflicts[conflictIDS[keys[0]]].description += `<br /> ${conflict.description}`;
-
-				// Remove Duplicate
-				ModuleCredits.conflicts.splice(numberOfConflicts, 1);
-			}else{
-				conflictIDS[keys[0]] = numberOfConflicts;
-			}
-		}
-	}
-
-	static async fetchGlobalConflicts() {
-		fetch('http://foundryvtt.mouse0270.com/module-credits/conflicts.json?time=5')
-			.then(response => response.json())
-			.then(data => {
-				for (let conflict of data) {
-					this.defineConflict(conflict);
+		// Loop Through conflicts and Add them if they need to be added
+		if ((moduleJSON?.conflicts || moduleJSON?.issues) ?? false) {
+			// Cause I am lazy, merge Conflicts and Issues
+			// Yes this does mean techncially a user could list a conflict as an issue and vice versa
+			// But I also don't honestly care for the purpose of display the content is the same
+			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []);
+			conflicts.forEach((conflict, index) => {
+				if (game.modules.get(conflict?.name) ?? false) {
+					if (this.versionCompare(conflict.versionMin, game.modules.get(conflict?.name).data.version, conflict.versionMax)) {
+						formatedData.conflicts.push(conflict)
+					}
+				}else {
+					if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
+						formatedData.conflicts.push(Object.assign(conflict, { type: 'issue' }))
+					}
 				}
-
-				//this.cleanUpConflicts();
-				$('#sidebar #settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
-			}).catch(error => console.error(error))
-	}
-
-	static api = () => {
-		game.modules.get(MODULE.ID).api = {
-			registerChangelog: this.registerChangelog,
-			defineConflict: this.defineConflict
+			})
 		}
 
-		// Add Support for Changelogs & Conflicts
-		this.polyfillLibChangelogs();
+		return formatedData;
 	}
 
-	static updateSettingsTab = ($element) => {
+	static async getGlobalConflicts() {
+		// Get Global Conflcits
+		let globalConflicts = await this.getFile(`http://foundryvtt.mouse0270.com/module-credits/conflicts.json?time=${Date.now()}`);
+
+		// Assign Conflict if Package Exists
+		globalConflicts.forEach((conflict, index) => {
+			if (this.packages.get(conflict.moduleID) && this.packages.get(conflict.conflictingModuleID)) {
+				// HANDLE CONFLICT BETWEEN TWO MODULES
+				if (this.versionCompare(conflict.versionMin, this.packages.get(conflict.conflictingModuleID).version, conflict.versionMax)) {
+					this.packages.get(conflict.moduleID).conflicts.push({
+						"name": conflict.conflictingModuleID,
+						"type": "module",
+						"description": conflict.description ?? false,
+						"versionMin": conflict.versionMin ?? false,
+						"versionMax": conflict.versionMax ?? false
+					})
+				}
+			}else if (this.packages.get(conflict.moduleID)) {
+				// HANDLE KNOWN ISSUE
+				if (this.versionCompare(conflict.versionMin, this.packages.get(conflict.moduleID).version, conflict.versionMax)) {
+					this.packages.get(conflict.moduleID).conflicts.push({
+						"type": "issue",
+						"description": conflict.description ?? false,
+						"versionMin": conflict.versionMin ?? false,
+						"versionMax": conflict.versionMax ?? false
+					})
+				}
+			}else{
+				MODULE.debug('MODULES NOT ENABLED: ', this.packages.get(conflict.moduleID), this.packages.get(conflict.conflictingModuleID));
+			}
+		})
+	}
+
+	static async getPackages() {
+		for await (let [key, module] of game.modules) {
+			this.packages.set(key, await this.formatPackage(module.data._source));
+		};
+
+		await this.getGlobalConflicts();
+		this.registerConflictsAndIssues();
+
+		return this.packages;
+	}
+
+	static updateSettingsTab = (settings, $element, options) => {
 		if ($element.find('#settings #settings-documentation').length >= 1) {
-			if ($element.find('#settings #settings-documentation button[data-action="changelog"]').length <= 0) {
+			if ($element.find('#settings #settings-documentation button[data-action="changelog"]').length <= 0 && this.hasPermission && this.isGMOnline) {
 				$element.find('#settings #settings-documentation').append(`<button data-action="changelog">
 						<i class="fas fa-exchange-alt"></i> Module Changelogs
 					</button>`);
 
 				$element.find('#settings #settings-documentation [data-action="changelog"]').off('click');
 				$element.find('#settings #settings-documentation [data-action="changelog"]').on('click', event => {
-					this.renderChangelog({ showAllModules: true })
+					new DIALOG(MODULE.setting('trackedChangelogs')).render(true);
 				});
 			}
 
-			$element.find('#settings #settings-game button[data-action="modules"]').attr('data-conflicts', ModuleCredits.conflicts.length);
+			// If user can manage modules, Show Conflicts
+			if (game.permissions.SETTINGS_MODIFY.includes(game.user.role)) {
+				$element.find('#settings #settings-game button[data-action="modules"]').attr('data-conflicts', Object.keys(this.conflicts).length);
+			}
 		}
 	} 
 
-	static init = () => {
-		// Add Changelog Button to Help and Documentation
-		Hooks.on("renderSidebarTab", (settings, element) => {
-			this.updateSettingsTab($(element));
-		});
-		this.updateSettingsTab($('#ui-right #sidebar'));
+	static fixModuleTags = ($element) => {
+		// Handle Version Tag
+		let version = $element.find('.tag.version').text();
+		// Format Version Text | Use Translation Location for better Support
+		version = version.replace(`${game.i18n.translations.PACKAGE.TagVersion} `, '').replace('This is auto replaced', '0.0.0');
+		// Update Tag Text
+		$element.find('.tag.version').text(version);
 
-		this.registerChangelog({moduleID: MODULE.ID});
-			
-		this.fetchGlobalConflicts();
-		this.maifestPlusSupport();
-
-		this.registerLibThemer();
-
-		// dumb feature
-		$('body').on('mouseenter', 'a[href]', (event) => {
-			$('body').append(`<div class="url-link-display">${$(event.target).attr('href')}</div>`);
-		}).on('mouseleave', 'a[href]', () => {
-			$('.url-link-display').remove();
-		})
+		// Handle Compatibility Risk Tag
+		let compatibilityRisk = $element.find('.tag.unknown').text();
+		// Format Compatibility Risk Text
+		// * TODO: Find Translation Text for Compatibility Risk
+		compatibilityRisk = compatibilityRisk.replace('Compatibility Risk (', '').replace(')', '');
+		// Update Tag Text
+		$element.find('.tag.unknown').text(compatibilityRisk);
 	}
 
-	static procesStaticChangelogs = () => {
-		// Enable Version Tracking
-		this.versionTracker().then(response => response).then((trackedModules) => {
-			// Update Setting
-			MODULE.setting('trackedChangelogs', trackedModules);
-			if (game.user.isGM && MODULE.setting('showNewChangelogsOnLoad'))
-				this.renderChangelog({trackedModules: trackedModules});
+	static buildAuthorTooltip = (authors) => {
+		let $tooltipHTML = $(`<div class="${MODULE.ID}-author-data"></div>`);
+		const isURL = (url) => { try { new URL(url); return true; } catch { return false; }};
+
+		// DEFINE AUTHOR TOOLTIP LAYOURS
+		const defineTooltips = (template, {key, value}) => {
+			if (value == undefined || typeof value == 'undefined') return '';
+			if (key == 'url') key = 'website';
+
+			if (key == 'name') {
+				return `<div class="${MODULE.ID}-list-group-item tooltip-type-name">
+					<strong>${value}</strong>
+				</div>`;
+			}else if (['twitter', 'patreon', 'github', 'reddit', 'ko-fi'].includes(key)) {
+				return `<a href="${isURL(value) ? value : 'https://www.'+key+'.com/'+value}" target="_blank" class="${MODULE.ID}-list-group-item ${MODULE.ID}-tooltip-social ${MODULE.ID}-tooltip tooltip-type-${key}">
+					<i class="fab fa-${key}"></i>
+					${isURL(value) ? key : value}
+				</a>`;
+		 	}else {
+				return `<${isURL(value) ? 'a' : 'div'} ${isURL(value) ? 'href="'+value+'" traget="_blank"' : ''} class="${MODULE.ID}-list-group-item ${MODULE.ID}-tooltip tooltip-type-${key}">
+					<i class="fas fa-info-circle"></i>
+					${isURL(value) ? key : value }
+				</${isURL(value) ? 'a' : 'div'}>`;
+			}
+		}
+
+		authors.forEach(function (author, index) {
+			let $author = $(`<div class="${MODULE.ID}-list-group"></div>`);
+			for (const [key, value] of Object.entries(author)) {
+				$author.append(defineTooltips('default', {key, value}));
+			}
+			$tooltipHTML.append($author);
 		});
+		return $tooltipHTML;
 	}
 
-	static async versionTracker() {
-		const compareVersion = (version1, version2) => {
-			const levels1 = version1.split('.');
-			const levels2 = version2.split('.');
-			const length = Math.max(levels1.length, levels2.length);
-		
-			for (let i = 0; i < length; i++) {
-				const v1 = i < levels1.length ? parseInt(levels1[i]) : 0;
-				const v2 = i < levels2.length ? parseInt(levels2[i]) : 0;
-		
-				if (v1 > v2) return true;
-				if (v2 > v1) return false;
-			}
-		
-			return 0;
-		};
+	static addPackageTag = ($element, tag, action = false, options = {}) => {
+		let $tag = $(`<a class="tag ${tag}" title="${tag}"></a>`);
 
-		let tracker = MODULE.setting('trackedChangelogs');
-		
-		// Remove Modules that Don't Exists
-		Object.entries(tracker).forEach(([key, module]) => {
-			if (typeof game.modules.get(key) == 'undefined') {
-				delete tracker[key];
-			}
-		})
-		
-		// Check if Mods have udpated
-		for await (let [key, module] of game.modules) {
-			// Check If Module Exists
-			if (typeof tracker[module?.data?.name] != 'undefined') {
-				// Check if Module has Updated
-				if (compareVersion(module?.data?.version, tracker[module?.data?.name].version)) {
-					await FilePicker.browse('user', `./modules/${module?.data?.name}/`, { extensions: ['.md'] }).then(response => {
-						let files = response.files.filter(file => file.toLowerCase().includes(`changelog.md`))
-						if (files.length > 0) {
-							return files[0];
-						}
-						throw TypeError(`${module?.data?.title} did not provide a changelog.md file`);
-					}).then(file => {
-						tracker[module?.data?.name] = {
-							version: module?.data?.version,
-							hasSeen: false
-						}
-					}).catch((error) => {
-						//this.LOG(error);
-					});
+		if (action == 'popover') {
+			tippy($tag[0], options)
+		}else if (action && typeof action != 'function') {
+			 $tag.attr({
+				'href': action,
+				'target': '_blank'
+			});
+		}else if (action && typeof action == 'function') {
+			$tag.on('click', action);
+		}
+
+		$element.find('.package-overview .package-title').after($tag);
+	}
+
+	static renderModuleManagement = (ModuleManagement, element, options) => {
+		let $element = $(element);
+
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// Module Management+ Adjustments
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// Auto Focus Filter Modules On Load
+		$element.find('.list-filters input[type="text"]').focus();
+
+		// If user does not have Access, Filter to show only active modules and hide
+		if (!game.permissions.SETTINGS_MODIFY.includes(game.user.role)) {
+			$element.find('.list-filters .filter[data-filter="active"]').trigger('click');
+			$element.find('.list-filters .filter[data-filter="active"]').remove();
+			$element.find('#module-list .package .package-title input[type="checkbox"]').remove();
+		}else{
+			$element.find('.list-filters .filter[data-filter="all"]').text($element.find('.list-filters .filter[data-filter="all"]').text().replace('Modules', ''));
+			$element.find('.list-filters .filter[data-filter="active"]').text($element.find('.list-filters .filter[data-filter="active"]').text().replace('Modules', ''));
+			$element.find('.list-filters .filter[data-filter="inactive"]').text($element.find('.list-filters .filter[data-filter="inactive"]').text().replace('Modules', ''));
+		}
+
+		// Add Clear Text Button when user has typed content into filter
+		$element.find('.list-filters input[type="text"]').on('keyup', (event) => {
+			if ($(event.target).val().length > 0) {
+				if ($(event.target).next('button.far').length == 0) {
+					$(event.target).after('<button class="far fa-times-circle"></button>');
+					$(event.target).next('button.far').css({
+						position: `absolute`,
+						left: `${$(event.target).width()}px`
+					})
 				}
 			}else{
-				await FilePicker.browse('user', `./modules/${module?.data?.name}/`, { extensions: ['.md'] }).then(response => {
-					let files = response.files.filter(file => file.toLowerCase().includes(`changelog.md`))
-					if (files.length > 0) {
-						return files[0];
-					}
-					throw TypeError(`${module?.data?.title} did not provide a changelog.md file`);
-				}).then(file => {
-					tracker[module?.data?.name] = {
-						version: module?.data?.version,
-						hasSeen: false
-					}
-				}).catch((error) => {
-					//this.LOG(error);
-				});
-			}
-		};
-
-		return await tracker;
-	}
-
-	static renderChangelog = ({trackedModules, showAllModules}) => {
-		if (typeof trackedModules == 'undefined') trackedModules = MODULE.setting('trackedChangelogs');
-		if (typeof showAllModules == 'undefined') showAllModules = false;
-
-		// Sort Modules by ModuleID
-		let sortedModules = Object.keys(trackedModules).sort().reduce((obj, key) => { 
-				obj[key] = trackedModules[key]; 
-			  	return obj;
-			}, {});
-
-		// Check if Changelog has to be shown
-		let showChangelog = false;
-		let modulesToShow = [];
-		Object.entries(sortedModules).forEach(([key, module]) => {
-			// If Changelog has not been seen, show changelog
-			let moduleData = MODULE.setting('useSourceInsteadofSchema') ? game.modules.get(key).data._source : game.modules.get(key).data;
-			if (!module.hasSeen || showAllModules) {
-				showChangelog = true;
-
-				let pushData = {
-					title: moduleData?.title,
-					name: moduleData?.name,
-					type: 'changelog'
-				}
-				if (module?.description ?? false) pushData.description = module.description;
-
-				modulesToShow.push(pushData)
+				$(event.target).next('button.far').remove();
 			}
 		});
+		// When user clicks on filter, Clear text and reset filter
+		$element.find('.list-filters').on('click', 'button.far', (event) => {
+			$element.find('.list-filters input[type="text"]').val('');
+			$element.find('.list-filters input[type="text"]').trigger('keyup');
+			$element.find('.list-filters .filter[data-filter].active').trigger(`click`);
+		})
 
-		if (showChangelog || showAllModules) {
-			new ModuleCreditsDialog(modulesToShow).render(true);
-		}
-	}
 
-	static renderModuleManagement = (app, html) => {
-		let $modulesTab = html.find('#module-list');
-		let popperInstance = null;
-		
-		$modulesTab.find('li.package').each((index, module) => {
-			let $module = $(module);
-			let moduleData = MODULE.setting('useSourceInsteadofSchema') ? game.modules.get($module.data('module-name')).data._source : game.modules.get($module.data('module-name')).data;
+		// Add Stripped Rows | Click active option
+		$element.find('.list-filters .filter[data-filter]').on(`click.${MODULE.ID}`, (event) => {
+			$("#module-management #module-list .package").removeClass('even');
 
-			$module.toggleClass('condense-tags', MODULE.setting('condenseTags'));
-			$module.toggleClass('default-icons', MODULE.setting('defaultIcons'));
-			$module.toggleClass('condense-default-tags', MODULE.setting('condenseDefaultTags'));
-			$module.toggleClass('condense-compatibility-risk', MODULE.setting('condenseCompatibilityRisk'));
-			$module.toggleClass('condense-version', MODULE.setting('condenseVersion'));
-			$module.toggleClass('condense-version', MODULE.setting('condenseAuthors'));
-
-			// Define Tag Template
-			const tag = ({$tag, text, onclick, isLocal}) => {
-				if (typeof $tag == 'undefined') $tag = $(`<span class="tag ${text.split('.')[1]}">${MODULE.localize(text)}</span>`);
-				if (typeof onclick == 'function') $tag.addClass('action').on('click', onclick);
-				if (typeof isLocal == 'undefined' || isLocal == false) $tag.addClass('url');
-
-				return $tag;
-			}
-
-			if (MODULE.setting('condenseCompatibilityRisk')) {
-				let $compatibilityRisk = $module.find(`.package-overview .tag.unknown:contains('Compatibility Risk')`);
-				if ($compatibilityRisk.length > 0) {
-					$compatibilityRisk.html($compatibilityRisk.text().replace(/Compatibility Risk/gi, '').replace(/\(/gi, '').replace(/\)/gi, ''));
+			let isEven = true;
+			$("#module-management #module-list .package").each((index, modulePackage) => {
+				if (!$(modulePackage).hasClass('hidden')) {
+					$(modulePackage).toggleClass('even', !isEven);
+					isEven = !isEven;
 				}
-			}
+			})
+		})
+		// Trigger Stripped Effect when Module Management Window Loaded
+		Hooks.once('renderApplication', () => {
+			$element.find('.list-filters .filter[data-filter]').eq(0).trigger(`click.${MODULE.ID}`);
+		});
 
-			// reused $tag variable
-			let $tag = null;
+		// Hook into Tidy UI Disable All
+		$element.on(`click.${MODULE.ID}`, `.enhanced-module-management .disable-all-modules`, (event) => {
+			var checkbox = $element.find(`.package[data-module-name="${MODULE.ID}"] input[type="checkbox"]`);
+			checkbox.prop("checked", true);
+		});
 
-			// Update Version Tag with URL on click
-			if (moduleData?.url?.length > 0) {
-				$tag = tag({
-					$tag: $module.find('.package-overview .tag.version'),
-					onclick: (event) => window.open(moduleData?.url, '_blank')
-				});
-				if (MODULE.setting('condenseVersion')) {
-					let textParts = $tag.text().split(' ');
-					$tag.html(`${textParts[0][0]}${textParts[1]}`.toLowerCase());
-				}
-			}
+		// Remove Binds when Menu Closes
+		Hooks.once('closeModuleManagement', () => {
+			$element.find('.list-filters .filter[data-filter]').off(`click.${MODULE.ID}`);
+			$element.off(`click.${MODULE.ID}`);
+		})
+
+		// Fix Module Tags
+		for (const [key, module] of this.packages) {
+			let $package = $element.find(`.package[data-module-name="${key}"]`);
+
+			/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+			// UPDATE AND ADD NEW TAGS
+			/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+			// Fix Version and Compatibility Risk Tags
+			this.fixModuleTags($package);
 			
-			// check if module has readme URL
-			if (MODULE.setting('showReadme')) {
-				$tag = tag({
-					text: 'text.readme.name',
-					onclick: () =>  window.open(moduleData?.readme, '_blank')
-				});
-				if (MODULE.setting('fetchLocalReadme')) {
-					FilePicker.browse('user', `./modules/${moduleData?.name}/`, { extensions: ['.md'] }).then(response => {
-						let files = response.files.filter(file => file.toLowerCase().includes(`readme.md`))
-						if (files.length > 0) {
-							return files[0];
-						}
-						throw TypeError(`${moduleData?.title} did not provide a readme.md file`);
-					}).then(file => {
-						$tag = tag({
-							text: 'text.readme.name',
-							isLocal: true,
-							onclick: () => {
-								new ModuleCreditsDialog([{title: moduleData.title, name: moduleData.name, type: 'readme'}]).render(true);
-							}
-						});
-						$module.find('.package-overview .tag').last().before($tag);
-					}).catch((error) => {
-						if (moduleData?.readme?.length > 0) $module.find('.package-overview .tag').last().before($tag);
-					});
-				}else{
-					if (moduleData?.readme?.length > 0) $module.find('.package-overview .tag').last().before($tag);
-				}
-			}
-			
-			// check if module has issues URL
-			if (moduleData?.bugs?.length > 0 && MODULE.setting('showIssues')) {
-				$tag = tag({
-					text: 'text.issues.name',
-					isLocal: this.bugReporterSupport(moduleData),
-					onclick: () =>  {
-						// Handle For Bug Reporter Support
-						if (this.bugReporterSupport(moduleData)) {
-							game.modules.get("bug-reporter").api.bugWorkflow(moduleData?.name);
-						}else{
-							window.open(moduleData?.bugs, '_blank')
-						}
-
+			// Add Readme and Changelog Tags
+			if (this.packages.get(key)?.readme) this.addPackageTag($package, 'readme', () => {
+				new DIALOG({
+					[key]: {
+						hasSeen: false,
+						title: game.modules.get(key).data.title,
+						version: game.modules.get(key).data.version
 					}
-				})
-				$module.find('.package-overview .tag').last().before($tag)
-			}
-			
-			// check if module has changelog URL
-			if (MODULE.setting('showChangelog')) {
-				$tag = tag({
-					text: 'text.changelog.name',
-					onclick: () =>  window.open(moduleData?.changelog, '_blank')
-				});
-				if (MODULE.setting('fetchLocalChangelogs')) {
-					FilePicker.browse('user', `./modules/${moduleData?.name}/`, { extensions: ['.md'] }).then(response => {
-						let files = response.files.filter(file => file.toLowerCase().includes(`changelog.md`))
-						if (files.length > 0) {
-							return files[0];
-						}
-						throw TypeError(`${moduleData?.title} did not provide a changelog.md file`);
-					}).then(file => {
-						$tag = tag({
-							text: 'text.changelog.name',
-							isLocal: true,
-							onclick: () => {
-								new ModuleCreditsDialog([{title: moduleData.title, name: moduleData.name, type: 'changelog'}]).render(true);
-							}
-						});
-						$module.find('.package-overview .tag').last().before($tag);
-					}).catch((error) => {
-						if (moduleData?.changelog?.length > 0) $module.find('.package-overview .tag').last().before($tag);
-					});
-				}else{
-					if (moduleData?.changelog?.length > 0) $module.find('.package-overview .tag').last().before($tag);
-				}
-			}
-
-			// Build Authors
-			let authors = [];
-			moduleData?.authors?.forEach(author => {
-				authors.push({...author});
+				}, 'readme').render(true);
+			});
+			if (this.packages.get(key)?.changelog) this.addPackageTag($package, 'changelog', () => {
+				new DIALOG({
+					[key]: {
+						hasSeen: false,
+						title: game.modules.get(key).data.title,
+						version: game.modules.get(key).data.version
+					}
+				}, 'changelog').render(true)
 			});
 
-			// If not authors found, use author tag instead
-			if (authors.length == 0 && moduleData?.author?.length > 0) {
-				moduleData?.author.split(',').forEach((author, index) => {
-					authors.push({ name: author, url: null })
-				})
+			// Add Issues Link | Support for 🐛 Bug Reporter Support
+			if (this.bugReporterSupport(module)) {
+				this.addPackageTag($package, 'issues bug-reporter', () => {
+					game.modules.get("bug-reporter").api.bugWorkflow(key);
+				});
+			}else if (this.packages.get(key)?.bugs) {
+				this.addPackageTag($package, 'issues', this.packages.get(key).bugs);
 			}
 
-			// Add Author tag to Module Tags
-			function buildTooltip(event, authors) {
-				let showTooltip = false;
-				let $self = $(event.currentTarget);
-				let $tooltip = $(`<div id="${MODULE.ID}-tooltip" role="tooltip">
-						<div id="${MODULE.ID}-arrow" data-popper-arrow></div>
-					</div>`);
-
-				function isURL(text) {
-					return text.match(new RegExp(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi));
-				}
-
-				// Check if Authors is Array, if not, convert to array
-				if (!Array.isArray(authors)) {
-					authors = [authors];
-				}
-
-				authors.forEach(function (author, index) {
-					$tooltip.find(`#${MODULE.ID}-arrow`).before(`<div class="${MODULE.ID}-list-group"></div>`)
-					for (const [key, value] of Object.entries(author)) {
-						let $group = $tooltip.find(`.${MODULE.ID}-list-group`).last();
-
-						// Handle if key is supported url
-						if (value != undefined) {
-							if (['twitter', 'patreon', 'github', 'reddit'].includes(key)) {
-								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
-										<i class="fab fa-${key}"></i>
-											${key}
-										</a>`);
-								}else{
-									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
-										<i class="fab fa-${key}"></i>
-											${value}
-										</a>`);
-								}
-							}else if (['ko-fi'].includes(key)) {
-								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
-										<i class="fas fa-coffee"></i>
-											${key}
-										</a>`);
-								}else{
-									$group.append(`<a href="https://www.${key}.com/${value}" class="${MODULE.ID}-list-group-item mc-tooltip-social">
-										<i class="fas fa-coffee"></i>
-											${value}
-										</a>`);
-								}
-							}else if (['url'].includes(key) && isURL(value)) {
-								$group.append(`<a href="${value}" target="_blank" class="${MODULE.ID}-list-group-item mc-tooltip-url">
-									<i class="fas fa-link"></i>
-									Website
-								</a>`);
-							}else if (['discord'].includes(key)) {
-								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-discord">
-											<i class="fab fa-${key}"></i>
-											${key}
-										</a>`);
-								}else{
-									$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-discord">
-										<i class="fab fa-discord"></i>
-										${value}
-									</div>`)
-								}
-							}else if (['email'].includes(key)) {
-								$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-email">
-									<i class="far fa-envelope"></i>
-									${value}
-								</div>`)
-							}else if (key == 'name') { 
-								$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-name">
-									<strong>${value}</strong>
-								</div>`)				
-							}else{
-								if (isURL(value)) {
-									$group.append(`<a href="${value}" class="${MODULE.ID}-list-group-item mc-tooltip-other">
-											<i class="fas fa-external-link-alt"></i>
-											${key}
-										</a>`);
-								}else{
-									$group.append(`<div class="${MODULE.ID}-list-group-item mc-tooltip-other">
-										<i class="fas fa-info-circle"></i>
-										${key} - ${value}
-									</div>`)
-								}
-							}
-						}
-					}
-				});
-
-				// If tag contains more then just authors name, show tooltip when clicked
-				if ($tooltip.find(`.${MODULE.ID}-list-group-item`).length > 1) showTooltip = true;
-
-				// If a tooltip already exists, destroy it.
-				if (popperInstance != null) {
-					popperInstance.destroy();
-					$(`#${MODULE.ID}-tooltip`).remove();
-				}
-
-				if (showTooltip) {
-					// Add Tooltip to DOM
-					$self.before($tooltip);
-
-					// Setup Tooltip
-					popperInstance = Popper.createPopper($self[0], $tooltip[0], {
-						placement: 'auto',
-						strategy: 'absolute',
-						modifiers: [
-							{
-								name: 'offset',
-								options: {
-								offset: [0, 8],
-								},
-							},
-						],
-					});
-				}
-			}
-
-			// Condense Authors if there is more then one.
-			if (MODULE.setting('condenseAuthors') && authors.length > 1) {
-				$tag = tag({
-					text: 'text.author.name',
-					isLocal: true,
-					onclick: (event) => {
-						buildTooltip(event, authors);
-					}
-				});
-				$tag.html('<i class="fas fa-users"></i>');
-						
-				// Add Author Tags
-				$module.find('.package-overview .package-title').after($tag)
-			}else{
-				authors.forEach(author => {
-					$tag = tag({
-						text: 'text.author.name',
-						isLocal: true,
-						onclick: (event) => {
-							buildTooltip(event, author);
-						}
-					});
-
-					$tag.html(author?.name);
-						
-					// Add Author Tags
-					$module.find('.package-overview .package-title').after($tag)
+			// Add Authors Tag
+			let authors = this.packages.get(key).authors;
+			if (authors.length > 0) {
+				let authorClasses = `author ${authors.length < 3 ? 'authors-' + authors.length : 'authors' }`;
+				this.addPackageTag($package, authorClasses, 'popover', {
+					content: this.buildAuthorTooltip(authors)[0],
+					allowHTML: true,
+					trigger: 'click',
+					interactive: true,
 				});
 			}
-		});
+		}
 
-		$('body').on('click', (event) => {
-			if (popperInstance != null) {
-				if ($(event.target).closest(`#${MODULE.ID}-tooltip`).length == 0 && $(event.target).closest('.tag.author').length == 0) {
-					popperInstance.destroy();
-					$(`#${MODULE.ID}-tooltip`).remove();
-				}
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// REGISTER CONFLICTS AND KNOWN ISSUES
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		for (let key in this.conflicts) {
+			let conflict = this.conflicts[key];
+			let moduleIDs = key.split('^');
+
+			// Add Conflict Icon to Package
+			let $tooltipContent = null;
+			moduleIDs.forEach((moduleID) => {
+				let $package = $element.find(`.package[data-module-name="${moduleID}"]`);
+				if ($package.find(`.package-title .${MODULE.ID}-conflict`).length == 0) { 
+					$package.find('.package-title input').after(`<span class="${MODULE.ID}-conflict">
+						<i class="fas fa-exclamation-triangle"></i>
+					</span>`);
+
+					tippy($package.find(`.package-title .${MODULE.ID}-conflict`)[0], {
+						content: 'Loading...',
+						onShow: (instance) => {
+							instance.setContent($(instance.reference).data('tooltip-content'));
+						},
+						allowHTML: true
+					})
+				}				
+			});
+
+			let htmlTitle = `<h3>${conflict.type == 'conflict' ? 'Conflict with ' + game.modules.get(moduleIDs[1]).data.title : 'Known Issues'}</h3>`;
+			let htmlContent = '';
+			conflict.description.forEach((description) => {
+				if (description) htmlContent += MODULE.markup(description.toString());
+			});
+
+			let $packTooltip = $element.find(`.package[data-module-name="${moduleIDs[0]}"] .package-title .${MODULE.ID}-conflict`);
+			$packTooltip.data('tooltip-content', ($packTooltip.data('tooltip-content') ?? '') + `${htmlTitle}${htmlContent}`);
+			
+			if (moduleIDs.length > 1) {
+				htmlTitle = `<h3>Conflict with ${game.modules.get(moduleIDs[0]).data.title}</h3>`;
+				$packTooltip = $element.find(`.package[data-module-name="${moduleIDs[1]}"] .package-title .${MODULE.ID}-conflict`);
+				$packTooltip.data('tooltip-content', ($packTooltip.data('tooltip-content') ?? '') + `${htmlTitle}${htmlContent}`);
 			}
-		})
-	} 
+		}
 
-	static renderSettingsConfig = (app, html) => {
-		let $moduleSection = $(html).find('[data-tab="modules"] h2.module-header:contains("Module Credits")')
-		
-		// Add Support for Tidy UI - Game Settings
-		if (!game.modules.get('tidy-ui-game-settings')) $moduleSection = $moduleSection.next();
+		// HIDE TOOLTIPS WHEN USER SCROLLS IN MODULE LIST
+		$("#module-management #module-list").on('scroll', (event) => {
+			tippy.hideAll();
+		 });
+	}
 
-		// Add Reset for Tracked Changelogs
-		$moduleSection.after(`<div class="form-group submenu">
-				<label>${MODULE.localize('resetDialog.name')}</label>
-				<button type="button" data-action="module-credits-reset-tracked-changelogs">
+	static renderSettingsConfig = (SettingsConfig, element, options) => {
+		let $element = $(element);
+
+		let $settings = $element.find(`[data-tab="modules"] h2.module-header:contains("${MODULE.TITLE}")`);
+
+		// Add Button to Settings Window
+		$settings.next('.form-group').before(`<div class="form-group submenu">
+				<label>${MODULE.localize('settings.resetDialog.name')}</label>
+				<button type="button" data-action="${MODULE.ID}-reset-tracked-changelogs">
 					<i class="fas fa-eraser"></i>
-					<label>${MODULE.localize('resetDialog.button')}</label>
+					<label>${MODULE.localize('settings.resetDialog.button')}</label>
 				</button>
-				<p class="notes">${MODULE.localize('resetDialog.hint')}</p>
+				<p class="notes">${MODULE.localize('settings.resetDialog.hint')}</p>
 			</div>`);
 		
-		$moduleSection.next('.form-group').find('button[data-action="module-credits-reset-tracked-changelogs"]').on('click', event => {
+		$element.find(`button[data-action="${MODULE.ID}-reset-tracked-changelogs"]`).on('click', (event) => {
 			Dialog.confirm({
-				title: MODULE.localize('resetDialog.name'), 
-				content: MODULE.localize('resetDialog.hint'), 
+				title: MODULE.localize('settings.resetDialog.name'), 
+				content: MODULE.localize('settings.resetDialog.hint'), 
 				yes: (event) => { 
 					MODULE.setting('trackedChangelogs', {}).then(response => response).then((settingValue) => {
-						this.versionTracker().then(response => response).then((trackedModules) => {
-							// Update Setting
-							MODULE.setting('trackedChangelogs', trackedModules);
-						});
+						MODULE.debug(this.getTrackedChangelogs());
 					})
 				}, 
 				no: (event) => { return false; }
 			})
-		});
-
-		// Handle Change Event for Condense Default Tags
-		$(html).find(`[name="${MODULE.ID}.defaultIcons"]`).on('change', (event) => {
-			let $element = $(event.currentTarget);
-			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.ID}.condenseDefaultTags"]`);
-
-			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
-		});
-		$(html).find(`[name="${MODULE.ID}.condenseDefaultTags"]`).on('change', (event) => {
-			let $element = $(event.currentTarget);
-			let $defaultIcons = $(html).find(`[name="${MODULE.ID}.defaultIcons"]`);
-
-			if ($element.is(':checked')) $defaultIcons.prop('checked', true);
-		});
-
-		// Handle Change Event for Fetch Local Readme
-		$(html).find(`[name="${MODULE.ID}.showReadme"]`).on('change', (event) => {
-			let $element = $(event.currentTarget);
-			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.ID}.fetchLocalReadme"]`);
-
-			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
-		});
-		$(html).find(`[name="${MODULE.ID}.fetchLocalReadme"]`).on('change', (event) => {
-			let $element = $(event.currentTarget);
-			let $showReadme = $(html).find(`[name="${MODULE.ID}.showReadme"]`);
-
-			if ($element.is(':checked')) $showReadme.prop('checked', true);
-		});
-
-		// Handle Change Event for Fetch Local Changelog
-		$(html).find(`[name="${MODULE.ID}.showChangelog"]`).on('change', (event) => {
-			let $element = $(event.currentTarget);
-			let $fetchLocalChangelog = $(html).find(`[name="${MODULE.ID}.fetchLocalChangelogs"]`);
-
-			if (!$element.is(':checked')) $fetchLocalChangelog.prop('checked', false);
-		});
-		$(html).find(`[name="${MODULE.ID}.fetchLocalChangelogs"]`).on('change', (event) => {
-			let $element = $(event.currentTarget);
-			let $showChangelog = $(html).find(`[name="${MODULE.ID}.showChangelog"]`);
-
-			if ($element.is(':checked')) $showChangelog.prop('checked', true);
-		});
+		})
 	}
 }

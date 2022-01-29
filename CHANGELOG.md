@@ -1,13 +1,15 @@
-# Version 0.0.5.0 - The Story of Conflicts and More.
-- With permission from theripper93 I've added a wrapper to support modules who use his module in Module Credits
-- Fixed Author Popover being under elements below it
-- Added the ability to define a changelog in code with `game.modules.get('module-credits').api.registerChangelog({...})`
-- Added the ability to define a conflict with `game.modules.get('module-credits').api.defineConflict({...})`
-- Added Global `conflicts.json` file that is read from github to allow conflicts to be defined before modules are enabled
-- Added Support for Manifest Plus `conflicts` section
-- Added Support for Manifest Plus `deprecated` section (Support is minimum and only shows that the module is deprecated and the reason)
-- Added Ko-fi and reddit support for author credits
-- Patched modules that use the `author` tag and then do a comma seperated list
+# Version 1.0.0 - Module Management+
+Module Credits has been rewritten from the ground up with all new features and what I'd like to think as better code and organization. This little project of mine has grown a lot since I started it and foundry even implemented its condensed tags as a core feature. But with its Growth I've decided, I'd just rebrand and release an official version 1 as I am pretty happy with the result. Instead of listing what has changed, I am going to list the all of the features packed into Module Management+
+- Condensed the tags on the Module Management window to show just the icon instead of the text. This cleans up the interface and provides more space for longer names. As this is included in Foundry VTT 9.245+ this feature essentially backports it earlier versions of Foundry.
+- Added New tags to the packages listed in the Module Management window, these tags are Changelog, Readme, Issues and Authors.
+  - Changelog and Readme tags will only show if you are able to access to the `File Browser` permission. However if you have [socketlib](https://foundryvtt.com/packages/socketlib) it will attempt to execute these fuctions as the GM to provide this ability to players who do not have access.
+  - The Issues tag provides built in support for 🐛 Bug Reporter, meaning if the module supports but reporter you will be presented with a dialog to file an issue directly in foundry, otherwise it will open a url to the `issues` link the the `module.json` file
+  - Authors when clicked will bring up a dialog with a list of all authors in the `module.json` and display links or any information the authors have listed their.
+- Cleaned up the interface for the Module Management window, by remove the text that basically said here is where you enable modules, and udpating the css for the filter search/buttons.
+- When opening the Module Management window, the filter modules input will automatically be focus to allow you to quickly start typing.
+- If a user is unable to manage modules, Ive reworked the interface, to only show active modules and removed the checkbox (which was disabled, but unnessary).
+- Added Stripped rows to the packages to make the interface nicer on the eyes and provide seperation of content. Also updated the UI to allow a little more spacing for the same reason
+- Added the ability to register and display Conflicts and Known Issues. If a conflict or known issue is defined in a modules `module.json` file or the [global file](https://github.com/mouse0270/module-credits/blob/master/conflicts.json) and the conflict is valid for the versions you have installed, it will be displayed with an ⚠️, hovering over this icon will show a list of all registered conflicts and known issues for that module related the packages installed in your instance of foundry.
 
 # Version 0.0.4.0 - Plus more Options
 - Updated to latest version of Foundry.

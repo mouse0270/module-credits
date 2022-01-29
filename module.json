@@ -2,11 +2,13 @@
   "name": "module-credits",
   "title": "Module Management+",
   "description": "Enhances the Module Management window by giving you more information when managing your packages.",
-  "version": "0.5.0",
-  "library": "false",
+  "version": "1.0.0",
+  "library": false,
+  "socket": true,
   "manifestPlusVersion": "0.0.0.1",
   "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "9",
+  "author": "mouse0270",
   "authors": [
     {
       "name": "Mouse0270",
@@ -15,6 +17,8 @@
       "twitter": "Mouse0270",
       "patreon": "Mouse0270",
       "github": "Mouse0270",
+      "ko-fi": "Mouse0270",
+      "reddit": "u/Mouse0270",
       "email": "rmcintosh@websitesbyfatdudes.com"
     }
   ],
@@ -36,13 +40,21 @@
       "versionMin": "0.6"
     }
   ],
+  "issues": [
+    {
+      "description": "Example issue, There is a known issue related to this module, blah blah blah..."
+    }
+  ],
   "deprecated": { },
-  "esmodules": [ "/scripts/_init.mjs" ],
+  "esmodules": [ "/scripts/init.mjs" ],
   "scripts": [ ],
   "styles": [ "/styles/module.css" ],
   "url": "This is auto replaced",
   "manifest": "This is auto replaced",
   "download": "This is auto replaced",
+  "readme": "https://github.com/mouse0270/module-credits/blob/master/README.md",
+  "changelog": "https://raw.githubusercontent.com/mouse0270/module-credits/master/CHANGELOG.md",
+  "license": "https://github.com/mouse0270/module-credits/blob/master/LICENSE",
   "bugs": "https://github.com/mouse0270/module-credits/issues",
   "media": [
     {

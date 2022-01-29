@@ -1,13 +1,17 @@
 // GET REQUIRED LIBRARIES
-import './lib/marked.min.js';
-import './lib/purify.min.js';
+import './libraries/marked.min.js';
+import './libraries/purify.min.js';
 
 let _STORE = {};
 export class MODULE {
 	static ID = 'module-credits';
+	static OPTIONS = {
+		background: '#7030A0',
+		color: '#fff'
+	}
 
-	static get title() {
-		return `${this.ID}.title`;
+	static get TITLE() {
+		return this.localize('title');
 	}
 
 	static get api() {
@@ -25,9 +29,24 @@ export class MODULE {
 		return game.i18n.localize(`${this.ID}.${arguments[0]}`);
 	}
 
-	static markup = (content) => {
-		return DOMPurify.sanitize(marked.parse(content), {USE_PROFILES: {html: true}});
+	static CONSOLE = (LOG_LEVEL, ...args) => {
+		try {
+			if (game.modules.get('_dev-mode')?.api?.getPackageDebugValue(this.ID, 'level') >= LOG_LEVEL) {
+				console.log(
+					`%c${this.TITLE}`
+					, `background-color: ${this.OPTIONS.background}; border-radius: 2px; color: ${this.OPTIONS.color}; padding: 0.15rem 0.25rem;`
+					, '|', ...args
+				);
+			}
+		}catch (event) {
+			console.warn(`${this.TITLE} debug logging failed`, event);
+		}
 	}
+
+	static log = (...args) => { this.CONSOLE(1, ...args); }
+	static debug = (...args) => { this.CONSOLE(3, ...args); }
+	static warn = (...args) => { this.CONSOLE(4, ...args); }
+	static error = (...args) => { this.CONSOLE(2, ...args); }
 
 	static setting = (...args) => {		
 		// Are we registering a new setting
@@ -55,5 +74,10 @@ export class MODULE {
 				return game.settings.set(this.ID, setting, args[1]);
 			}
 		}
+	}
+
+	// CUSTOM MODULE FUNCTIONS
+	static markup = (content) => {
+		return DOMPurify.sanitize(marked.parse(content), {USE_PROFILES: {html: true}});
 	}
 }
