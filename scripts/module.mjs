@@ -329,7 +329,8 @@ export class MMP {
 
 	static async getPackages() {
 		for await (let [key, module] of game.modules) {
-			this.packages.set(key, await this.formatPackage(module.data._source));
+			// HANDLE IF PACKAGE DOESNT HAVE SOURCE USE DATA THEN KICK OUT
+			if (module?.data?._source ?? module?.data ?? false) this.packages.set(key, await this.formatPackage(module?.data?._source ?? module?.data));
 		};
 
 		await this.getGlobalConflicts();
