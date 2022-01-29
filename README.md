@@ -1,7 +1,9 @@
 # Module Management+
 Module Management+ is packed with features and design imporvements designed to make manageing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly.
 
-Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules
+Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.
+
+![image](https://user-images.githubusercontent.com/564874/151680029-b6ab5ba8-c4a6-43c4-9580-7b76946acd79.png)
 
 ## I am a developer, how do I register my module with MM+?
 Well you don't technically register anything with MM+. MM+ was designed to auto detect supported details and display them to the user. It tries to implement many of the features from the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) Guidelines right into Foundry. 
