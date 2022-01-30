@@ -1,5 +1,10 @@
 [
 	{
+		"moduleID": "variant-encumbrance-dnd5e",
+		"conflictingModuleID": "df-qol",
+		"description": "Possible minor issue with \"Vehicle Cargo Capacity Unit\""
+	},
+	{
 		"moduleID": "sticky-sidebar",
 		"description": "Errors on latest versions of chromium web based browsers.",
 		"versionMin": "0.0.1",

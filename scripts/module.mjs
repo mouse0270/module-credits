@@ -163,11 +163,12 @@ export class MMP {
 							`${key}${(conflict?.name ?? false) ? '^'+conflict?.name : ''}`,
 							`${(conflict?.name ?? false) ? conflict?.name+'^' : ''}${key}`
 						]
-					
+
 					// SET CONFLICT ID
 					// This code determins if a conflict between two modules has already been defined
 					// if so, append to that conflict instead of adding a new one.
-					if (this.conflicts.hasOwnProperty(conflictID[0])) conflictID = conflictID[0];
+					if (conflict.type == 'foundry') conflictID = `${key}|foundry`;
+					else if (this.conflicts.hasOwnProperty(conflictID[0])) conflictID = conflictID[0];
 					else if (this.conflicts.hasOwnProperty(conflictID[1])) conflictID = conflictID[1];
 					else conflictID = conflictID[0];
 					
@@ -179,7 +180,7 @@ export class MMP {
 					// Conflict has not been Registered - Create
 					}else{
 						this.conflicts[conflictID] = {
-							type: conflictID.includes('^') ? 'conflict' : 'issue',
+							type: conflict.type,
 							description: [conflict?.description]
 						}
 					}
@@ -252,7 +253,12 @@ export class MMP {
 			issues: [], //moduleJSON?.conflicts ?? false,
 			deprecated: moduleJSON?.deprecated ?? false,
 			attributions: moduleJSON?.attributions ?? false,
-			allowBugReporter: moduleData?.allowBugReporter ?? moduleData?.flags?.allowBugReporter ?? false
+			allowBugReporter: moduleData?.allowBugReporter ?? moduleData?.flags?.allowBugReporter ?? moduleJSON.allowBugReporter ?? false
+		}
+
+		// Throw Dev Debug Warning if Developer has not updated to using .flags.allowBugReporter
+		if (moduleJSON.allowBugReporter && !moduleData?.flags?.allowBugReporter) {
+			MODULE.warn(`${game.modules.get(moduleData.name).data.title} is using a deprecated version of support for 🐛 Bug Reporter.`);
 		}
 
 		// Track Changelogs
@@ -273,19 +279,28 @@ export class MMP {
 		}
 
 		// Loop Through conflicts and Add them if they need to be added
-		if ((moduleJSON?.conflicts || moduleJSON?.issues) ?? false) {
+		if ((moduleJSON?.conflicts || moduleJSON?.issues || moduleData?.flags?.conflicts || moduleData?.flags?.issues) ?? false) {
+
+			// Check if Module is using Deprecated Version of Defining Conflicts | Issues
+			if (moduleJSON?.conflicts?.length >= 1 ?? false) MODULE.warn(`${game.modules.get(moduleData.name).data.title} is using a deprecated version of defining conflicts. Please move your conflicts to the flags property.`);
+			if (moduleJSON?.issues?.length >= 1 ?? false) MODULE.warn(`${game.modules.get(moduleData.name).data.title} is using a deprecated version of defining issues. Please move your issues to the flags property.`);
+			
 			// Cause I am lazy, merge Conflicts and Issues
 			// Yes this does mean techncially a user could list a conflict as an issue and vice versa
 			// But I also don't honestly care for the purpose of display the content is the same
-			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []);
+			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []).concat(moduleData?.flags?.conflicts ?? []).concat(moduleData?.flags?.issues ?? []);
 			conflicts.forEach((conflict, index) => {
 				if (game.modules.get(conflict?.name) ?? false) {
 					if (this.versionCompare(conflict.versionMin, game.modules.get(conflict?.name).data.version, conflict.versionMax)) {
-						formatedData.conflicts.push(conflict)
+						formatedData.conflicts.push(mergeObject(conflict, { type: 'module' }, { inplace:false }))
 					}
 				}else {
-					if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
-						formatedData.conflicts.push(Object.assign(conflict, { type: 'issue' }))
+					if (conflict.type == 'foundry') {
+						if (this.versionCompare(conflict.versionMin, game.release.version, conflict.versionMax)) {
+							formatedData.conflicts.push(mergeObject(conflict, { type: 'foundry' }, { inplace:false }))
+						}
+					}else if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
+						formatedData.conflicts.push(mergeObject(conflict, { type: 'issue' }, { inplace:false }))
 					}
 				}
 			})
@@ -561,6 +576,9 @@ export class MMP {
 			let conflict = this.conflicts[key];
 			let moduleIDs = key.split('^');
 
+			// Handle if conflict is with foundry
+			moduleIDs[0] = moduleIDs[0].replace('|foundry', '');
+
 			// Add Conflict Icon to Package
 			let $tooltipContent = null;
 			moduleIDs.forEach((moduleID) => {
@@ -580,7 +598,36 @@ export class MMP {
 				}				
 			});
 
-			let htmlTitle = `<h3>${conflict.type == 'conflict' ? 'Conflict with ' + game.modules.get(moduleIDs[1]).data.title : 'Known Issues'}</h3>`;
+			const getTypeHeading = (type, options) => {
+				if (type == 'module' || type == 'conflict') return `Conflict with ${options.title}`;
+				else if (type == 'foundry') return 'Incompatible Foundry Version'
+				else return 'Known Issues';
+			}
+
+			if (conflict.type == 'foundry') {
+				$element.find(`.package[data-module-name="${moduleIDs[0].replace('|foundry')}"] .tag.unknown`).addClass('error');
+				if ((game.modules.get(moduleIDs[0])?.data?.flags?.MMP?.enableFoundryConfirm ?? false)) {
+					$element.find(`.package[data-module-name="${moduleIDs[0]}"] input`).on('change', (event) => {
+						if ($(event.target).is(':checked')) {
+							Dialog.confirm({
+								title: 'Would you like to enable this module?', 
+								content: `<p><strong>Incompatible Foundry Version</p></strong>` + MODULE.markup(conflict.description.join("\n\n")), 
+								yes: (event) => { return true }, 
+								no: (event) => { 
+									$element.find(`.package[data-module-name="${moduleIDs[0]}"] input`).trigger('click');
+									return false; 
+								},
+								rejectClose: true
+							}).catch((event) => {
+								// User closed Dialog, They did not cofirm enabling the module, disable it.
+								$element.find(`.package[data-module-name="${moduleIDs[0]}"] input`).trigger('click');
+							})
+						}
+					})
+				}
+			}
+
+			let htmlTitle = `<h3>${getTypeHeading(conflict.type, game.modules.get(moduleIDs[1])?.data ?? false)}</h3>`;
 			let htmlContent = '';
 			conflict.description.forEach((description) => {
 				if (description) htmlContent += MODULE.markup(description.toString());

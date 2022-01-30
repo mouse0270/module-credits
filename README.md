@@ -8,6 +8,9 @@ Some of the notable features of Module Management+ is the Addition of new tags s
 ## I am a developer, how do I register my module with MM+?
 Well you don't technically register anything with MM+. MM+ was designed to auto detect supported details and display them to the user. It tries to implement many of the features from the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) Guidelines right into Foundry. 
 
+### IMPORTANT UPDATE REGARDING PACKAGE MANIFEST+ SUPPORT
+[Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is a wondeful set of guidelines that I am attempting to implement support for with this module. However as of January 30th 2022 their guidelines want you to add the properties directly into the root of your `module.json` file. This has been deprecated by foundry in favor of using the `flags` property. MM+ will be going forward assuming you are defining your conflicts and issue inside of the `flags` property. They are defined exactly the same, just within that property. Defining these values outside of the `flags` has been considered **DEPRECATED** by me and may stop working in future versions if MM+.
+
 If you want your modules Readme or Changelog to show up in MM+ all you have to do is provide your `README.md` and/or `CHANGELOG.md` files with your module, MM+ will scan Foundry's modules and auto detect and display this information.
 
 ## What about Conflicts and Known Issues?
@@ -15,7 +18,7 @@ This is where [Package Manifest+](https://foundryvtt.wiki/en/development/manifes
 > Please note, though I attempted to follow the guidelines provided by Package Manifest+, I do not follow them word for word, MM+ is very flexible
 
 ## Registering a Conflict
-To register a conflict in MM+ all you have to do use use the `conflicts` keyword in your `module.json` file. This is an array of conflicts.
+To register a conflict in MM+ all you have to do use use the `conflicts` keyword in your `module.json` file under the `flags` property. This is an array of conflicts.
 
 | Field | Required | Description |
 |-------|----------|-------------|
@@ -24,31 +27,50 @@ To register a conflict in MM+ all you have to do use use the `conflicts` keyword
 | versionMin | false | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
 | versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
 ```json
-"conflicts": [
-	{
-		"name": "module-name",
-		"description": "A description detailing the conflict between the two modules.",
-		"versionMin": "a.b.c",
-		"versionMax": "a.b.c"
-	}
-]
+"flags": {
+	"conflicts": [
+		{
+			"name": "module-name",
+			"description": "A description detailing the conflict between the two modules.",
+			"versionMin": "a.b.c",
+			"versionMax": "a.b.c"
+		}
+	]
+}
 ```
 
+## What if my Conflict is with foundry?
+A conflict with foundry is defined in a very similar manner to a conflict with a module, however, it requries that you use the `type` property instead of a `name` property. Look at the example below:
+```json
+"flags": {
+	"conflicts": [
+		{
+			"type": "foundry",
+			"description": "This module does not support founrdry version 9+. Enabling this module will have issues, due so at your own risk as this version is not supported at this time.",
+			"versionMin": "9"
+		}
+	]
+}
+```
+
+
 ## Registering a Known Issue
-To register a known issue in MM+ all you have to do use use the `issues` keyword in your `module.json` file. This is an array of issues.
+To register a known issue in MM+ all you have to do use use the `issues` keyword in your `module.json` file under the `flags` property. This is an array of issues.
 | Field | Required | Description |
 |-------|----------|-------------|
 | description | false | This is the text that will be displayed to the user about the conflict/known issue. If not description is defined, the module will list **No Details Provided** |
 | versionMin | false | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
 | versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
 ```json
-"issues": [
-	{
-		"description": "A description detailing the conflict between the two modules.",
-		"versionMin": "a.b.c",
-		"versionMax": "a.b.c"
-	}
-]
+"flags": {
+	"issues": [
+		{
+			"description": "A description detailing the conflict between the two modules.",
+			"versionMin": "a.b.c",
+			"versionMax": "a.b.c"
+		}
+	]
+}
 ```
 
 ## Wait so if I find a known issue or conflict, I have to push a module update to register it?

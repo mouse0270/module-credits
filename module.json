@@ -2,10 +2,10 @@
   "name": "module-credits",
   "title": "Module Management+",
   "description": "Module Management+ is packed with features and design imporvements designed to make manageing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly. Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "library": false,
   "socket": true,
-  "manifestPlusVersion": "0.0.0.1",
+  "manifestPlusVersion": "0.0.1",
   "minimumCoreVersion": "0.8.6",
   "compatibleCoreVersion": "9",
   "author": "mouse0270",
@@ -32,8 +32,6 @@
   "dependencies": [
     
   ],
-  "conflicts": [],
-  "issues": [],
   "deprecated": { },
   "esmodules": [ "/scripts/init.mjs" ],
   "scripts": [ ],
@@ -53,6 +51,13 @@
   ],
   "allowBugReporter": true,
   "flags": {
-    "allowBugReporter": true
+    "allowBugReporter": true,
+    "conflicts": [
+      {
+        "name": "lib-changelogs",
+        "description": "Changelogs & Conflicts provides similar features. These modules will work together just fine, this is more of a sample conflict then an actual conflict.",
+        "versionMin": "0.0.6"
+      }
+    ]
   }
 }

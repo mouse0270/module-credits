@@ -59,6 +59,14 @@
 .package-list .package .package-overview .tag.changelog:before{
     content: '\f362';
 }
+/* FOUNDRY VERSION INCOMPATIBLE  */
+.package-list .package .package-overview .tag.unknown.error {
+    background-color: rgb(244, 67, 54);
+}
+.package-list .package .package-overview .tag.unknown.error:before {
+    content: '\f54c' !important;
+}
+
 /* IF EXTERNAL ALLWAYS DISPLAY THIS ICON */
 .package-list .package .package-overview .tag.url:before {
     content: '\f35d' !important;
@@ -522,6 +530,12 @@
     margin-top: 4px;
     padding: 0px 8px;
 }
+
+.window-app .window-content > .dialog-content p:first-child {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
 /* HANDLE FOR TIDY UI */
 #module-management .enhanced-module-management ~ #module-list.package-list {
     max-height: calc(100vh - 172px);

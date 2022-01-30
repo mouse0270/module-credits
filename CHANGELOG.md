@@ -1,3 +1,24 @@
+# Version 1.0.1 - Conflicts with Foundry
+## IMPORTANT UPDATE REGARDING PACKAGE MANIFEST+ SUPPORT
+[Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is a wondeful set of guidelines that I am attempting to implement support for with this module. However as of January 30th 2022 their guidelines want you to add the properties directly into the root of your `module.json` file. This has been deprecated by foundry in favor of using the `flags` property. MM+ will be going forward assuming you are defining your conflicts and issue inside of the `flags` property. They are defined exactly the same, just within that property. Defining these values outside of the `flags` has been considered **DEPRECATED** by me and may stop working in future versions if MM+.
+
+- Added the ability to list a conflict with foundry
+- Added a flag under `"MMP": { "enableFoundryConfirm": true }`, using this flag will present the user with a dialog asking them to confirm enable the module if it conflicts with their version of foundry
+- Fixed the tag when there is a conflict with foundry to instead of showing an Explantion Mark and Yellow Tag, it will now show a skull and the tag will be Red
+
+To List a conflict with foundry you must define it under conflicts. Unlike other conflicts, this does not require you to define a name, however it does require that you define they type as foundry.
+```json
+"flags": {
+  "conflicts": [
+    {
+      "type": "foundry",
+      "description": "This module does not support founrdry version 9+. Enabling this module will have issues, due so at your own risk as this version is not supported at this time.",
+      "versionMin": "9"
+    }
+  ]
+}
+```
+
 # Version 1.0.0 - Module Management+
 Module Credits has been rewritten from the ground up with all new features and what I'd like to think as better code and organization. This little project of mine has grown a lot since I started it and foundry even implemented its condensed tags as a core feature. But with its Growth I've decided, I'd just rebrand and release an official version 1 as I am pretty happy with the result. Instead of listing what has changed, I am going to list the all of the features packed into Module Management+
 - Condensed the tags on the Module Management window to show just the icon instead of the text. This cleans up the interface and provides more space for longer names. As this is included in Foundry VTT 9.245+ this feature essentially backports it earlier versions of Foundry.
