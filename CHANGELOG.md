@@ -1,3 +1,7 @@
+# Version 1.0.2 - People using author property incorrectly
+- Added a fix that will stop the module from crashing if people use the `author` property in an manner I am unware of.
+- Added a 🧙 Developer Mode `error` to see the conflicting module.
+
 # Version 1.0.1 - Conflicts with Foundry
 ## IMPORTANT UPDATE REGARDING PACKAGE MANIFEST+ SUPPORT
 [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is a wondeful set of guidelines that I am attempting to implement support for with this module. However as of January 30th 2022 their guidelines want you to add the properties directly into the root of your `module.json` file. This has been deprecated by foundry in favor of using the `flags` property. MM+ will be going forward assuming you are defining your conflicts and issue inside of the `flags` property. They are defined exactly the same, just within that property. Defining these values outside of the `flags` has been considered **DEPRECATED** by me and may stop working in future versions if MM+.

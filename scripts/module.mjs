@@ -199,9 +199,18 @@ export class MMP {
 		
 		// If no authors found, use author tag instead
 		if (authors.length == 0 && moduleData?.author?.length > 0) {
-			moduleData?.author.split(',').forEach((author, index) => {
-				authors.push({ name: author})
-			})
+			if (typeof moduleData?.author == 'string' || (Array.isArray(moduleData?.author) && (moduleData?.author?.length >= 1 ?? false))) {
+				try {
+					if (Array.isArray(moduleData?.author)) moduleData?.author.join(',');
+					moduleData?.author.split(',').forEach((author, index) => {
+						authors.push({ name: author})
+					})
+				} catch (error) {
+					MODULE.error(`${game.modules.get(moduleData.name).data.title} is using an unknown format for the author property in there module.json file. Unable to process this modules authors.`,  moduleData?.author);
+				}
+			}else{
+				MODULE.error(`${game.modules.get(moduleData.name).data.title} is using an unknown format for the author property in there module.json file. Unable to process this modules authors.`,  moduleData?.author);
+			}
 		}
 
 		return authors;
