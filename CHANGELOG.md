@@ -1,3 +1,9 @@
+# Version 1.0.3 - Little Patches
+- Add the ability to show both the 🐛 Bug Reporter tag and a tag linking to bugs url.
+- Fixed global conflict url using `http`
+- Fixed conflicts with modules not installed registering as a known conflict instead.
+- Fixed issue with 🐛 Bug Reporter saying module does not support it.
+
 # Version 1.0.2 - People using author property incorrectly
 - Added a fix that will stop the module from crashing if people use the `author` property in an manner I am unware of.
 - Added a 🧙 Developer Mode `error` to see the conflicting module.

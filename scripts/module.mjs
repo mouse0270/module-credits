@@ -188,6 +188,8 @@ export class MMP {
 				});
 			}
 		}
+
+		MODULE.debug(`Formated Conflicts`, this.conflicts);
 	}
 
 	static formatAuthors = (moduleData) => {
@@ -298,6 +300,7 @@ export class MMP {
 			// Yes this does mean techncially a user could list a conflict as an issue and vice versa
 			// But I also don't honestly care for the purpose of display the content is the same
 			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []).concat(moduleData?.flags?.conflicts ?? []).concat(moduleData?.flags?.issues ?? []);
+			if (conflicts.length > 0) MODULE.log(`Registering Conflict from ${moduleData.name}.`, conflicts)
 			conflicts.forEach((conflict, index) => {
 				if (game.modules.get(conflict?.name) ?? false) {
 					if (this.versionCompare(conflict.versionMin, game.modules.get(conflict?.name).data.version, conflict.versionMax)) {
@@ -308,8 +311,10 @@ export class MMP {
 						if (this.versionCompare(conflict.versionMin, game.release.version, conflict.versionMax)) {
 							formatedData.conflicts.push(mergeObject(conflict, { type: 'foundry' }, { inplace:false }))
 						}
-					}else if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
-						formatedData.conflicts.push(mergeObject(conflict, { type: 'issue' }, { inplace:false }))
+					}else if (conflict.type == 'foundry') {
+						if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
+							formatedData.conflicts.push(mergeObject(conflict, { type: 'issue' }, { inplace:false }));
+						}
 					}
 				}
 			})
@@ -320,7 +325,7 @@ export class MMP {
 
 	static async getGlobalConflicts() {
 		// Get Global Conflcits
-		let globalConflicts = await this.getFile(`http://foundryvtt.mouse0270.com/module-credits/conflicts.json?time=${Date.now()}`);
+		let globalConflicts = await this.getFile(`//foundryvtt.mouse0270.com/module-credits/conflicts.json?time=${Date.now()}`);
 
 		// Assign Conflict if Package Exists
 		globalConflicts.forEach((conflict, index) => {
@@ -558,11 +563,14 @@ export class MMP {
 
 			// Add Issues Link | Support for 🐛 Bug Reporter Support
 			if (this.bugReporterSupport(module)) {
+				// Force Module to register allowBugReporter as True
+				game.modules.get(key).data.flags.allowBugReporter = true;
 				this.addPackageTag($package, 'issues bug-reporter', () => {
 					game.modules.get("bug-reporter").api.bugWorkflow(key);
 				});
-			}else if (this.packages.get(key)?.bugs) {
-				this.addPackageTag($package, 'issues', this.packages.get(key).bugs);
+			}
+			if (this.packages.get(key)?.bugs) {
+				this.addPackageTag($package, 'issues github', this.packages.get(key).bugs);
 			}
 
 			// Add Authors Tag
