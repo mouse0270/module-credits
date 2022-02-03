@@ -2,7 +2,7 @@
   "name": "module-credits",
   "title": "Module Management+",
   "description": "Is packed with features and design improvements designed to make managing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly. Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "library": false,
   "socket": true,
   "manifestPlusVersion": "0.0.1",
@@ -57,6 +57,11 @@
         "name": "lib-changelogs",
         "description": "Changelogs & Conflicts provides similar features. These modules will work together just fine, this is more of a sample conflict then an actual conflict.",
         "versionMin": "0.0.6"
+      }
+    ],
+    "issues": [
+      {
+        "description": "Copying or Exporting a module list automatically closes the dialog due to a limitation with froundry's Dialog class, repreventing me from stopping the close event on button click."
       }
     ]
   }

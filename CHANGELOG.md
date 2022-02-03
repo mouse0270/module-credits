@@ -1,3 +1,16 @@
+# Version 1.1.0 - Module Presets
+- Added the ability to create, update and delete presets. A preset simply toggles a predefined list of modules as active and disabling all other modules.
+- Added the ability to toggle all modules (in)active.
+- Added Socket tag if module has the property `socket` set to `true`
+- Added a Library tag if module has the property `library` set to `true`
+- Added `baseUrl` when rendering `README.md` or `CHANGELOG.md` files to better support relative path's for these files. This still requires the module developer to package these images with their module.
+- Added the ability to toggle Package Description individually.
+- Moved the setting to track Read Changelogs to a client variable so that if you read a changelog in one world, you don't have to re-read it in another world.
+- Fixed Conflict(s) UI on manage button to be less invasive and improve compatibility with UI modules
+- Fixed Authors property if module developer uses it as a string array instead of an object
+- Fixed Internal Debugging methods using 🧙 Developer Mode 
+- Removed `github` from issues tag as not everyone uses github/gitlab for issues
+
 # Version 1.0.3 - Little Patches
 - Add the ability to show both the 🐛 Bug Reporter tag and a tag linking to bugs url.
 - Fixed global conflict url using `http`

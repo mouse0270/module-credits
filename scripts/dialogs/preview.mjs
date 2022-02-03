@@ -1,7 +1,7 @@
 // GET MODULE CORE
-import { MODULE } from './_module.mjs';
+import { MODULE } from '../_module.mjs';
 
-export class DIALOG extends FormApplication {
+export class PreviewDialog extends FormApplication {
 	constructor(data, type = 'changelog') {
 		super();
 
@@ -22,7 +22,7 @@ export class DIALOG extends FormApplication {
 			...super.defaultOptions,
 			title: MODULE.TITLE,
 			id: `${MODULE.ID}-dialog`,
-			template: `./modules/${MODULE.ID}/templates/dialog.hbs`,
+			template: `./modules/${MODULE.ID}/templates/preview.hbs`,
 			resizable: true,
 			width: $(window).width() > 720 ? 720 : $(window).width() - 100,
 			height: $(window).height() > 600 ? 600 : $(window).height() - 100
@@ -54,7 +54,7 @@ export class DIALOG extends FormApplication {
 
 			game.modules.get(MODULE.ID).API.getContent(moduleID, this.type).then(response => {
 				$(html).find(`.${MODULE.ID}-dialog-title span`).html($element.html());
-				$(html).find(`.${MODULE.ID}-dialog-content`).html(MODULE.markup(response));
+				$(html).find(`.${MODULE.ID}-dialog-content`).html(MODULE.markup(response.replaceAll('](/', ']('), { baseUrl: 'modules/monks-tokenbar/' }));
 
 				// Update Has Seen Status
 				if (game.user.isGM && this.type == 'changelog') {

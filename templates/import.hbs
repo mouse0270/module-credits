@@ -1,0 +1,50 @@
+<form action="#" style="display: none;"></form>
+<div class="dialog-content">
+	{{#if IsTidyUI}}
+	<div class="notification warning" style="">
+		<strong>Import Type is TidyUI</strong><br/>
+		<p>When importing a TidyUI file you will be unable to import Client or World level settings.</p>
+	</div>
+	{{/if}}
+	<ul id="{{DIALOG.ID}}-import-header">
+    	<li>
+			<input name="import-toggle-modules" type="checkbox">
+			<div>Module Title</div>
+			{{#if IsTidyUI}}{{else}}
+			<label for="import-toggle-client-settings">
+				Client <input id="import-toggle-client-settings" name="import-toggle-client-settings" type="checkbox">
+			</label>
+			<label for="import-toggle-world-settings">
+				World <input id="import-toggle-world-settings" name="import-toggle-world-settings" type="checkbox">
+			</label>
+			{{/if}}
+		</li>
+	</ul>
+	<ul id="{{DIALOG.ID}}-import-packages"{{#if IsTidyUI}} style="max-height: 420px;"{{/if}}>
+	{{#each modules}}
+    	<li data-module="{{@key}}">
+			<input id="import-{{@key}}-module" name="import-module" type="checkbox" {{#if isInstalled}}checked{{else}}disabled{{/if}}>
+			<label for="import-{{@key}}-module">
+				{{title}}
+				{{#if isInstalled}}{{else}}<span class="tag unknown">Module Not Installed</span>{{/if}}
+			</label>
+			{{#if ../IsTidyUI}}{{else}}
+			<label for="import-settings-client">
+				<input name="import-settings-client" type="checkbox" {{#if hasClientSettings}}{{else}}disabled{{/if}}>
+			</label>
+			<label for="import-settings-world">
+				<input name="import-settings-world" type="checkbox" {{#if hasWorldSettings}}{{else}}disabled{{/if}}>
+			</label>
+			{{/if}}
+		</li>
+	{{/each}}
+	</ul>
+</div>
+<div class="dialog-buttons" style="flex: 0 1">
+	<Label class="keep-enabled" data-button="keep-enabled">
+		<input name="keep-enabled-modules" type="checkbox"> Keep Current Modules Enabled
+	</Label>
+	<button class="dialog-button import" data-button="import">
+		<i class="fas fa-upload"></i> Import
+	</button>
+</div>

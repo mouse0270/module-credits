@@ -4,7 +4,12 @@ import './libraries/tippy.min.js';
 
 // GET MODULE CORE
 import { MODULE } from './_module.mjs';
-import { DIALOG } from './dialog.mjs';
+import { PreviewDialog } from './dialogs/preview.mjs';
+import { ExportDialog } from './dialogs/export.mjs';
+import { ImportDialog } from './dialogs/import.mjs';
+
+// Foundry Overwrite Dialog
+import { BetterDialog as Dialog } from './foundry/dialog.mjs';
 
 // DEFINE MODULE CLASS
 export class MMP {
@@ -147,7 +152,7 @@ export class MMP {
 				}, {});
 
 				if (Object.keys(unseenChangelogs).length >= 1) {
-					new DIALOG(unseenChangelogs).render(true);
+					new PreviewDialog(unseenChangelogs).render(true);
 				}
 			}
 		})
@@ -188,15 +193,14 @@ export class MMP {
 				});
 			}
 		}
-
-		MODULE.debug(`Formated Conflicts`, this.conflicts);
 	}
 
 	static formatAuthors = (moduleData) => {
 		// Build Authors
 		let authors = [];
 		moduleData?.authors?.forEach(author => {
-			authors.push({...author});
+			if (typeof author == 'string') authors.push({ name: author });
+			else authors.push({...author});
 		});
 		
 		// If no authors found, use author tag instead
@@ -249,6 +253,7 @@ export class MMP {
 		// Assign Files to Variables
 		let readme = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('README.md'.toLowerCase()))[0] : false;
 		let changelog = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('CHANGELOG.md'.toLowerCase()))[0] : false;
+		let acknowledgments = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('ACKNOWLEDGMENTS.md'.toLowerCase()))[0] : false;
 		// Get License File
 		let license = false; // Foundry File Picker Does not Display this File
 
@@ -256,8 +261,11 @@ export class MMP {
 		let formatedData = {
 			authors: this.formatAuthors(moduleData),
 			version: moduleData?.version != 'This is auto replaced' ? moduleData?.version : '0.0.0' ?? false,
+			socket: moduleData?.socket ?? false,
+			library: moduleData?.library ?? false,
 			readme: readme,
 			changelog: changelog,
+			acknowledgments: acknowledgments,
 			license: license,
 			bugs: moduleData?.bugs ?? false,
 			conflicts: [], //moduleJSON?.conflicts ?? false,
@@ -300,7 +308,7 @@ export class MMP {
 			// Yes this does mean techncially a user could list a conflict as an issue and vice versa
 			// But I also don't honestly care for the purpose of display the content is the same
 			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []).concat(moduleData?.flags?.conflicts ?? []).concat(moduleData?.flags?.issues ?? []);
-			if (conflicts.length > 0) MODULE.log(`Registering Conflict from ${moduleData.name}.`, conflicts)
+			if (conflicts.length > 0) MODULE.debug(`Registering Conflict from ${moduleData.name}.`, conflicts)
 			conflicts.forEach((conflict, index) => {
 				if (game.modules.get(conflict?.name) ?? false) {
 					if (this.versionCompare(conflict.versionMin, game.modules.get(conflict?.name).data.version, conflict.versionMax)) {
@@ -377,7 +385,7 @@ export class MMP {
 
 				$element.find('#settings #settings-documentation [data-action="changelog"]').off('click');
 				$element.find('#settings #settings-documentation [data-action="changelog"]').on('click', event => {
-					new DIALOG(MODULE.setting('trackedChangelogs')).render(true);
+					new PreviewDialog(MODULE.setting('trackedChangelogs')).render(true);
 				});
 			}
 
@@ -458,10 +466,221 @@ export class MMP {
 		$element.find('.package-overview .package-title').after($tag);
 	}
 
+	static addModulePresets = (element) => {
+		let $presets = $(`<div id="${MODULE.ID}-presets">
+			<button id="${MODULE.ID}-create-preset" title="Create New Preset"><i class="fas fa-plus"></i></button>
+			<input type="text" id="${MODULE.ID}-preset-title" />
+			<select id="${MODULE.ID}-preset-options">
+				<option value="none">Select a Preset...</option>
+			</select>
+			<button id="${MODULE.ID}-cancel-preset" title="Delete Preset"><i class="far fa-trash-alt"></i></button>
+			<button id="${MODULE.ID}-save-preset" title="Save Preset"><i class="far fa-save"></i></button>
+			<button id="${MODULE.ID}-export-preset" title="Export Preset"><i class="fas fa-download"></i></button>
+			<button id="${MODULE.ID}-import-preset" title="Import Preset"><i class="fas fa-upload"></i></button>
+		</div>`);
+
+		function handleButtonStates() {
+			let isAddingPreset = $presets.hasClass('adding-preset');
+			let presetSelected = $presets.hasClass('preset-selected');
+
+			$presets.find(`button#${MODULE.ID}-cancel-preset`).prop('disabled', !isAddingPreset && !presetSelected);
+			$presets.find(`button#${MODULE.ID}-save-preset`).prop('disabled', !isAddingPreset && !presetSelected);
+
+			$presets.find(`button#${MODULE.ID}-create-preset`).prop('disabled', isAddingPreset);
+			$presets.find(`button#${MODULE.ID}-export-preset`).prop('disabled', isAddingPreset);
+			$presets.find(`button#${MODULE.ID}-import-preset`).prop('disabled', isAddingPreset);
+		}
+
+		// Handle Button States
+		handleButtonStates();
+
+		// Build Preset Dropdown List
+		for (let [key, setting] of Object.entries(MODULE.setting('presets'))) {
+			$presets.find(`select#${MODULE.ID}-preset-options`).append(`<option value="${key}">${setting.name}</option>`);
+		}
+
+		// When the Preset Changes
+		$presets.find(`select#${MODULE.ID}-preset-options`).on('change', (event) => {
+			let preset = $(event.target).val();
+
+			$(event.target).closest(`#${MODULE.ID}-presets`).removeClass('adding-preset preset-selected');
+
+			if (preset != "none") {
+				$(element).find('.package-title input[type="checkbox"]').prop('checked', false);
+				$(element).find('.package-title input[type="checkbox"]').removeClass('active');
+
+				MODULE.setting('presets')[preset].modules.forEach((module, index) => {
+					$(element).find(`.package[data-module-name="${module.name}"] input[type="checkbox"]`).prop('checked', true);
+					$(element).find(`.package[data-module-name="${module.name}"] input[type="checkbox"]`).addClass('active');
+				});
+				//$(element).find(`.package input[type="checkbox"]`).trigger('change');
+
+				$(event.target).closest(`#${MODULE.ID}-presets`).addClass('preset-selected');
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-cancel-preset`).attr('title', 'Delete Preset');
+			}
+
+			// Handle Button States
+			handleButtonStates();
+		})
+
+		// HANDLE CREATING
+		$presets.find(`#${MODULE.ID}-create-preset`).on('click', (event) => {
+			event.preventDefault();
+
+			$(event.target).closest(`#${MODULE.ID}-presets`).removeClass('preset-selected');
+			$(event.target).closest(`#${MODULE.ID}-presets`).toggleClass('adding-preset');
+			if ($(event.target).closest(`#${MODULE.ID}-presets`).hasClass('adding-preset')) {
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-preset-title`).val('');
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-preset-title`).focus();
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-cancel-preset`).attr('title', 'Cancel Preset');
+			}else{
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-cancel-preset`).attr('title', 'Delete Preset');
+			}
+
+			// Handle Button States
+			handleButtonStates();
+		});
+
+		// When Cancelling || When Deleting
+		$presets.find(`#${MODULE.ID}-cancel-preset`).on('click', (event) => {
+			event.preventDefault();
+
+			if ($(event.target).closest(`#${MODULE.ID}-presets`).hasClass('adding-preset')) {
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-preset-title`).blur();
+				$(event.target).closest(`#${MODULE.ID}-presets`).find(`#${MODULE.ID}-preset-title`).val('');
+				$(event.target).closest(`#${MODULE.ID}-presets`).removeClass('adding-preset');
+			}else{
+				let presetKey = $presets.find(`#${MODULE.ID}-preset-options`).val();
+				Dialog.confirm({
+					title: MODULE.localize('dialog.deletePreset.name'), 
+					content: MODULE.localize('dialog.deletePreset.hint'), 
+					yes: (event) => { 
+						let settings = MODULE.setting('presets');
+						delete settings[presetKey];
+						MODULE.setting('presets', settings).then(response => {
+							$presets.find(`#${MODULE.ID}-preset-options option[value="${presetKey}"]`).remove();
+							$presets.find(`#${MODULE.ID}-preset-options`).val('none');
+							$presets.find(`#${MODULE.ID}-preset-options`).trigger('change');
+						})
+					}, 
+					no: (event) => { return false; }
+				})
+			}
+
+			// Handle Button States
+			handleButtonStates();
+
+		});
+
+		// Saving
+		$presets.find(`#${MODULE.ID}-save-preset`).on('click', (event) => {
+			event.preventDefault();
+			let modules = [];
+			let presetKey = foundry.utils.randomID();
+			let presetTitle = $presets.find(`#${MODULE.ID}-preset-title`).val();
+
+			$(element).find('#module-list li.package  input[type="checkbox"]:checked').each((index, module) => {
+				let moduleName = $(module).closest('li').data('module-name');
+				modules.push({
+					name: moduleName,
+					title: game.modules.get(moduleName)?.data?.title ?? moduleName
+				});
+			})
+
+			if ($presets.hasClass('adding-preset')) {
+				$presets.find(`#${MODULE.ID}-preset-options`).append(`<option value="${presetKey}">${presetTitle}</option>`);
+				$presets.find(`#${MODULE.ID}-preset-options`).val(presetKey);
+			}else{
+				presetKey = $presets.find(`#${MODULE.ID}-preset-options`).val();
+				presetTitle = $presets.find(`#${MODULE.ID}-preset-options option:selected`).text();
+			}
+
+			$presets.find(`#${MODULE.ID}-save-preset`).prop('disabled', true).html('<i class="fas fa-circle-notch fa-spin"></i>');
+			MODULE.setting('presets', mergeObject(MODULE.setting('presets'), { 
+				[presetKey]: {
+					"name": presetTitle,
+					"modules": modules
+				}  
+			}, { inplace: false })).then((response) => {
+				$presets.find(`#${MODULE.ID}-save-preset`).html('<i class="fas fa-check"></i>');
+				setTimeout(() => {
+					$(event.target).closest(`#${MODULE.ID}-presets`).removeClass('adding-preset');
+					$presets.find(`#${MODULE.ID}-preset-options`).trigger('change');
+					
+					$presets.find(`#${MODULE.ID}-save-preset`).prop('disabled', false).html('<i class="far fa-save"></i>');
+				}, 500);
+			});
+		});
+
+		// Export
+		$presets.find(`#${MODULE.ID}-export-preset`).on('click', (event) => {
+			event.preventDefault();
+			new ExportDialog($(element).find('#module-list li.package')).render(true);
+		});
+
+		// Import
+		$presets.find(`#${MODULE.ID}-import-preset`).on('click', (event) => {
+			event.preventDefault();
+			$('<input type="file">').on('change', (event) => {
+				const fileData = event.target.files[0];
+				// Check if User Selected a File.
+				if (!fileData) return false; 
+				// Check if User Selected JSON File
+				if (fileData.type != 'application/json') {
+					ui.notifications.error(`<strong>${MODULE.TITLe}</strong> Please select a JSON file.`);
+					return false;
+				}
+
+				// Read File Data
+				readTextFromFile(fileData).then(async (response) => {
+					try {
+						// Convert Response into JSON
+						const responseJSON = JSON.parse(response);
+						let moduleData = {};
+						let importType = MODULE.ID;
+
+						// Check if Import is for TidyUI
+						if (responseJSON.hasOwnProperty('activeModules') ?? false) {
+							importType = 'tidy-ui_game-settings';
+							responseJSON.activeModules.forEach((module, index) => {								
+								moduleData[module.id] = {
+									title: module.title,
+									version: module.version,
+									settings: {
+										client: undefined,
+										world: undefined
+									}
+								}
+							})
+						}else if (responseJSON?.[Object.keys(responseJSON)[0]]?.hasOwnProperty('title') ?? false) {
+							moduleData = responseJSON;
+						}else{
+							ui.notifications.error(`<strong>${MODULE.TITLe}</strong> Unable to determine how to load file.`);
+							return false;
+						}
+
+						// Show Import Dialog
+						new ImportDialog(moduleData, importType).render(true);
+					} catch (error) {
+						MODULE.error('Failed to read selected file', error);
+						ui.notifications.error(`<strong>${MODULE.TITLe}</strong> Failed to read selected file.`);
+						return false;
+					}
+				})
+			}).trigger('click');
+			//new ImportDialog({}).render(true);
+		});
+
+		$(element).find('.list-filters').before($presets);
+
+		// Terrible Fix - Breaks all UI modification
+		$(element).find('#module-list').css({
+			'max-height': 'calc(600px - 42px)'
+		});
+	}
+
 	static renderModuleManagement = (ModuleManagement, element, options) => {
 		let $element = $(element);
-
-		$element.find('.window-title').text(MODULE.TITLE);
 
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		// Module Management+ Adjustments
@@ -478,7 +697,44 @@ export class MMP {
 			$element.find('.list-filters .filter[data-filter="all"]').text($element.find('.list-filters .filter[data-filter="all"]').text().replace('Modules', ''));
 			$element.find('.list-filters .filter[data-filter="active"]').text($element.find('.list-filters .filter[data-filter="active"]').text().replace('Modules', ''));
 			$element.find('.list-filters .filter[data-filter="inactive"]').text($element.find('.list-filters .filter[data-filter="inactive"]').text().replace('Modules', ''));
+			$element.find('.list-filters').prepend(`<button type="button" class="toggle-modules" title="Indeterminate">
+				<i class="far fa-minus-square"></i>
+			</button>`);
+
+			// Add Toggle 
+			function getModuleStatus() {
+				let modules = $element.find('.package .package-title input[type="checkbox"]').length;
+				let activeModules = $element.find('.package .package-title input[type="checkbox"]:checked').length;
+				
+				if (modules == 0) $element.find('.list-filters button.toggle-modules').html('<i class="far fa-square"></i>');
+				else if (modules == activeModules) $element.find('.list-filters button.toggle-modules').html('<i class="far fa-check-square"></i>');
+				else if (activeModules == 0) $element.find('.list-filters button.toggle-modules').html('<i class="far fa-square"></i>'); 
+				else $element.find('.list-filters button.toggle-modules').html('<i class="far fa-minus-square"></i>');
+			}
+
+			$element.find('.list-filters button.toggle-modules').on('click', (event) => {
+				let modules = $element.find('.package .package-title input[type="checkbox"]').length;
+				let activeModules = $element.find('.package .package-title input[type="checkbox"]:checked').length;
+
+				$element.find(`.package input[type="checkbox"]`).prop('checked', modules > activeModules);
+				$element.find(`.package input[type="checkbox"]`).toggleClass('active', modules > activeModules);
+				//$element.find(`.package input[type="checkbox"]`).trigger('change');
+
+				getModuleStatus();				
+			});
+
+			$element.find(`.package input[type="checkbox"]`).on('change', getModuleStatus);
+
+
+			// Adds the Ability to save Presets
+			this.addModulePresets(element);
+			//$element.find('p.notes').css('display', 'none');
 		}
+
+		$element.find('.list-filters button.expand').on('click', (event) => {
+			let toggleState = $element.find('.list-filters button.expand').attr('title') == game.i18n.localize('Collapse');
+			$element.find('.package-list .package .package-overview .expand').toggleClass('expanded', toggleState)
+		});
 
 		// Add Clear Text Button when user has typed content into filter
 		$element.find('.list-filters input[type="text"]').on('keyup', (event) => {
@@ -543,7 +799,7 @@ export class MMP {
 			
 			// Add Readme and Changelog Tags
 			if (this.packages.get(key)?.readme) this.addPackageTag($package, 'readme', () => {
-				new DIALOG({
+				new PreviewDialog({
 					[key]: {
 						hasSeen: false,
 						title: game.modules.get(key).data.title,
@@ -552,7 +808,7 @@ export class MMP {
 				}, 'readme').render(true);
 			});
 			if (this.packages.get(key)?.changelog) this.addPackageTag($package, 'changelog', () => {
-				new DIALOG({
+				new PreviewDialog({
 					[key]: {
 						hasSeen: false,
 						title: game.modules.get(key).data.title,
@@ -569,8 +825,16 @@ export class MMP {
 					game.modules.get("bug-reporter").api.bugWorkflow(key);
 				});
 			}
-			if (this.packages.get(key)?.bugs) {
-				this.addPackageTag($package, 'issues github', this.packages.get(key).bugs);
+			if (this.packages.get(key)?.bugs ?? false) {
+				this.addPackageTag($package, 'issues', this.packages.get(key).bugs);
+			}
+
+			
+			if (this.packages.get(key)?.socket ?? false) {
+				this.addPackageTag($package, 'socket');
+			}
+			if (this.packages.get(key)?.library ?? false) {
+				this.addPackageTag($package, 'library');
 			}
 
 			// Add Authors Tag
@@ -584,6 +848,15 @@ export class MMP {
 					interactive: true,
 				});
 			}
+
+			// Add Info Toggle
+			let $expandButton = $(`<button type="button" class="expand" title="Expand">
+				<i class="fa fa-angle-double-up"></i>
+			</button>`).on('click', (event) => {
+				$package.find('.package-overview button.expand').toggleClass('expanded');
+				$package.find('.package-description').toggleClass('hidden', !$package.find('.package-overview button.expand').hasClass('expanded'))
+			})
+			$package.find('.package-overview').append($expandButton);
 		}
 
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */

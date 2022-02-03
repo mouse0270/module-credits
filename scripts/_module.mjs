@@ -7,7 +7,15 @@ export class MODULE {
 	static ID = 'module-credits';
 	static OPTIONS = {
 		background: '#7030A0',
-		color: '#fff'
+		color: '#fff',
+		LOG_LEVEL: [
+			{ title: 'OFF', background: '#000', color: '#fff' },
+			{ title: "ERROR", background: '#F93154', color: '#fff' },
+			{ title: "WARN", background: '#FFA900', color: '#fff' },
+			{ title: "DEBUG", background: '#B23CFD', color: '#fff' },
+			{ title: "INFO", background: '#39C0ED', color: '#fff' },
+			{ title: "LOG", background: '#39C0ED', color: '#fff' }
+		]
 	}
 
 	static get TITLE() {
@@ -25,17 +33,18 @@ export class MODULE {
 		_STORE = foundry.utils.mergeObject(_STORE, data, { inplace: false });
 	}
 
-	static localize() {
-		return game.i18n.localize(`${this.ID}.${arguments[0]}`);
+	static localize(stringId, data = {}) {
+		return isObjectEmpty(data.hash ?? {}) ? game.i18n.localize(`${this.ID}.${stringId}`) : game.i18n.format(`${this.ID}.${stringId}`, data);
 	}
 
 	static CONSOLE = (LOG_LEVEL, ...args) => {
 		try {
 			if (game.modules.get('_dev-mode')?.api?.getPackageDebugValue(this.ID, 'level') >= LOG_LEVEL) {
 				console.log(
-					`%c${this.TITLE}`
+					`%c${this.TITLE}%c${this.OPTIONS.LOG_LEVEL[LOG_LEVEL].title}`
 					, `background-color: ${this.OPTIONS.background}; border-radius: 2px; color: ${this.OPTIONS.color}; padding: 0.15rem 0.25rem;`
-					, '|', ...args
+					, `background-color: ${this.OPTIONS.LOG_LEVEL[LOG_LEVEL].background}; border-radius: 2px; color: ${this.OPTIONS.LOG_LEVEL[LOG_LEVEL].color}; padding: 0.15rem 0.25rem; margin-left: 0.25rem;${LOG_LEVEL >= 4 ? 'display:none' : ''}`
+					, ...args
 				);
 			}
 		}catch (event) {
@@ -43,10 +52,11 @@ export class MODULE {
 		}
 	}
 
-	static log = (...args) => { this.CONSOLE(1, ...args); }
+	static log = (...args) => { this.CONSOLE(5, ...args); }
+	static info = (...args) => { this.CONSOLE(4, ...args); }
 	static debug = (...args) => { this.CONSOLE(3, ...args); }
-	static warn = (...args) => { this.CONSOLE(4, ...args); }
-	static error = (...args) => { this.CONSOLE(2, ...args); }
+	static warn = (...args) => { this.CONSOLE(2, ...args); }
+	static error = (...args) => { this.CONSOLE(1, ...args); }
 
 	static setting = (...args) => {		
 		// Are we registering a new setting
@@ -77,7 +87,7 @@ export class MODULE {
 	}
 
 	// CUSTOM MODULE FUNCTIONS
-	static markup = (content) => {
-		return DOMPurify.sanitize(marked.parse(content), {USE_PROFILES: {html: true}});
+	static markup = (content, markedOptions = {}, DOMPurifyOptions = {}) => {
+		return DOMPurify.sanitize(marked.parse(content, markedOptions), mergeObject({USE_PROFILES: {html: true}}, DOMPurifyOptions, { inplace: false }));
 	}
 }

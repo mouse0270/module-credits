@@ -59,6 +59,12 @@
 .package-list .package .package-overview .tag.changelog:before{
     content: '\f362';
 }
+.package-list .package .package-overview .tag.socket:before{
+    content: '\f1e6';
+}
+.package-list .package .package-overview .tag.library:before{
+    content: '\f02d';
+}
 /* FOUNDRY VERSION INCOMPATIBLE  */
 .package-list .package .package-overview .tag.unknown.error {
     background-color: rgb(244, 67, 54);
@@ -177,11 +183,29 @@
 .package-list .package .package-overview .tag.issues {
     order: 8;
 }
-.package-list .package .package-overview .tag.unknown {
+.package-list .package .package-overview .tag.socket {
     order: 9;
 }
-.package-list .package .package-overview .tag.version {
+.package-list .package .package-overview .tag.library {
     order: 10;
+}
+.package-list .package .package-overview .tag.unknown {
+    order: 11;
+}
+.package-list .package .package-overview .tag.version {
+    order: 12;
+}
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* Expand Individual Item */
+#module-management .package-list .package .package-overview .expand {
+    margin: 0px -.75rem 0px 6px;
+    order: 99;
+}
+#module-management .package-list .package .package-overview .expand i {
+    margin: 0px;
+}
+#module-management .package-list .package .package-overview .expand.expanded i {
+    transform: rotate(180deg);
 }
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
@@ -248,29 +272,51 @@
 /* Style Conflict Notification on Manage Modules Button               */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 #settings #settings-game button[data-action="modules"][data-conflicts] {
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-top: 0px;
+    position: relative;
 }
 #settings #settings-game button[data-action="modules"][data-conflicts]::before {
-    content: attr(data-conflicts) ' Conflicts Detected';
+    content: attr(data-conflicts);
     background-color: rgb(244, 67, 54);
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    color:rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
     display: block;
     font-size: 0.8rem;
-    margin-bottom: .125rem;
-    margin-left: -1px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: .05rem .5rem;
+    position: absolute;
+    border-radius: 50%;
+    height: 20px;
+    line-height: normal;
+    width: 20px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
 }
-#settings #settings-game button[data-action="modules"][data-conflicts="0"]::before {
+#settings #settings-game button[data-action="modules"][data-conflicts]:hover::after {
+    content: 'Conflicts: ';
+    background-color: rgb(244, 67, 54);
+    color: rgb(255, 255, 255);
+    padding: 0px 10px 0px 5px;
+    position: absolute;
+    border-radius: 5px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    height: 20px;
+}
+#settings #settings-game button[data-action="modules"][data-conflicts="0"]::before,
+#settings #settings-game button[data-action="modules"][data-conflicts="0"]:hover::after {
     content: none;
 }
-#settings #settings-game button[data-action="modules"][data-conflicts="1"]::before {
-    content: attr(data-conflicts) ' Conflict Detected'
+#settings #settings-game button[data-action="modules"][data-conflicts="1"]:hover::after {
+    content: 'Conflict: '
 }
 
 
@@ -368,6 +414,152 @@
 }
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* PRESETS                                                            */
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+#module-management .window-content form #module-credits-presets {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    position: relative;
+    width: 100%;
+}
+#module-management .window-content form #module-credits-presets > button {
+    border: 1px solid var(--color-border-light-tertiary);
+    border-right-width: 0px;
+    border-radius: 0px;
+    flex: 0 1 50px;
+    margin: 0px;
+    padding: 0px;
+    width: 50px;
+}
+#module-management .window-content form #module-credits-presets > button:first-child {
+    border-bottom-left-radius: 0.25rem;
+    border-top-left-radius: 0.25rem;
+    border-right-width: 0px;
+}
+#module-management .window-content form #module-credits-presets > button:last-child {
+    border-bottom-right-radius: 0.25rem;
+    border-top-right-radius: 0.25rem;
+    border-right-width: 1px;
+}
+#module-management .window-content form #module-credits-presets > button i {
+    margin: 0px;
+    transform: translateY(2px);
+}
+#module-management .window-content form #module-credits-presets > input,
+#module-management .window-content form #module-credits-presets > select {
+    border-radius: .0rem;
+    border-right-width: 0px;
+    display: block;
+    flex: 1;
+    font-size: 1rem;
+    height: auto;
+    min-height: 35px;
+    padding: .375rem .75rem;
+    width: 100%;
+}
+#module-management .window-content form #module-credits-presets > input {
+    display: none;
+}
+#module-management .window-content form #module-credits-presets.adding-preset > input {
+    display: block;
+}
+#module-management .window-content form #module-credits-presets.adding-preset > select {
+    display: none;
+}
+#module-management .window-content form #module-credits-presets.adding-preset > button#module-credits-cancel-preset i:before {
+    content: '\f00d';
+    font-weight: 900;
+}
+
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* IMPORT                                                            */
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+#module-credits-import-dialog .window-content .dialog-content ul {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    margin: 0px -8px;
+    max-height: 496px;
+    overflow-y: overlay;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li {
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-light-primary);
+    display: flex;
+    min-height: 35px;
+    padding: 0px 8px;
+}
+#module-credits-import-dialog .window-content .dialog-content ul#module-credits-import-header li {
+    border-bottom-width: 2px;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li:nth-child(even) {
+    background-color: rgba(0, 0, 0, .03);
+}
+#module-credits-import-dialog .window-content .dialog-content ul li > * {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li > input[type="checkbox"] {
+    margin: 0px;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li input[name="import-toggle-modules"],
+#module-credits-import-dialog .window-content .dialog-content ul li input[name="import-module"] {
+    flex: 0 1 50px;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li label[for="import-toggle-client-settings"],
+#module-credits-import-dialog .window-content .dialog-content ul li label[for="import-toggle-world-settings"],
+#module-credits-import-dialog .window-content .dialog-content ul li label[for="import-settings-client"],
+#module-credits-import-dialog .window-content .dialog-content ul li label[for="import-settings-world"] {
+    align-items: center;
+    flex: 0 1 75px;
+    justify-content: end;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li .tag {
+    background-color: var(--color-border-dark);
+    border-radius: 3px;
+    color: var(--color-text-light-highlight);
+    font-size: 0.6rem;
+    padding: 0.15rem 0.25rem;
+    margin-left: .5rem;
+}
+#module-credits-import-dialog .window-content .dialog-buttons {
+    border-top: 1px solid var(--color-border-light-primary);
+    flex: 0 1;
+    padding: 8px 8px 0px;
+    margin: 0px -8px;
+}
+#module-credits-import-dialog .window-content .dialog-buttons label.keep-enabled {
+    align-items: center;
+    display: flex;
+    font-size: var(--font-size-14);
+    font-family: var(--font-primary);
+    line-height: 28px;
+    margin: 0 1px;
+    width: 100%;
+}
+/*#module-credits-import-dialog .window-content .dialog-content ul li:first-child {
+    font-weight: bold;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li > *:first-child {
+    flex: 0 1 50px;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li div:nth-child(2) {
+    flex: 1;
+    text-align: left;
+}
+#module-credits-import-dialog .window-content .dialog-content ul li > label {
+    flex: 1;
+    font-weight: bold;
+    text-align: left;
+}
+#module-credits-import-dialog .window-content .dialog-buttons {
+    flex: 0 1;
+}*/
+
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 /* Style Conflict Notification on Manage Modules Button               */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 #module-credits-tooltip {
@@ -441,7 +633,7 @@
     padding: 0px;
     position: absolute;
     top: 50%;
-    transform: translate(1.25rem, -50%);
+    transform: translate(2.75rem, -50%);
     width: auto;
 }
 #module-management .window-content form .list-filters > input[type="text"] + button[class^="fa"]:hover, 
@@ -459,7 +651,7 @@
     padding: .375rem .75rem;
     user-select: none;
 }
-#module-management .window-content form .list-filters > .expand {
+#module-management .window-content form .list-filters > button {
     background: var(--color-bg-btn-minor-inactive);
     border: 1px solid var(--color-border-light-tertiary);
     border-left-width: 0px;
@@ -468,15 +660,27 @@
     height: auto;
     margin: 0px;
 }
+#module-management .window-content form .list-filters > button:first-child {
+    border-left-width: 1px;
+    border-right-width: 0px;
+    border-radius:  .25rem 0rem 0rem .25rem;
+    flex: 0 0 25px;
+}
+#module-management .window-content form .list-filters > button:first-child i {
+    margin: 0px;
+}
+#module-management .window-content form .list-filters > button:first-child + input {
+    border-radius:  0rem;
+}
 #module-management .window-content form .list-filters > a.filter:hover,
-#module-management .window-content form .list-filters > .expand:hover,
-#module-management .window-content form .list-filters > .expand:focus {
+#module-management .window-content form .list-filters > button:hover,
+#module-management .window-content form .list-filters > button:focus {
     background-color: var(--color-bg-option);
     box-shadow: none;
     text-shadow: none;
 }
 #module-management .window-content form .list-filters > a.filter.active,
-#module-management .window-content form .list-filters > .expand[title="Collapse"] {
+#module-management .window-content form .list-filters > button[title="Collapse"] {
     background-color: var(--color-bg-btn-minor-active);
 }
 #module-management .window-content form #module-list {
@@ -513,11 +717,14 @@
     margin-right: 4px;
 }
 #module-management .window-content form #module-list.package-list .package .package-description {
+    background: var(--color-text-dark-primary);
+    color: var(--color-text-light-primary);
     font-size: 0.9rem;
     margin: 0px;
     padding: .5rem .75rem;
 }
 #module-management .window-content form #module-list.package-list .package .package-description .package-metadata {
+    color: var(--color-text-light-primary);
   list-style: none;
   margin: 0rem;
   margin-top: .5rem; 
