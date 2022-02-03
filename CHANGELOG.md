@@ -1,5 +1,6 @@
 # Version 1.1.0 - Module Presets
 - Added the ability to create, update and delete presets. A preset simply toggles a predefined list of modules as active and disabling all other modules.
+> **WARNING** The ability to import settings is considered experimental. Basically I am deleting/removing settings from foundry and replacing them with new ones. In theory this should work just fine, but I can't promise this will work perfectly. Please let me know of any issues you run into.
 - Added the ability to toggle all modules (in)active.
 - Added Socket tag if module has the property `socket` set to `true`
 - Added a Library tag if module has the property `library` set to `true`
