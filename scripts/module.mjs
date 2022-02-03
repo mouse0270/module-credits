@@ -268,6 +268,7 @@ export class MMP {
 			acknowledgments: acknowledgments,
 			license: license,
 			bugs: moduleData?.bugs ?? false,
+			url: moduleData?.url ?? false,
 			conflicts: [], //moduleJSON?.conflicts ?? false,
 			issues: [], //moduleJSON?.conflicts ?? false,
 			deprecated: moduleJSON?.deprecated ?? false,
@@ -816,6 +817,10 @@ export class MMP {
 					}
 				}, 'changelog').render(true)
 			});
+
+			if (this.packages.get(key)?.url ?? false) {
+				this.addPackageTag($package, 'url', this.packages.get(key).url);
+			}
 
 			// Add Issues Link | Support for 🐛 Bug Reporter Support
 			if (this.bugReporterSupport(module)) {

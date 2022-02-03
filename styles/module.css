@@ -157,6 +157,17 @@
 	cursor: pointer;
 }
 
+/* GIVE NEW TAGS COLORS */
+.package-list .package .package-overview .tag.url {
+    background-color: var(--palette-teal-500, rgb(72, 0, 254));
+    color:  var(--palette-teal-500-contrast-text, rgb(255 255 255));
+}
+.package-list .package .package-overview .tag.url.action:hover {
+    background-color: var(--palette-teal-700, rgb(84, 39, 197));
+    color: var(--palette-teal-700-contrast-text, rgb(255 255 255));
+	cursor: pointer;
+}
+
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 /* ORDER TAGS */
 .package-list .package .package-overview .tag.author {
@@ -192,8 +203,11 @@
 .package-list .package .package-overview .tag.unknown {
     order: 11;
 }
-.package-list .package .package-overview .tag.version {
+.package-list .package .package-overview .tag.url {
     order: 12;
+}
+.package-list .package .package-overview .tag.version {
+    order: 13;
 }
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 /* Expand Individual Item */
