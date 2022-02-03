@@ -253,7 +253,7 @@ export class MMP {
 		// Assign Files to Variables
 		let readme = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('README.md'.toLowerCase()))[0] : false;
 		let changelog = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('CHANGELOG.md'.toLowerCase()))[0] : false;
-		let acknowledgments = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('ACKNOWLEDGMENTS.md'.toLowerCase()))[0] : false;
+		let attributions = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('ATTRIBUTIONS.md'.toLowerCase()))[0] : false;
 		// Get License File
 		let license = false; // Foundry File Picker Does not Display this File
 
@@ -265,7 +265,7 @@ export class MMP {
 			library: moduleData?.library ?? false,
 			readme: readme,
 			changelog: changelog,
-			acknowledgments: acknowledgments,
+			attributions: attributions,
 			license: license,
 			bugs: moduleData?.bugs ?? false,
 			url: moduleData?.url ?? false,
