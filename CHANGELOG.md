@@ -1,5 +1,6 @@
 # Version 1.1.0 - Module Presets
 - Added the ability to create, update and delete presets. A preset simply toggles a predefined list of modules as active and disabling all other modules.
+- Added the ability to export and import module lists. Exporting will export the `client` and `world` settings for those modules. Importing will allow you to import those settings. Provided support to import `JSON` files created by TidyUI.
 > **WARNING** The ability to import settings is considered experimental. Basically I am deleting/removing settings from foundry and replacing them with new ones. In theory this should work just fine, but I can't promise this will work perfectly. Please let me know of any issues you run into.
 - Added the ability to toggle all modules (in)active.
 - Added URL tag that if a module has the property `url`, clicking this tag will open that URL
