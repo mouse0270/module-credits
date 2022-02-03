@@ -155,7 +155,7 @@ export class MMP {
 					new PreviewDialog(unseenChangelogs).render(true);
 				}
 			}
-		})
+		});
 	}
 
 	static registerConflictsAndIssues = () => {
