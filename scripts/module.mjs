@@ -245,11 +245,11 @@ export class MMP {
 		return MODULE.setting('trackedChangelogs');
 	}
 
-	static async formatPackage(moduleData) {
+	static async formatPackage(moduleData, options = {dir: 'modules'}) {
 		// Get README and CHANGELOG Files
-		let getFiles = await this.checkIfFilesExists(`./modules/${moduleData.name}/`, { extensions: ['.md'] });
+		let getFiles = await this.checkIfFilesExists(`./${options.dir}/${moduleData.name}/`, { extensions: ['.md'] });
 		// Required as Foundry Does not Load All Required Information from module.json file
-		let moduleJSON = await this.getFile(`./modules/${moduleData.name}/module.json`);
+		let moduleJSON = await this.getFile(`./${options.dir}/${moduleData.name}/${options.dir == 'modules' ? 'module' : 'system'}.json`);
 		// Assign Files to Variables
 		let readme = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('README.md'.toLowerCase()))[0] : false;
 		let changelog = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('CHANGELOG.md'.toLowerCase()))[0] : false;
@@ -272,7 +272,6 @@ export class MMP {
 			conflicts: [], //moduleJSON?.conflicts ?? false,
 			issues: [], //moduleJSON?.conflicts ?? false,
 			deprecated: moduleJSON?.deprecated ?? false,
-			attributions: moduleJSON?.attributions ?? false,
 			allowBugReporter: moduleData?.allowBugReporter ?? moduleData?.flags?.allowBugReporter ?? moduleJSON.allowBugReporter ?? false
 		}
 
