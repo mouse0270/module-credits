@@ -322,7 +322,7 @@ export class MMP {
 						if (this.versionCompare(conflict.versionMin, game.release.version, conflict.versionMax)) {
 							formatedData.conflicts.push(mergeObject(conflict, { type: 'foundry' }, { inplace:false }))
 						}
-					}else if (conflict.type != 'foundry') {
+					}else if (conflict.type != 'foundry' && (game.modules.get(conflict?.name) ?? false)) {
 						if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
 							formatedData.conflicts.push(mergeObject(conflict, { type: 'issue' }, { inplace:false }));
 						}

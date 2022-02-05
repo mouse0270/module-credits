@@ -1,3 +1,6 @@
+# Version 1.1.6 - Conflicting Module Must be installed
+- Fixed an issue that wasn't checking if the conflicting module was installed cause MM+ to register the conflict as a known issue. Now if its a conflict both modules must be installed.
+
 # Version 1.1.5 - Screw Your Emoji
 - Added a semxy new settings screen that allows you to filter down to a setting via a search and made it so that settings are grouped into accordion like elements. This design was HEAVILY influenced by the amazing [TidyUI Game Settings](https://foundryvtt.com/packages/tidy-ui_game-settings) module
 - Added Screw Your Emoji which sorts modules and settings
