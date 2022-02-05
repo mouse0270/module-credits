@@ -1,8 +1,8 @@
 # Version 1.1.5 - Screw Your Emoji
-- Added a semxy new settings screen that allows you to filter down to a setting via a search and made it so that settings are grouped into accordian like elements. This design was HEAVILY influenced by the amazing [TidyUI Game Settings](https://foundryvtt.com/packages/tidy-ui_game-settings) module
+- Added a semxy new settings screen that allows you to filter down to a setting via a search and made it so that settings are grouped into accordion like elements. This design was HEAVILY influenced by the amazing [TidyUI Game Settings](https://foundryvtt.com/packages/tidy-ui_game-settings) module
 - Added Screw Your Emoji which sorts modules and settings
 - Added Setting for Full Height Module Management and Configuration Settings
-- Added 🧙 Developer Mode Debug Options to make it easier to find issues users are experiance within not seeing conflicts.
+- Added 🧙 Developer Mode Debug Options to make it easier to find issues users are experience within not seeing conflicts.
 - Fixed an issue where issues were not registering in the tooltips.
 - Fixed some UI designs and spacing
 
