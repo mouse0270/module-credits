@@ -193,6 +193,8 @@ export class MMP {
 				});
 			}
 		}
+
+		MODULE.debug(this.conflicts);
 	}
 
 	static formatAuthors = (moduleData) => {
@@ -308,6 +310,7 @@ export class MMP {
 			// Yes this does mean techncially a user could list a conflict as an issue and vice versa
 			// But I also don't honestly care for the purpose of display the content is the same
 			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []).concat(moduleData?.flags?.conflicts ?? []).concat(moduleData?.flags?.issues ?? []);
+			MODULE.debug(conflicts)
 			if (conflicts.length > 0) MODULE.debug(`Registering Conflict from ${moduleData.name}.`, conflicts)
 			conflicts.forEach((conflict, index) => {
 				if (game.modules.get(conflict?.name) ?? false) {
@@ -319,7 +322,7 @@ export class MMP {
 						if (this.versionCompare(conflict.versionMin, game.release.version, conflict.versionMax)) {
 							formatedData.conflicts.push(mergeObject(conflict, { type: 'foundry' }, { inplace:false }))
 						}
-					}else if (conflict.type == 'foundry') {
+					}else if (conflict.type != 'foundry') {
 						if (this.versionCompare(conflict.versionMin, moduleData.version, conflict.versionMax)) {
 							formatedData.conflicts.push(mergeObject(conflict, { type: 'issue' }, { inplace:false }));
 						}
@@ -675,12 +678,31 @@ export class MMP {
 
 		// Terrible Fix - Breaks all UI modification
 		$(element).find('#module-list').css({
-			'max-height': 'calc(600px - 42px)'
+			'max-height': 'calc(600px - 37px)'
 		});
+	}
+
+	static screwYourEmoji = (elements, titleSelector) => {
+		$(elements).each((index, element) => {
+			$(element).attr('data-sort-title', $(element).find(titleSelector).text().toUpperCase().replace(/[^\w]/gi, ''));
+		});
+
+		// Sort Elements and Append To parent to Replace Order
+		$(elements).sort((firstEl, secondEl) => {
+			return $(secondEl).attr('data-sort-title') < $(firstEl).attr('data-sort-title') ? 1 : -1
+		}).appendTo($(elements).parent())
 	}
 
 	static renderModuleManagement = (ModuleManagement, element, options) => {
 		let $element = $(element);
+
+		// Enable Big Picture Mode
+		if (MODULE.setting('bigPictureMode')) $(element).addClass(`${MODULE.ID}-big-picture-mode`);
+
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// F### Your Emoji (Better Title Sorting)
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		this.screwYourEmoji($element.find('#module-list .package'), '.package-title');
 
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		// Module Management+ Adjustments
@@ -943,7 +965,7 @@ export class MMP {
 		 });
 	}
 
-	static renderSettingsConfig = (SettingsConfig, element, options) => {
+	static addCustomSettingResetDialog = (app, element, options) => {
 		let $element = $(element);
 
 		let $settings = $element.find(`[data-tab="modules"] h2.module-header:contains("${MODULE.TITLE}")`);
@@ -970,5 +992,100 @@ export class MMP {
 				no: (event) => { return false; }
 			})
 		})
+	}
+
+	static renderSettingsConfig = (app, element, options) => {
+		// Add Reset Tracked Changelogs to Settings
+		this.addCustomSettingResetDialog(app, element, options);
+
+		// DISABLE IF TIDY UI IS ENABLED
+		if (game.modules.get('tidy-ui_game-settings')?.active ?? false)  {
+			MODULE.warn(`TidyUI and ${MODULE.TITLE} provide almost the identical functionality. Though ${MODULE.TITLE} does its best to remain compatible with TidyUI, this is impossible to do so given how we both edit the settings page. ${MODULE.TITLE} has disabled its settings page in favor of TidyUI. This may not always be the case.`);
+			
+			$(element).addClass('user-running-tidy-ui');
+			return undefined;
+		}
+
+		// Enable Big Picture Mode
+		if (MODULE.setting('bigPictureMode')) $(element).addClass(`${MODULE.ID}-big-picture-mode`);
+
+		// Group Elements
+		$(element).find('[data-tab="modules"] .settings-list > h2.module-header').each((index, module) => {
+			$(module).append('<i class="fas fa-chevron-circle-down"></i>');
+			$(module).nextUntil('h2.module-header').addBack().wrapAll('<section class="module-settings-group collapsed" />');
+			$(module).nextAll().wrapAll('<div class="module-settings" style="max-height: 0px;" />');
+			
+			$(module).parent().find('.module-settings .form-fields input').each((index, input) => {
+				$(input).closest('.form-group').attr('data-input-type', $(input).attr('type'));
+			})
+		})
+			
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// f### Your Emoji (Better Title Sorting)
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		this.screwYourEmoji($(element).find('[data-tab="modules"] .settings-list .module-settings-group'), 'h2.module-header');
+			
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// Add a Search Feature
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		let $search = $(`<div id="${MODULE.ID}-settings-search">
+			<input type="text" placeholder="Filter Settings" />
+			<button class="far fa-times-circle"></button>
+		</div>`);
+
+		// Bind Search on keypress
+		$search.find('input').on('keyup change', (event) => {
+			let searchKey = $(event.target).val().toUpperCase().replace(/[^\w]/gi, '');
+
+			if (searchKey.length > 0) {
+				$(element).find('.module-settings-group').each((index, setting) => {
+					$(setting).toggleClass('hide-setting', !$(setting).attr('data-sort-title').includes(searchKey));
+					$(setting).addClass('collapsed');
+				
+					$(setting).find('.module-settings').css({ 'max-height': `0px` });
+				})
+			}else{
+				$(element).find('.module-settings-group').removeClass('hide-setting')
+			}
+			
+			if ($(element).find('.module-settings-group:not(.hide-setting)').length == 1) {
+				let $settingGroup = $(element).find('.module-settings-group:not(.hide-setting)');
+				$settingGroup.removeClass('collapsed');
+				
+				$settingGroup.find('.module-settings').css({ 
+					'max-height': $settingGroup.hasClass('collapsed') ? `0px` : `${$settingGroup.find('.module-settings')[0].scrollHeight}px`
+				});
+			}
+		});
+
+		// Bind Button to Clear Input
+		$search.find('button').on('click', (event) => {
+			event.preventDefault();
+			$(event.target).prev().val('');
+			$(event.target).prev().trigger('change');
+		})
+
+		// Add Search to Settings
+		$(element).find('.tab[data-tab="modules"]').prepend($search);
+
+		// Bind Module Settings Click to Focus Input
+		$(element).find('nav.tabs a.item[data-tab="modules"]').on('click', (event) => {
+			MODULE.log(event, $search.find('input'));
+			setTimeout(() => {
+				$search.find('input').focus();
+			}, 100)
+		});
+			
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// Toggle Settings
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		$(element).find('.tab[data-tab="modules"] .module-settings-group .module-header').on('click', (event) => {
+			let $settingGroup = $(event.target).closest('.module-settings-group');
+			$settingGroup.toggleClass('collapsed');
+			
+			$settingGroup.find('.module-settings').css({ 
+				'max-height': $settingGroup.hasClass('collapsed') ? `0px` : $settingGroup.find('.module-settings')[0].scrollHeight 
+			});
+		});
 	}
 }

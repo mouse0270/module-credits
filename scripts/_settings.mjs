@@ -26,14 +26,17 @@ Hooks.once('setup', () => {
 	MODULE.setting('register', 'trackedChangelogs', {
 		type: Object,
 		default: {},
-		scope: 'client',
 		config: false
 	});
 	MODULE.setting('register', 'presets', {
 		type: Object,
 		default: {},
-		scope: 'client',
 		config: false
+	});
+	MODULE.setting('register', 'bigPictureMode', {
+		type: Boolean,
+		default: true,
+		config: true
 	});
 });
 

@@ -10,6 +10,10 @@
 				"name": "Reset Tracked Changelogs",
 				"button": "Confirm Reset",
 				"hint": "Confirming this reset, will set all changelogs to unseen."
+			},
+			"bigPictureMode": {
+				"name": "Big Picture Mode",
+				"hint": "Enabling this feature will set the Module Management and Configure Settings windows to the full height of the foundry window."
 			}
 		}
 	}

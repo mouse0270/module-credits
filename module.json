@@ -57,11 +57,9 @@
         "name": "lib-changelogs",
         "description": "Changelogs & Conflicts provides similar features. These modules will work together just fine, this is more of a sample conflict then an actual conflict.",
         "versionMin": "0.0.6"
-      }
-    ],
-    "issues": [
-      {
-        "description": "Copying or Exporting a module list automatically closes the dialog due to a limitation with froundry's Dialog class, repreventing me from stopping the close event on button click."
+      }, {
+        "name": "tidy-ui_game-settings",
+        "description": "MM+ Provides many of the features found in TidyUI Game settings such as the ability to Export/Import Module Lists and Accordian Style Settings for a clearer look. It is suggested to use one or the other modules, not both at the same time. If you choose to run both at the same time, MMP will attempt to provide compatiblity with TidyUI by disabling itself on the Module Settings Tab."
       }
     ]
   }

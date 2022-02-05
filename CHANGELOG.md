@@ -1,3 +1,12 @@
+# Version 1.1.5 - Screw Your Emoji
+- Added a semxy new settings screen that allows you to filter down to a setting via a search and made it so that settings are grouped into accordian like elements. This design was HEAVILY influenced by the amazing [TidyUI Game Settings](https://foundryvtt.com/packages/tidy-ui_game-settings) module
+- Added Screw Your Emoji which sorts modules and settings
+- Added Setting for Full Height Module Management and Configuration Settings
+- Added 🧙 Developer Mode Debug Options to make it easier to find issues users are experiance within not seeing conflicts.
+- Fixed some UI designs and spacing
+
+> **WARNING** Please be advised that TidyUI and MM+ provide almost the identical functionality. Though MM+ does its best to remain compatible with TidyUI, this is impossible to do so given how we both edit the settings page. MM+ has disabled its settings page in favor of TidyUI. This may not always be the case.
+
 # Version 1.1.0 - Module Presets
 - Added the ability to create, update and delete presets. A preset simply toggles a predefined list of modules as active and disabling all other modules.
 - Added the ability to export and import module lists. Exporting will export the `client` and `world` settings for those modules. Importing will allow you to import those settings. Provided support to import `JSON` files created by TidyUI.
