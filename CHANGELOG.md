@@ -3,9 +3,12 @@
 - Added Screw Your Emoji which sorts modules and settings
 - Added Setting for Full Height Module Management and Configuration Settings
 - Added 🧙 Developer Mode Debug Options to make it easier to find issues users are experiance within not seeing conflicts.
+- Fixed an issue where issues were not registering in the tooltips.
 - Fixed some UI designs and spacing
 
 > **WARNING** Please be advised that TidyUI and MM+ provide almost the identical functionality. Though MM+ does its best to remain compatible with TidyUI, this is impossible to do so given how we both edit the settings page. MM+ has disabled its settings page in favor of TidyUI. This may not always be the case.
+
+![image](https://user-images.githubusercontent.com/564874/152625472-04f4c4c6-852c-43c5-8b63-3aebfcf34cd7.png)
 
 # Version 1.1.0 - Module Presets
 - Added the ability to create, update and delete presets. A preset simply toggles a predefined list of modules as active and disabling all other modules.
