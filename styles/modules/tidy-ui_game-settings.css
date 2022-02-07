@@ -1,0 +1,29 @@
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* HANDLE FOR TIDY UI                                                 */
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+#module-management .enhanced-module-management {
+    display: none !important;
+}
+#module-management .enhanced-module-management ~ #module-list.package-list {
+    margin-bottom: 0px;
+    min-height: calc(100vh - 130px);
+}
+#module-management .enhanced-module-management ~ #module-credits-presets ~ #module-list.package-list {
+    min-height: calc(100vh - 175px);
+}
+#module-management .enhanced-module-management ~ #module-list.package-list .package-title span[class*="-conflict"] {
+    margin-right: 8px;
+}
+
+#client-settings.user-running-tidy-ui.window-app .window-content {
+    padding: 8px;
+}
+#client-settings.user-running-tidy-ui section.content [data-tab="modules"] .settings-list {
+    padding: 0px 8px;
+}
+#client-settings.user-running-tidy-ui.app.window-app.form #config-tabs .settings-list .module-wrapper:first-of-type h2.module-header {
+    margin-top: .5rem;
+}
+#client-settings.user-running-tidy-ui.window-app section.content [data-tab="modules"] .settings-list {
+    max-height: calc(100vh - 198px);
+}

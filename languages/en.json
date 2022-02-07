@@ -15,6 +15,12 @@
 				"name": "Big Picture Mode",
 				"hint": "Enabling this feature will set the Module Management and Configure Settings windows to the full height of the foundry window."
 			}
+		},
+		"controls" :{
+			"filterSettings": {
+				"placeholder": "Filter Settings",
+				"clearFilter": "Clear Search"
+			}
 		}
 	}
 }

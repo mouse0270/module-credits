@@ -1,0 +1,20 @@
+{
+	"module-credits": {
+		"title": "Module Management+",
+		"settings": {
+			"showNewChangelogsOnLoad": {
+				"name": "Afficher les nouveaux Journaux au chargement",
+				"hint": "Si un journal est marqué comme non vu et que ce paramètre soit activé alors une boîte de dialogue s'affiche et montre tous les journaux n'étant pas marqués comme vus."
+			},
+			"resetDialog": {
+				"name": "Réinitialisation des Journaux",
+				"button": "Confirmer la réinitialisation",
+				"hint": "Confirmer cette réinitialisation, mettra tous les Journaux en non vu."
+			},
+			"bigPictureMode": {
+				"name": "Mode Grosse Image",
+				"hint": "En activant cette fonction, les fenêtres du gestionnaire de modules et de Configuration des options prendont toute la hauteur de la fenêtre."
+			}
+		}
+	}
+}

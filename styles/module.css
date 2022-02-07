@@ -298,6 +298,9 @@
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 /* BIG MODULE MANAGEMENT/CONFIGURE SETTINGS WINDOWS                   */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+#client-settings.window-app {
+    min-height: auto; /* Fix other modules setting this value; */
+}
 #client-settings.module-credits-big-picture-mode.window-app,
 #module-management.module-credits-big-picture-mode.window-app {
     min-height: 100vh;
@@ -309,7 +312,7 @@
 #module-management.module-credits-big-picture-mode #module-credits-presets ~ #module-list.package-list {
     min-height: calc(100vh - 165px);
 }
-#client-settings.window-app section.content [data-tab="modules"] .settings-list {
+#client-settings.window-app section.content .settings-list {
     min-height: 75vh;
     max-height: 75vh;
 }
@@ -703,11 +706,12 @@
     border-bottom: 1px solid var(--color-underline-header);
 }
 #client-settings [data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group.submenu > button {
+    flex: 1 0 100%;
     height: auto;
     line-height: normal;
 }
 #client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group label {
-    flex: 1 0 100%;
+    flex: 2;
 }
 #client-settings #config-tabs div.tab[data-tab="modules"]  .settings-list .module-settings-group .module-settings .form-group .notes {
     flex: 0 1 100%;
@@ -720,7 +724,7 @@
     flex-direction: row-reverse;
 }
 #client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group[data-input-type="checkbox"] label {
-    flex-basis: unset;
+    /*flex-basis: unset;*/
 }
 #client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group[data-input-type="checkbox"] .form-fields {
     align-self: center;
@@ -937,4 +941,17 @@
 }
 #client-settings.user-running-tidy-ui.window-app section.content [data-tab="modules"] .settings-list {
     max-height: calc(100vh - 198px);
+}
+
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* HANDLE FOR Socket Settings                                         */
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+#client-settings section.content [data-tab="modules"] .settings-list > .form-group {
+    border-bottom: 1px solid var(--color-underline-header);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0px;
+    padding: .35rem 1rem;
+    position: relative
 }

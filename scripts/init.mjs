@@ -35,6 +35,9 @@ Hooks.once('socketlib.ready', () => {
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 // FOUNDRY HOOKS -> READY
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+Hooks.once('ready', async () => {	
+	MMP.addSupportStyles();
+});
 Hooks.once('ready', async () => {
 	await MIGRATE.init();
 	

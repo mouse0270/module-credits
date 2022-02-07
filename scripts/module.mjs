@@ -15,6 +15,7 @@ import { BetterDialog as Dialog } from './foundry/dialog.mjs';
 export class MMP {
 	static packages = new Map();
 	static conflicts = {};
+	static activeConflcits = 0;
 	static popperInstance = null;
 	static socket;
 
@@ -137,6 +138,19 @@ export class MMP {
 		}
 	}
 
+	static async addSupportStyles() {
+		let getSystemFiles = await this.checkIfFilesExists(`./modules/${MODULE.ID}/styles/system`, { extensions: ['.css'] });
+
+		// Add System Support
+		getSystemFiles.find(element => {
+			if (element.includes(`${game.system.id}.css`)) {
+				$(`html head link[href^="modules/${MODULE.ID}/"]`).last().after(`<link href="${element}" rel="stylesheet" type="text/css" media="all">`)
+				return true;
+			}
+			return false;
+		});
+	}
+
 	static init = () => {
 		// SETUP API
 		this.installAPI();
@@ -176,6 +190,11 @@ export class MMP {
 					else if (this.conflicts.hasOwnProperty(conflictID[0])) conflictID = conflictID[0];
 					else if (this.conflicts.hasOwnProperty(conflictID[1])) conflictID = conflictID[1];
 					else conflictID = conflictID[0];
+
+					// Count Active Conflicts
+					if (game.modules.get(key)?.active && (game.modules.get(conflict?.name)?.active ?? true)) {
+						this.activeConflcits++;
+					}
 					
 					// Conflict has been registered already - Append
 					if (this.conflicts.hasOwnProperty(conflictID)) {
@@ -194,7 +213,12 @@ export class MMP {
 			}
 		}
 
-		MODULE.debug(this.conflicts);
+		MODULE.debug('Conflicts Registered: ', this.conflicts);
+
+		// If user can manage modules, Show Conflicts
+		if (game.permissions.SETTINGS_MODIFY.includes(game.user.role)) {
+			//$element.find('#settings #settings-game button[data-action="modules"]').attr('data-conflicts', this.activeConflcits);
+		}
 	}
 
 	static formatAuthors = (moduleData) => {
@@ -310,7 +334,6 @@ export class MMP {
 			// Yes this does mean techncially a user could list a conflict as an issue and vice versa
 			// But I also don't honestly care for the purpose of display the content is the same
 			let conflicts = (moduleJSON?.conflicts ?? []).concat(moduleJSON?.issues ?? []).concat(moduleData?.flags?.conflicts ?? []).concat(moduleData?.flags?.issues ?? []);
-			MODULE.debug(conflicts)
 			if (conflicts.length > 0) MODULE.debug(`Registering Conflict from ${moduleData.name}.`, conflicts)
 			conflicts.forEach((conflict, index) => {
 				if (game.modules.get(conflict?.name) ?? false) {
@@ -394,7 +417,7 @@ export class MMP {
 
 			// If user can manage modules, Show Conflicts
 			if (game.permissions.SETTINGS_MODIFY.includes(game.user.role)) {
-				$element.find('#settings #settings-game button[data-action="modules"]').attr('data-conflicts', Object.keys(this.conflicts).length);
+				$element.find('#settings #settings-game button[data-action="modules"]').attr('data-conflicts', this.activeConflcits);
 			}
 		}
 	} 
@@ -1029,8 +1052,8 @@ export class MMP {
 		// Add a Search Feature
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		let $search = $(`<div id="${MODULE.ID}-settings-search">
-			<input type="text" placeholder="Filter Settings" />
-			<button class="far fa-times-circle"></button>
+			<input type="text" placeholder="${MODULE.localize("controls.filterSettings.placeholder")}" />
+			<button class="far fa-times-circle" title="${MODULE.localize("controls.filterSettings.clearFilter")}"></button>
 		</div>`);
 
 		// Bind Search on keypress
@@ -1070,7 +1093,6 @@ export class MMP {
 
 		// Bind Module Settings Click to Focus Input
 		$(element).find('nav.tabs a.item[data-tab="modules"]').on('click', (event) => {
-			MODULE.log(event, $search.find('input'));
 			setTimeout(() => {
 				$search.find('input').focus();
 			}, 100)

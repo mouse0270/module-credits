@@ -1,3 +1,11 @@
+# Version 1.1.7 - A little More Subtle
+- Added French Localization (Thanks @Sasmira)
+- Added Support for Warhammer Fantasy Rolepay 4th Edition's UI
+- Fixed `.settings-list` class in Configure Settings to have a min/max height of 75vh. This should resolve double scrollbars from multiple modules.
+- Fixed Socket Settings adding a global `.form-group` to the start of the Module Settings window. This setting will be be styled similar to a module header.
+- Fixed Long settings names breaking settings page layout.
+- Changed the notify conflicts logic on the Manage Modules button, to only show a conflict number related to active conflicts not all conflicts.
+
 # Version 1.1.6 - Conflicting Module Must be installed
 - Fixed an issue that wasn't checking if the conflicting module was installed cause MM+ to register the conflict as a known issue. Now if its a conflict both modules must be installed.
 
