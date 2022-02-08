@@ -109,8 +109,6 @@ export class MMP {
 				}
 			}
 			throw TypeError("unable to fetch file content");
-		}).then(data => {
-			return data;
 		}).catch(error => {
 			MODULE.debug(error);
 			return false;
@@ -359,35 +357,40 @@ export class MMP {
 
 	static async getGlobalConflicts() {
 		// Get Global Conflcits
-		let globalConflicts = await this.getFile(`//foundryvtt.mouse0270.com/module-credits/conflicts.json?time=${Date.now()}`);
-
-		// Assign Conflict if Package Exists
-		globalConflicts.forEach((conflict, index) => {
-			if (this.packages.get(conflict.moduleID) && this.packages.get(conflict.conflictingModuleID)) {
-				// HANDLE CONFLICT BETWEEN TWO MODULES
-				if (this.versionCompare(conflict.versionMin, this.packages.get(conflict.conflictingModuleID).version, conflict.versionMax)) {
-					this.packages.get(conflict.moduleID).conflicts.push({
-						"name": conflict.conflictingModuleID,
-						"type": "module",
-						"description": conflict.description ?? false,
-						"versionMin": conflict.versionMin ?? false,
-						"versionMax": conflict.versionMax ?? false
-					})
+		return this.getFile(`//foundryvtt.mouse0270.com/module-credits/conflicts.json?time=${Date.now()}`).then(response => {
+			// Assign Conflict if Package Exists
+			response.forEach((conflict, index) => {
+				if (this.packages.get(conflict.moduleID) && this.packages.get(conflict.conflictingModuleID)) {
+					// HANDLE CONFLICT BETWEEN TWO MODULES
+					if (this.versionCompare(conflict.versionMin, this.packages.get(conflict.conflictingModuleID).version, conflict.versionMax)) {
+						this.packages.get(conflict.moduleID).conflicts.push({
+							"name": conflict.conflictingModuleID,
+							"type": "module",
+							"description": conflict.description ?? false,
+							"versionMin": conflict.versionMin ?? false,
+							"versionMax": conflict.versionMax ?? false
+						})
+					}
+				}else if (this.packages.get(conflict.moduleID)) {
+					// HANDLE KNOWN ISSUE
+					if (this.versionCompare(conflict.versionMin, this.packages.get(conflict.moduleID).version, conflict.versionMax)) {
+						this.packages.get(conflict.moduleID).conflicts.push({
+							"type": "issue",
+							"description": conflict.description ?? false,
+							"versionMin": conflict.versionMin ?? false,
+							"versionMax": conflict.versionMax ?? false
+						})
+					}
+				}else{
+					MODULE.debug('MODULES NOT ENABLED: ', this.packages.get(conflict.moduleID), this.packages.get(conflict.conflictingModuleID));
 				}
-			}else if (this.packages.get(conflict.moduleID)) {
-				// HANDLE KNOWN ISSUE
-				if (this.versionCompare(conflict.versionMin, this.packages.get(conflict.moduleID).version, conflict.versionMax)) {
-					this.packages.get(conflict.moduleID).conflicts.push({
-						"type": "issue",
-						"description": conflict.description ?? false,
-						"versionMin": conflict.versionMin ?? false,
-						"versionMax": conflict.versionMax ?? false
-					})
-				}
-			}else{
-				MODULE.debug('MODULES NOT ENABLED: ', this.packages.get(conflict.moduleID), this.packages.get(conflict.conflictingModuleID));
-			}
-		})
+			});
+			
+			return response;
+		}).catch((error) => {
+			MODULE.error(error)
+			return []
+		});
 	}
 
 	static async getPackages() {
@@ -396,8 +399,15 @@ export class MMP {
 			if (module?.data?._source ?? module?.data ?? false) this.packages.set(key, await this.formatPackage(module?.data?._source ?? module?.data));
 		};
 
-		await this.getGlobalConflicts();
-		this.registerConflictsAndIssues();
+		if (MODULE.setting('enableGlobalConflicts')) {
+			this.getGlobalConflicts().then((response) => {
+				this.registerConflictsAndIssues();
+			}).catch(() => {
+				this.registerConflictsAndIssues();
+			});
+		}else{
+			this.registerConflictsAndIssues();
+		}
 
 		return this.packages;
 	}
@@ -406,7 +416,7 @@ export class MMP {
 		if ($element.find('#settings #settings-documentation').length >= 1) {
 			if ($element.find('#settings #settings-documentation button[data-action="changelog"]').length <= 0 && this.hasPermission && this.isGMOnline) {
 				$element.find('#settings #settings-documentation').append(`<button data-action="changelog">
-						<i class="fas fa-exchange-alt"></i> Module Changelogs
+						<i class="fas fa-exchange-alt"></i> ${MODULE.localize('controls.moduleChangelogs')}
 					</button>`);
 
 				$element.find('#settings #settings-documentation [data-action="changelog"]').off('click');
@@ -476,7 +486,7 @@ export class MMP {
 	}
 
 	static addPackageTag = ($element, tag, action = false, options = {}) => {
-		let $tag = $(`<a class="tag ${tag}" title="${tag}"></a>`);
+		let $tag = $(`<a class="tag ${tag}" title="${options?.localization ? MODULE.localize(options?.localization) : tag.toLowerCase().replace(/[^\w]/gi, '-')}"></a>`);
 
 		if (action == 'popover') {
 			tippy($tag[0], options)
@@ -851,7 +861,7 @@ export class MMP {
 						version: game.modules.get(key).data.version
 					}
 				}, 'readme').render(true);
-			});
+			}, { localization: 'tags.readme' });
 			if (this.packages.get(key)?.changelog) this.addPackageTag($package, 'changelog', () => {
 				new PreviewDialog({
 					[key]: {
@@ -860,10 +870,10 @@ export class MMP {
 						version: game.modules.get(key).data.version
 					}
 				}, 'changelog').render(true)
-			});
+			}, { localization: 'tags.changelog' });
 
 			if (this.packages.get(key)?.url ?? false) {
-				this.addPackageTag($package, 'url', this.packages.get(key).url);
+				this.addPackageTag($package, 'url', this.packages.get(key).url, { localization: 'tags.url' });
 			}
 
 			// Add Issues Link | Support for 🐛 Bug Reporter Support
@@ -872,18 +882,18 @@ export class MMP {
 				game.modules.get(key).data.flags.allowBugReporter = true;
 				this.addPackageTag($package, 'issues bug-reporter', () => {
 					game.modules.get("bug-reporter").api.bugWorkflow(key);
-				});
+				}, { localization: 'tags.issues-bug-reporter' });
 			}
 			if (this.packages.get(key)?.bugs ?? false) {
-				this.addPackageTag($package, 'issues', this.packages.get(key).bugs);
+				this.addPackageTag($package, 'issues', this.packages.get(key).bugs, { localization: 'tags.issues' });
 			}
 
 			
 			if (this.packages.get(key)?.socket ?? false) {
-				this.addPackageTag($package, 'socket');
+				this.addPackageTag($package, 'socket', false, { localization: 'tags.socket' });
 			}
 			if (this.packages.get(key)?.library ?? false) {
-				this.addPackageTag($package, 'library');
+				this.addPackageTag($package, 'library', false, { localization: 'tags.library' });
 			}
 
 			// Add Authors Tag
@@ -895,6 +905,7 @@ export class MMP {
 					allowHTML: true,
 					trigger: 'click',
 					interactive: true,
+					localization: 'tags.authors'
 				});
 			}
 

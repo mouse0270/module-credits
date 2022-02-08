@@ -11,6 +11,10 @@
 				"button": "Confirm Reset",
 				"hint": "Confirming this reset, will set all changelogs to unseen."
 			},
+			"enableGlobalConflicts": {
+				"name": "Enable Global Conflicts",
+				"hint": "Disabling this setting will prevent MM+ from reaching out to the web and grabbing a live list of global conflicts. If this feature is disabled you may be missing known issues and/or conflicts that were not including in modules manifest file."
+			},
 			"bigPictureMode": {
 				"name": "Big Picture Mode",
 				"hint": "Enabling this feature will set the Module Management and Configure Settings windows to the full height of the foundry window."
@@ -20,7 +24,18 @@
 			"filterSettings": {
 				"placeholder": "Filter Settings",
 				"clearFilter": "Clear Search"
-			}
+			},
+			"moduleChangelogs": "Module Changelogs"
+		},
+		"tags": {
+			"authors": "Authors",
+			"issues": "Issues",
+			"issues-bug-reporter": "Bug Reporter",
+			"socket": "Socket",
+			"library": "Library",
+			"url": "Website",
+			"readme": "Readme",
+			"changelog": "Changelog"
 		}
 	}
 }

@@ -33,6 +33,12 @@ Hooks.once('setup', () => {
 		default: {},
 		config: false
 	});
+	MODULE.setting('register', 'enableGlobalConflicts', {
+		type: Boolean,
+		default: true,
+		config: true,
+		scope: 'world',
+	});
 	MODULE.setting('register', 'bigPictureMode', {
 		type: Boolean,
 		default: true,

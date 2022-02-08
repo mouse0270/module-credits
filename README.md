@@ -74,7 +74,9 @@ To register a known issue in MM+ all you have to do use use the `issues` keyword
 ```
 
 ## Wait so if I find a known issue or conflict, I have to push a module update to register it?
-Nope, this is actually what the `conflicts.json` file is meant for on my github. Lets say you come across a know issue and don't have time to fix it, or you find out about a package incompatibility. Its kinda crazy to suggest that you push a whole update to you module just to update the module.json file to state that there is a conflict or known issue. So I've decided to self host a file that can be update via the community with a pull request or file an issue. 
+Nope, this is actually what the `conflicts.json` file is meant for on my github. Lets say you come across a know issue and don't have time to fix it, or you find out about a package incompatibility. Its kinda crazy to suggest that you push a whole update to you module just to update the module.json file to state that there is a conflict or known issue. So I've decided to self host a file that can be update via the community with a pull request or file an issue.
+
+This file is stored on my own hosting outside of foundry and is grabbed when froundy is loaded in, this is the only way I know how to provide this functionality. As of version 1.1.7, there is a setting in the settings menu that will allow you to disable/enable this feature per world. If you would like to see the file grabbed you can find it at [conflicts.json](//foundryvtt.mouse0270.com/module-credits/conflicts.json)
 
 | Field | Required | Description |
 |-------|----------|-------------|

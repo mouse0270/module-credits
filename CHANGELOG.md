@@ -1,6 +1,7 @@
 # Version 1.1.7 - A little More Subtle
 - Added French Localization (Thanks @Sasmira)
-- Added Support for Warhammer Fantasy Rolepay 4th Edition's UI
+- Added Support for Warhammer Fantasy Roleplay 4th Edition's UI
+- Added Option to get Global Conflicts file that is enabled by default. This will prevent MM+ from grabbing globally defined conflicts. Disabling this setting may result in less conflicts notifications.
 - Fixed `.settings-list` class in Configure Settings to have a min/max height of 75vh. This should resolve double scrollbars from multiple modules.
 - Fixed Socket Settings adding a global `.form-group` to the start of the Module Settings window. This setting will be be styled similar to a module header.
 - Fixed Long settings names breaking settings page layout.
