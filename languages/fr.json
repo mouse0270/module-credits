@@ -27,7 +27,7 @@
                 "placeholder": "Paramétrage du filtre",
                 "clearFilter": "Suppression de la recherche"
             },
-            "moduleChangelogs": "Journal des modifications du module"
+            "moduleChangelogs": " Journal des MàJ par Module"
         },
         "tags": {
             "authors": "Auteurs",

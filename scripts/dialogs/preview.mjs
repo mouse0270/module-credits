@@ -7,7 +7,7 @@ export class PreviewDialog extends FormApplication {
 
 		// Sort Items by User Friendly Title
 		const sortedItems = Object.entries(data).sort((a, b) => {
-			return a[1].title.toUpperCase() > b[1].title.toUpperCase() ? 1 : -1
+			return (a[1]?.title.toUpperCase() ?? "UNKNOWN MODULE TITLE") > (b[1]?.title.toUpperCase() ?? "UNKNOWN MODULE TITLE") ? 1 : -1
 		}).reduce((obj, value) => {
 			obj[value[0]] = value[1]
 			return obj;
