@@ -1,5 +1,5 @@
 # Version 1.1.8 - Just a Little
-- Potentionally Fixed an issue when a module title is unable to be found
+- Potentially Fixed an issue when a module title is unable to be found
 - Updated French Translation
 
 # Version 1.1.7 - A little More Subtle
