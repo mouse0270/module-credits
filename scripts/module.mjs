@@ -14,6 +14,7 @@ import { BetterDialog as Dialog } from './foundry/dialog.mjs';
 // DEFINE MODULE CLASS
 export class MMP {
 	static packages = new Map();
+	static openSettings = [];
 	static conflicts = {};
 	static activeConflcits = 0;
 	static popperInstance = null;
@@ -140,13 +141,17 @@ export class MMP {
 		let getSystemFiles = await this.checkIfFilesExists(`./modules/${MODULE.ID}/styles/system`, { extensions: ['.css'] });
 
 		// Add System Support
-		getSystemFiles.find(element => {
-			if (element.includes(`${game.system.id}.css`)) {
-				$(`html head link[href^="modules/${MODULE.ID}/"]`).last().after(`<link href="${element}" rel="stylesheet" type="text/css" media="all">`)
-				return true;
-			}
+		if (getSystemFiles) {
+			getSystemFiles.find(element => {
+				if (element.includes(`${game.system.id}.css`)) {
+					$(`html head link[href^="modules/${MODULE.ID}/"]`).last().after(`<link href="${element}" rel="stylesheet" type="text/css" media="all">`)
+					return true;
+				}
+				return false;
+			});
+		}else{
 			return false;
-		});
+		}
 	}
 
 	static init = () => {
@@ -269,6 +274,17 @@ export class MMP {
 		return MODULE.setting('trackedChangelogs');
 	}
 
+	static async cleanUpRemovedChangelogs() {
+		let trackedChangelogs = MODULE.setting('trackedChangelogs');
+
+		for (const [key, module] of Object.entries(trackedChangelogs)) {
+			if (!game.modules.has(key) ?? false)
+				delete trackedChangelogs[key];
+		}
+
+		return await MODULE.setting('trackedChangelogs', trackedChangelogs);
+	}
+
 	static async formatPackage(moduleData, options = {dir: 'modules'}) {
 		// Get README and CHANGELOG Files
 		let getFiles = await this.checkIfFilesExists(`./${options.dir}/${moduleData.name}/`, { extensions: ['.md'] });
@@ -320,6 +336,9 @@ export class MMP {
 				}
 			}));
 		}
+
+		// Clean Up changelogs
+		await this.cleanUpRemovedChangelogs();
 
 		// Loop Through conflicts and Add them if they need to be added
 		if ((moduleJSON?.conflicts || moduleJSON?.issues || moduleData?.flags?.conflicts || moduleData?.flags?.issues) ?? false) {
@@ -1052,12 +1071,26 @@ export class MMP {
 			$(module).parent().find('.module-settings .form-fields input').each((index, input) => {
 				$(input).closest('.form-group').attr('data-input-type', $(input).attr('type'));
 			})
-		})
+		});
 			
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		// f### Your Emoji (Better Title Sorting)
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		this.screwYourEmoji($(element).find('[data-tab="modules"] .settings-list .module-settings-group'), 'h2.module-header');
+
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		// Open Up Previous Settings
+		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+		this.openSettings.forEach((key, index) => {
+			let $settingGroup = $(element).find(`[data-tab="modules"] .settings-list .module-settings-group[data-sort-title="${key}"]`);
+			
+			$settingGroup.removeClass('collapsed');
+			$settingGroup.find('.module-settings').css({ 
+				'transition-duration': '0s',
+				'max-height': $settingGroup.find('.module-settings')[0].scrollHeight 
+			});
+			setTimeout(() => { $settingGroup.find('.module-settings')[0].style.removeProperty('transition-duration') }, 400);
+		});
 			
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 		// Add a Search Feature
@@ -1115,6 +1148,12 @@ export class MMP {
 		$(element).find('.tab[data-tab="modules"] .module-settings-group .module-header').on('click', (event) => {
 			let $settingGroup = $(event.target).closest('.module-settings-group');
 			$settingGroup.toggleClass('collapsed');
+
+			if ($settingGroup.hasClass('collapsed') && this.openSettings.includes($settingGroup.attr('data-sort-title'))) {
+				this.openSettings.splice(this.openSettings.indexOf($settingGroup.attr('data-sort-title')), 1);
+			} else {
+				this.openSettings.push($settingGroup.attr('data-sort-title'))
+			}
 			
 			$settingGroup.find('.module-settings').css({ 
 				'max-height': $settingGroup.hasClass('collapsed') ? `0px` : $settingGroup.find('.module-settings')[0].scrollHeight 

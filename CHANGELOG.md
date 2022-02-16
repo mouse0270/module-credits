@@ -1,3 +1,8 @@
+# Version 1.1.9 - Bugs Where?!?!
+- Added the ability to save settings accordion state to remain open on refresh.
+- Potentially Fixed changelogs breaking if module is removed but changelog was tracked.
+- Fixed issue with getting system file if it doesn't exist.
+
 # Version 1.1.8 - Just a Little
 - Potentially Fixed an issue when a module title is unable to be found
 - Updated French Translation
@@ -15,10 +20,10 @@
 - Fixed an issue that wasn't checking if the conflicting module was installed cause MM+ to register the conflict as a known issue. Now if its a conflict both modules must be installed.
 
 # Version 1.1.5 - Screw Your Emoji
-- Added a semxy new settings screen that allows you to filter down to a setting via a search and made it so that settings are grouped into accordion like elements. This design was HEAVILY influenced by the amazing [TidyUI Game Settings](https://foundryvtt.com/packages/tidy-ui_game-settings) module
+- Added a semxy new settings screen that allows you to filter down to a setting via a search and made it so that settings are grouped into accordion-like elements. This design was HEAVILY influenced by the amazing [TidyUI Game Settings](https://foundryvtt.com/packages/tidy-ui_game-settings) module
 - Added Screw Your Emoji which sorts modules and settings
 - Added Setting for Full Height Module Management and Configuration Settings
-- Added 🧙 Developer Mode Debug Options to make it easier to find issues users are experience within not seeing conflicts.
+- Added 🧙 Developer Mode Debug Options to make it easier to find issues users are experiencing with not seeing conflicts.
 - Fixed an issue where issues were not registering in the tooltips.
 - Fixed some UI designs and spacing
 
