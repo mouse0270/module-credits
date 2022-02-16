@@ -1,6 +1,6 @@
 # Version 1.1.9 - Bugs Where?!?!
 - Added the ability to save settings accordion state to remain open on refresh.
-- Potentially Fixed changelogs breaking if the module if it is removed but changelog was tracked.
+- Potentially Fixed changelogs breaking if the module is removed but changelog was tracked.
 - Fixed issue with getting system file if it doesn't exist.
 
 # Version 1.1.8 - Just a Little
