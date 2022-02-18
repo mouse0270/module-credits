@@ -23,6 +23,12 @@ Hooks.once('setup', () => {
 		default: true,
 		scope: 'world',
 	});
+	/*MODULE.setting('register', 'trackedModules', {
+		type: Object,
+		default: {},
+		config: false,
+		scope: 'world',
+	});*/
 	MODULE.setting('register', 'trackedChangelogs', {
 		type: Object,
 		default: {},

@@ -158,6 +158,9 @@ export class MMP {
 		// SETUP API
 		this.installAPI();
 
+		// Track New Packages
+		//MODULE.log(this.getTrackedModules());
+
 		this.getPackages().then((response) => {
 			this.updateSettingsTab({}, $('#ui-right #sidebar'), {});
 
@@ -249,6 +252,21 @@ export class MMP {
 		}
 
 		return authors;
+	}
+
+	static async getTrackedModules() {
+		let trackedModules = MODULE.setting('trackedModules');
+
+		for await (let [key, module] of game.modules) {
+			if (!trackedModules.hasOwnProperty(key)) {
+				trackedModules[key] = {
+					version: module.data.version,
+					lastSeen: Date.now()
+				}
+			}
+		}
+
+		return await MODULE.setting('trackedModules', trackedModules);
 	}
 
 	static async getTrackedChangelogs() {
@@ -842,12 +860,42 @@ export class MMP {
 					$(modulePackage).toggleClass('even', !isEven);
 					isEven = !isEven;
 				}
-			})
+				
+				// Handle if module is Recent
+				let moduleId = $(modulePackage).data('module-name');
+				let currentDateNow = Date.now();
+				let moduleDateNow = MODULE.setting('trackedModules')?.[moduleId]?.lastSeen ?? Date.now();
+				let moduleIsXDaysOld = Math.floor((currentDateNow - moduleDateNow) / (1000 * 3600 * 24));
+
+				$(modulePackage).toggleClass('recent', moduleIsXDaysOld < 1);
+
+				//if ((MODULE.setting('trackedModules')?.[moduleId]))
+				//MODULE.log(moduleId, moduleDateNow, currentDateNow, Math.floor((currentDateNow - moduleDateNow) / (1000 * 3600 * 24)))
+			});
 		})
 		// Trigger Stripped Effect when Module Management Window Loaded
 		Hooks.once('renderApplication', () => {
 			$element.find('.list-filters .filter[data-filter]').eq(0).trigger(`click.${MODULE.ID}`);
+
+			// Add Filter Option
+			/*MODULE.log($element.find('#module-list .package'), $element.find('#module-list .package.recent').length ?? 0)
+			$element.find('.list-filters .filter[data-filter="inactive"]').after(`<a class="filter" data-filter="recent">${MODULE.localize('controls.recentModules')}  (${$element.find('#module-list .package.recent').length ?? -1})</a>`);
+			$element.find('.list-filters .filter[data-filter="recent"]').on('click', (event) => {
+				event.preventDefault();
+
+				$element.find('.list-filters .filter[data-filter]').removeClass('active');
+				$(event.target).addClass('active');
+
+				$element.find('#module-list .package').removeClass('hidden');
+				$element.find('#module-list .package:not(.recent)').addClass('hidden');
+
+    			$element.find('nav.list-filters input[name="search"]')[0].dispatchEvent(new KeyboardEvent("keyup", {"key": "Enter", "code": "Enter"}));
+
+				//$element.find('nav.list-filters input[name="search"]').trigger('keyup');
+				//$element.find('nav.list-filters input[name="search"]').keyup();
+			})*/
 		});
+
 
 		// Hook into Tidy UI Disable All
 		$element.on(`click.${MODULE.ID}`, `.enhanced-module-management .disable-all-modules`, (event) => {

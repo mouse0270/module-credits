@@ -313,8 +313,13 @@
     min-height: calc(100vh - 165px);
 }
 #client-settings.window-app section.content .settings-list {
-    min-height: 75vh;
-    max-height: 75vh;
+    min-height: 65vh;
+    max-height: 65vh;
+}
+#client-settings.window-app section.content [data-tab="modules"] .settings-list {
+    min-height: calc(65vh - 52px);
+    max-height: calc(65vh - 52px);
+
 }
 #client-settings.module-credits-big-picture-mode.window-app section.content [data-tab="modules"] .settings-list {
     max-height: calc(100vh - 180px);

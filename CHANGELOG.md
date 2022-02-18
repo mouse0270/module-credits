@@ -1,3 +1,7 @@
+# Version 1.1.10 - DAS but I've Never Heard of Her
+- Fixed an issue with DAS 5th Edition, where the system disabled the default scrolling behavior on the Client Settings windows. simply Restored the default behavior when using MM+...
+> Literally, this patch note is longer then the fix. lol
+
 # Version 1.1.9 - Bugs Where?!?!
 - Added the ability to save settings accordion state to remain open on refresh.
 - Potentially Fixed changelogs breaking if the module is removed but changelog was tracked.

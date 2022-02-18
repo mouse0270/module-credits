@@ -25,7 +25,8 @@
 				"placeholder": "Filter Settings",
 				"clearFilter": "Clear Search"
 			},
-			"moduleChangelogs": "Module Changelogs"
+			"moduleChangelogs": "Module Changelogs",
+			"recentModules": "Recent"
 		},
 		"tags": {
 			"authors": "Authors",
