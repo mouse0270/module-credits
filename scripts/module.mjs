@@ -862,12 +862,12 @@ export class MMP {
 				}
 				
 				// Handle if module is Recent
-				let moduleId = $(modulePackage).data('module-name');
-				let currentDateNow = Date.now();
-				let moduleDateNow = MODULE.setting('trackedModules')?.[moduleId]?.lastSeen ?? Date.now();
-				let moduleIsXDaysOld = Math.floor((currentDateNow - moduleDateNow) / (1000 * 3600 * 24));
+				//let moduleId = $(modulePackage).data('module-name');
+				//let currentDateNow = Date.now();
+				//let moduleDateNow = MODULE.setting('trackedModules')?.[moduleId]?.lastSeen ?? Date.now();
+				//let moduleIsXDaysOld = Math.floor((currentDateNow - moduleDateNow) / (1000 * 3600 * 24));
 
-				$(modulePackage).toggleClass('recent', moduleIsXDaysOld < 1);
+				//$(modulePackage).toggleClass('recent', moduleIsXDaysOld < 1);
 
 				//if ((MODULE.setting('trackedModules')?.[moduleId]))
 				//MODULE.log(moduleId, moduleDateNow, currentDateNow, Math.floor((currentDateNow - moduleDateNow) / (1000 * 3600 * 24)))

@@ -1,3 +1,6 @@
+# Version 1.1.11 - Forgot to disable code
+- Fixed "This is not a registered game setting" error
+
 # Version 1.1.10 - DAS but I've Never Heard of Her
 - Fixed an issue with DAS 5th Edition, where the system disabled the default scrolling behavior on the Client Settings windows. simply Restored the default behavior when using MM+...
 > Literally, this patch note is longer then the fix. lol
