@@ -1,5 +1,5 @@
 # Module Management+
-Module Management+ is packed with features and design imporvements designed to make manageing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly.
+Module Management+ is packed with features and design improvements designed to make managing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly.
 
 Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.
 
@@ -9,7 +9,7 @@ Some of the notable features of Module Management+ is the Addition of new tags s
 Well you don't technically register anything with MM+. MM+ was designed to auto detect supported details and display them to the user. It tries to implement many of the features from the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) Guidelines right into Foundry. 
 
 ### IMPORTANT UPDATE REGARDING PACKAGE MANIFEST+ SUPPORT
-[Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is a wondeful set of guidelines that I am attempting to implement support for with this module. However as of January 30th 2022 their guidelines want you to add the properties directly into the root of your `module.json` file. This has been deprecated by foundry in favor of using the `flags` property. MM+ will be going forward assuming you are defining your conflicts and issue inside of the `flags` property. They are defined exactly the same, just within that property. Defining these values outside of the `flags` has been considered **DEPRECATED** by me and may stop working in future versions if MM+.
+[Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is a wondeful set of guidelines that I am attempting to implement support for with this module. However as of January 30th 2022 their guidelines want you to add the properties directly into the root of your `module.json` file. This has been deprecated by foundry in favor of using the `flags` property. MM+ will be going forward assuming you are defining your conflicts and issue inside of the `flags` property. They are defined exactly the same, just within that property. Defining these values outside of the `flags` has been considered **DEPRECATED** by me and may stop working in future versions of MM+.
 
 If you want your modules Readme or Changelog to show up in MM+ all you have to do is provide your `README.md` and/or `CHANGELOG.md` files with your module, MM+ will scan Foundry's modules and auto detect and display this information.
 
@@ -74,7 +74,7 @@ To register a known issue in MM+ all you have to do use use the `issues` keyword
 ```
 
 ## Wait so if I find a known issue or conflict, I have to push a module update to register it?
-Nope, this is actually what the `conflicts.json` file is meant for on my github. Lets say you come across a know issue and don't have time to fix it, or you find out about a package incompatibility. Its kinda crazy to suggest that you push a whole update to you module just to update the module.json file to state that there is a conflict or known issue. So I've decided to self host a file that can be update via the community with a pull request or file an issue.
+Nope, this is actually what the `conflicts.json` file is meant for on my github. Lets say you come across a known issue and don't have time to fix it, or you find out about a package incompatibility. Its kinda crazy to suggest that you push a whole update to you module just to update the module.json file to state that there is a conflict or known issue. So I've decided to self host a file that can be update via the community with a pull request or file an issue.
 
 This file is stored on my own hosting outside of foundry and is grabbed when froundy is loaded in, this is the only way I know how to provide this functionality. As of version 1.1.7, there is a setting in the settings menu that will allow you to disable/enable this feature per world. If you would like to see the file grabbed you can find it at [conflicts.json](//foundryvtt.mouse0270.com/module-credits/conflicts.json)
 
