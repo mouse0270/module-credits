@@ -314,7 +314,7 @@
 }
 #client-settings.window-app section.content .settings-list {
     min-height: 65vh;
-    max-height: 65vh;
+    max-height: calc(100vh - 150px);
 }
 #client-settings.window-app section.content [data-tab="modules"] .settings-list {
     min-height: calc(65vh - 52px);
