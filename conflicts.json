@@ -20,5 +20,10 @@
 		"moduleID": "tidy-ui_game-settings",
 		"description": "The latest update to foundry 9.245 breaks the settings UI.",
 		"versionMax": "0.1.30"
+	},
+	{
+		"moduleID": "pf2e-abs-manager",
+		"description": "The modules functionality has been implemented into the Pf2e system. Also it has been abandoned since Dec. 14th, 2022.",
+		"versionMax": "2.0.1"
 	}
 ]
