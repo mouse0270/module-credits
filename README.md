@@ -1,124 +1,76 @@
 # Module Management+
-Module Management+ is packed with features and design improvements designed to make managing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly.
+Module Management+ improves upon foundry's vtt Manage Module and Configure Settings windows by adding additional features and functionalities to both managing modules and their settings.
 
-Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.
+The Features Included in MM+ Are
+- View modules/system Readme's, Changelogs and Attributions Files
+- View authors of modules and any of the links they provide for themselves
+- View any conflicts that a module may have listed with another module in your load order
+- View if a setting is a `world` or `client` setting
+- Open the settings for just a specific module
+- Open the website of the module for quick access to any additional help that site might provide
+- Open the Issues link of the module to report or find an issue you may have.
+- Create Module Presets to toggle between different lists of active modules quickly and easily
+- Export Module List with Settings
+- Import Module List (with support for import Tidy UI - Game Settings Export)
+- Sync a setting to all players (left clicking) or specfic player (right clicking)
+- Lock a setting, preventing players from adjusting it.
+- Converted Module Filter to Dropdown for Simplier look and feel.
 
-![image](https://user-images.githubusercontent.com/564874/151680029-b6ab5ba8-c4a6-43c4-9580-7b76946acd79.png)
+## Manage Modules
+MM+ expands the Manage Module window by adding additional tags and functionality. Some of the new tags are: 
+- Authors which allows you to view the authors of the module along with any links or information they may provide.
+- Readme which will allow you to view the readme in foundry if provided. With custom support to get the Readme from GitHub as well.
+- Changelog which will allow you to view the changelog in foundry if provided. With custom support to get the Changelog from GitHub as well.
+- Attributions which will allow you to view the attributions in foundry if provided. With custom support to get the Attributions from GitHub as well.
+- Tags to indicate if the module is a listed as a `library` or has `socket` functionality.
+- A link to the modules website or issues pages.
+- If the module has any settings options, there will be a tag that will open up those specific settings.
+- Support for [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter), so if a module supports [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter) instead of opening the issues paage, you'll be presented with [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter) Dialog to submit a bug within foundry.
+- Adds the ability for you to view conflicts that may be listed by a module developer, so you can quickly and see any issues that may be known.
 
-## I am a developer, how do I register my module with MM+?
-Well you don't technically register anything with MM+. MM+ was designed to auto detect supported details and display them to the user. It tries to implement many of the features from the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) Guidelines right into Foundry. 
+Not only has MM+ added all of these new tags, it has take steps to help managing your modules easier by providing the ability to Define Module Presets, Export and Import Module lists with settings. Module Presets are custom lists of active modules you can quickly toggle between. So if you run multiple worlds with different active modules you can toggle between them in just a few clicks. When exporting a module list, it will export all active modules and settings it can export. When importing a MM+ Export file, you will be prompted to choose which modules and settings you would like to import. MM+ Does provide support for [Tidy UI - Game Settings](https://github.com/sdenec/tidy-ui_game-settings) exported modules file.
 
-### IMPORTANT UPDATE REGARDING PACKAGE MANIFEST+ SUPPORT
-[Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) is a wondeful set of guidelines that I am attempting to implement support for with this module. However as of January 30th 2022 their guidelines want you to add the properties directly into the root of your `module.json` file. This has been deprecated by foundry in favor of using the `flags` property. MM+ will be going forward assuming you are defining your conflicts and issue inside of the `flags` property. They are defined exactly the same, just within that property. Defining these values outside of the `flags` has been considered **DEPRECATED** by me and may stop working in future versions of MM+.
+Lastly, MM+ changes a few designs on the Module Management window to make it a little more clean. To do this it removes the text at the top that tells you about this screen. MM+ also removes the individual filter options in favor of a dropdown to choose what you want to filter to.
 
-If you want your modules Readme or Changelog to show up in MM+ all you have to do is provide your `README.md` and/or `CHANGELOG.md` files with your module, MM+ will scan Foundry's modules and auto detect and display this information.
+# Configure Settings
+MM+ adds icons to show if a setting is a `client` or `world` setting to make it easier for Game Masters to know which settings are which. It also adds the ability to lock a setting so that only Game Masters can change this setting. If you have [socketlib](https://github.com/manuelVo/foundryvtt-socketlib) active you will be able to sync a setting to all players by left clicking on the `Sync Setting` icon or to a specific player by right clicking on the `Sync Setting` icon and choosing an active player from the list, if not other players are logged in, right clicking will do nothing.
 
-## What about Conflicts and Known Issues?
-This is where [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) Guidelines come in.
-> Please note, though I attempted to follow the guidelines provided by Package Manifest+, I do not follow them word for word, MM+ is very flexible
+> Please note that the setting that gets synced is the **SAVED** setting. For example, if you enable an option by clicking the checkbox for that setting, but don't hit `Save Changes` it will send the **SAVED** value and not the currently displayed value of `true`. Please make sure to hit `Save Changes` before syncing settings. This feature may be adjusted in the future based on user feedback.
+
+## Readme, Changelogs and Attributions
+MM+ provides a custom window inside foundry that will display these files content if provided. Making it easy to see what a modules does, what has changed, or any additional attributions the module author would like to include. MM+ provides support from grabbing remote content from GitHub if the user links to a file using that service.
 
 ## Registering a Conflict
-To register a conflict in MM+ all you have to do use use the `conflicts` keyword in your `module.json` file under the `flags` property. This is an array of conflicts.
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| name  | true    | If you do not provide a conflicting module name, MM+ will register the conflict as a known issue |
-| description | false | This is the text that will be displayed to the user about the conflict/known issue. If not description is defined, the module will list **No Details Provided** |
-| versionMin | false | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
-| versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
-```json
-"flags": {
-	"conflicts": [
-		{
-			"name": "module-name",
-			"description": "A description detailing the conflict between the two modules.",
-			"versionMin": "a.b.c",
-			"versionMax": "a.b.c"
-		}
-	]
-}
+With the release of MM+ v2+, conflicts have been moved from `flags.conflicts` to `relationships.conflicts` as this is the offical location for conflicts in FoundryVTT v10+. Registering a conflict now fits this scheme
 ```
-
-## What if my Conflict is with foundry?
-A conflict with foundry is defined in a very similar manner to a conflict with a module, however, it requries that you use the `type` property instead of a `name` property. Look at the example below:
-```json
-"flags": {
-	"conflicts": [
-		{
-			"type": "foundry",
-			"description": "This module does not support founrdry version 9+. Enabling this module will have issues, due so at your own risk as this version is not supported at this time.",
-			"versionMin": "9"
-		}
-	]
-}
-```
-
-
-## Registering a Known Issue
-To register a known issue in MM+ all you have to do use use the `issues` keyword in your `module.json` file under the `flags` property. This is an array of issues.
-| Field | Required | Description |
-|-------|----------|-------------|
-| description | false | This is the text that will be displayed to the user about the conflict/known issue. If not description is defined, the module will list **No Details Provided** |
-| versionMin | false | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
-| versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
-```json
-"flags": {
-	"issues": [
-		{
-			"description": "A description detailing the conflict between the two modules.",
-			"versionMin": "a.b.c",
-			"versionMax": "a.b.c"
-		}
-	]
-}
-```
-
-## Wait so if I find a known issue or conflict, I have to push a module update to register it?
-Nope, this is actually what the `conflicts.json` file is meant for on my github. Lets say you come across a known issue and don't have time to fix it, or you find out about a package incompatibility. Its kinda crazy to suggest that you push a whole update to you module just to update the module.json file to state that there is a conflict or known issue. So I've decided to self host a file that can be update via the community with a pull request or file an issue.
-
-This file is stored on my own hosting outside of foundry and is grabbed when froundy is loaded in, this is the only way I know how to provide this functionality. As of version 1.1.7, there is a setting in the settings menu that will allow you to disable/enable this feature per world. If you would like to see the file grabbed you can find it at [conflicts.json](//foundryvtt.mouse0270.com/module-credits/conflicts.json)
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| moduleID | true | This is your modules name |
-| conflictingModuleID | false | Leaving this field empty will define your conflict as a known issue. Its great for when you find out there is a major bug in your module, but you may not be able to fix it ASAP |
-| description | false | This is the text that will be displayed to the user about the conflict/known issue. If not description is defined, the module will list **No Details Provided** |
-| versionMin | true | The conflict/known issue will only be shown if the version number is greater or equal to the version listed here |
-| versionMax | false | The conflict/known issue will only be shown if the version number is less than the number listed here |
-
-An example of defining a conflict would look like this:
-```json
-[
 	{
-		"moduleID": "module-name",
-		"conflictingModuleID": "conflicting-module-name",
-		"description": "A description detailing the conflict between the two modules.",
-		"versionMin": "a.b.c",
-		"versionMax": "a.b.c"
+		"id": "tidy-ui_game-settings",
+		"type": "module",
+		"manifest": "https://raw.githubusercontent.com/sdenec/tidy-ui_game-settings/master/module.json",
+		"reason": "Tidy UI and MM+ perform many of the same functions. MM+ will not be fixing compatibility issues between the two modules.",
+		"compatibility": {
+			"minimum": "0.0.0"
+			"maximum": undefined
+			"verified": undefined
+		}
 	}
-]
 ```
-An example of defining a known issue would look like this:
-```json
-[
-	{
-		"moduleID": "module-name",
-		"description": "A description detailing the conflict between the two modules.",
-		"versionMin": "a.b.c"
-	}
-]
-```
+
+> Please not that if not values in `compatibility` are defined than MM+ will always show the conflict. However if you define a `minimum` or `maximum` value MM+ will alow show the conflict if the conflicting module falls between those versions. `minimum` version is defaulted to `0.0.0`. If `maximum` is `undefined` then it will assume the module is conflicted if conflicting module version is greater than `minimum`.
 
 ## Supported Modules
-### Package Manifest+
-Module Management+ uses the [Package Manifest+](https://foundryvtt.wiki/en/development/manifest-plus) Schema as a guideline for defining conflicts, deprecated modules, and additional author information. I did my best to match support and the intended usecase of the Package Manifest+ Schema, if you notice something is missing or conflicting, plese let me know.
-
-### Bug Reporter
+### [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter)
 Module Management+ adds support for [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter). If Bug Reporter is enabled and the module has opt'ed into the system, you can click that icon to quickly report an issue with that module using `Bug Reporter`. If you don't have bug reporter, don't worry the issues link will still appear in the modules tags.
+
+### [socketlib](https://github.com/manuelVo/foundryvtt-socketlib)
+Module Management+ adds support for [socketlib](https://github.com/manuelVo/foundryvtt-socketlib). If socketlib is enabled then MM+ will allow users who don't have access to the `FilePicker` to be able to view Readme, changelogs and attribution files. Also if you have socklib installed you will be able to sync settings to all players or specific players.
+
+### [Tidy UI - Game Settings](https://github.com/sdenec/tidy-ui_game-settings)
+Module Management+ supports importing module lists that were exported from [Tidy UI - Game Settings](https://github.com/sdenec/tidy-ui_game-settings). Please keep in mind that Tidy UI - Game Settings and MM+ do very similar things and both should not be active at the same time. I will not fix issues related to Tidy UI - Game Settings with the exception of importing module lists.
 
 ## Credits
 Libraries used in creating Module Management+
 - [Marked.js](https://github.com/markedjs/marked) 
 - [DOMPurify](https://github.com/cure53/DOMPurify) 
-- [Popper.js](https://popper.js.org/) 
 - [Tippy.js](https://atomiks.github.io/tippyjs/) 
+- [Popper.js](https://popper.js.org/) 

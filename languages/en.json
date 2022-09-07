@@ -3,40 +3,30 @@
 		"title": "Module Management+",
 		"settings": {
 			"showNewChangelogsOnLoad": {
-				"name": "Show New Changelogs on Load",
-				"hint": "If a changelog is marked as unseen and this setting is enabled a dialog will appear showing all changelogs that haven't been marked as seen."
-			},
-			"resetDialog": {
-				"name": "Reset Tracked Changelogs",
-				"button": "Confirm Reset",
-				"hint": "Confirming this reset, will set all changelogs to unseen."
-			},
-			"enableGlobalConflicts": {
-				"name": "Enable Global Conflicts",
-				"hint": "Disabling this setting will prevent MM+ from reaching out to the web and grabbing a live list of global conflicts. If this feature is disabled you may be missing known issues and/or conflicts that were not including in modules manifest file."
+				"name": "Show New Changelogs on Load"
 			},
 			"bigPictureMode": {
-				"name": "Big Picture Mode",
-				"hint": "Enabling this feature will set the Module Management and Configure Settings windows to the full height of the foundry window."
+				"name": "Big Picture Mode"
 			}
 		},
-		"controls" :{
-			"filterSettings": {
-				"placeholder": "Filter Settings",
-				"clearFilter": "Clear Search"
-			},
-			"moduleChangelogs": "Module Changelogs",
-			"recentModules": "Recent"
-		},
 		"tags": {
+			"socket": "Module uses Socket API",
+			"library": "Is a Library Module",
 			"authors": "Authors",
-			"issues": "Issues",
-			"issues-bug-reporter": "Bug Reporter",
-			"socket": "Socket",
-			"library": "Library",
-			"url": "Website",
-			"readme": "Readme",
-			"changelog": "Changelog"
+			"url": "View Website",
+			"readme": "View Readme",
+			"changelog": "View Changelog",
+			"attributions": "View Attributions",
+			"issues": "Report/View Bug(s)",
+			"bugReporter": "Report Bug with 🐛 Bug Reporter"
+		},
+		"dialog": {
+			"search": "Search Changelogs",
+			"collapseModeLabel": "Collapse Sidebar",
+			"navLabel": "Table of Contents",
+			"markAsSeen": "Mark as Seen",
+			"previousPage": "Previous Page",
+			"nextPage": "Next Page"
 		}
 	}
 }

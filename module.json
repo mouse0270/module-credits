@@ -1,73 +1,82 @@
 {
-  "name": "module-credits",
-  "title": "Module Management+",
-  "description": "Is packed with features and design improvements designed to make managing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly. Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.",
-  "version": "1.1.0",
-  "library": false,
-  "socket": true,
-  "manifestPlusVersion": "0.0.1",
-  "minimumCoreVersion": "0.8.6",
-  "compatibleCoreVersion": "9",
-  "author": "mouse0270",
-  "authors": [
-    {
-      "name": "Mouse0270",
-      "url": "https://github.com/mouse0270/module-credits",
-      "discord": "Mouse0270#0270",
-      "twitter": "Mouse0270",
-      "patreon": "Mouse0270",
-      "github": "Mouse0270",
-      "ko-fi": "Mouse0270",
-      "reddit": "u/Mouse0270",
-      "email": "rmcintosh@websitesbyfatdudes.com"
-    }
-  ],
-  "languages": [
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "languages/en.json"
-    }, {
-        "lang": "fr",
-        "name": "French",
-        "path": "languages/fr.json",
-        "authors": [
-          { "name": "Sasmira" }
-        ]
-    }
-  ],
-  "dependencies": [
-    
-  ],
-  "deprecated": { },
-  "esmodules": [ "/scripts/init.mjs" ],
-  "scripts": [ ],
-  "styles": [ "/styles/module.css" ],
-  "url": "This is auto replaced",
-  "manifest": "This is auto replaced",
-  "download": "This is auto replaced",
-  "readme": "https://github.com/mouse0270/module-credits/blob/master/README.md",
-  "changelog": "https://raw.githubusercontent.com/mouse0270/module-credits/master/CHANGELOG.md",
-  "license": "https://github.com/mouse0270/module-credits/blob/master/LICENSE",
-  "bugs": "https://github.com/mouse0270/module-credits/issues",
-  "media": [
-    {
-      "type": "icon",
-      "url": "https://raw.githubusercontent.com/mouse0270/module-credits/master/images/mm%2B.png"
-    }
-  ],
-  "allowBugReporter": true,
-  "flags": {
-    "allowBugReporter": true,
-    "conflicts": [
-      {
-        "name": "lib-changelogs",
-        "description": "Changelogs & Conflicts provides similar features. These modules will work together just fine, this is more of a sample conflict then an actual conflict.",
-        "versionMin": "0.0.6"
-      }, {
-        "name": "tidy-ui_game-settings",
-        "description": "MM+ Provides many of the features found in TidyUI Game settings such as the ability to Export/Import Module Lists and Accordian Style Settings for a clearer look. It is suggested to use one or the other modules, not both at the same time. If you choose to run both at the same time, MMP will attempt to provide compatiblity with TidyUI by disabling itself on the Module Settings Tab."
-      }
-    ]
-  }
+	"id": "module-credits",
+	"title": "Module Management+",
+	"description": "Is packed with features and design improvements designed to make managing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly. Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.",
+	"version": "2.0.0",
+	"compatibility": {
+		"minimum": "0.8.6",
+		"verified": 10,
+		"maximum": 10
+	},
+	"authors": [
+		{
+			"name": "Mouse0270",
+			"url": "https://github.com/mouse0270/module-credits",
+			"email": "rmcintosh@websitesbyfatdudes.com",
+			"discord": "Mouse0270#0270",
+
+			"flags": {
+				"twitter": "Mouse0270",
+				"patreon": "Mouse0270",
+				"github": "Mouse0270",
+				"ko-fi": "Mouse0270",
+				"reddit": "u/Mouse0270"
+			}
+		}
+	],
+
+	"library": false,
+	"socket": true,
+
+	"relationships": {
+		"systems": [],
+		"requires": [],
+		"conflicts": [
+			{
+				"id": "tidy-ui_game-settings",
+				"type": "module",
+				"manifest": "https://raw.githubusercontent.com/sdenec/tidy-ui_game-settings/master/module.json",
+				"reason": "Tidy UI and MM+ perform many of the same functions. MM+ will not be fixing compatibility issues between the two modules.",
+				"compatibility": {}
+			}, {
+				"id": "lib-changelogs",
+				"type": "module",
+				"manifest": "https://github.com/theripper93/libChangelogs/blob/master/module.json",
+				"reason": "Changelog & Conflicts is deprecated and the author recommends you use Module Management+ instead.",
+				"compatibility": {
+					"minimum": "0.7.7"
+				}
+			}
+		]
+	},
+	"esmodules": [
+        "/scripts/init.mjs"
+	],
+	"scripts": [],
+	"styles": [
+        "/styles/module.css"
+	],
+	"languages": [
+		{
+			"lang": "en",
+			"name": "English",
+			"path": "languages/en.json"
+		}
+	],
+	"url": "This is auto replaced",
+	"manifest": "This is auto replaced",
+	"download": "This is auto replaced",
+	"readme": "https://github.com/mouse0270/module-credits/blob/master/README.md",
+	"changelog": "https://github.com/mouse0270/module-credits/blob/master/CHANGELOG.md",
+	"license": "https://github.com/mouse0270/module-credits/blob/master/LICENSE",
+	"bugs": "https://github.com/mouse0270/module-credits/issues",
+	"media": [
+		{
+			"type": "icon",
+			"url": "https://raw.githubusercontent.com/mouse0270/module-credits/master/assets/mm%2B.png"
+		}
+	],
+	"flags": {
+		"attributions": "https://github.com/mouse0270/module-credits/blob/master/ATTRIBUTIONS.md"
+	}
 }

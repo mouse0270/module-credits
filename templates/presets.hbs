@@ -1,0 +1,31 @@
+<div class="dialog-content">
+	<ul id="{{DIALOG.ID}}-presets-header">
+		<li>
+			<div>Preset Name</div>
+		</li>
+	</ul>
+	<ul id="{{DIALOG.ID}}-presets-list">
+		{{#each presets}}
+		<li data-preset="{{@key}}">
+			<label for="preset-{{@key}}">{{name}}</label>
+			<button data-action="info" data-tooltip="info">
+				<i class="fa-solid fa-circle-info"></i>
+			</button>
+			<button data-action="update" data-tooltip="Update">
+				<i class="fa-solid fa-floppy-disk"></i>
+			</button>
+			<button data-action="delete" data-tooltip="Delete">
+				<i class="fa-solid fa-trash"></i>
+			</button>
+			<button data-action="activate" data-tooltip="Activate">
+				<i class="fa-solid fa-circle-play"></i>
+			</button>
+		</li>
+		{{/each}}
+	</ul>
+</div>
+<div class="dialog-buttons" style="flex: 0 1">
+	<button class="dialog-button create" data-action="create">
+		<i class="fa-solid fa-plus"></i> Create New Preset
+	</button>
+</div>

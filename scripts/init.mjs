@@ -1,11 +1,7 @@
-// GET MODULE CORE
+// GET MODULE FUNCTIONS
 import { MODULE } from './_module.mjs';
 
-// IMPORT SETTINGS -> Settings Register on Hooks.Setup
-import './_settings.mjs';
-
-
-import { MIGRATE } from './_migrate.mjs';
+// GET CORE MODULE
 import { MMP } from './module.mjs';
 
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
@@ -35,11 +31,11 @@ Hooks.once('socketlib.ready', () => {
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 // FOUNDRY HOOKS -> READY
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
-Hooks.once('ready', async () => {	
-	MMP.addSupportStyles();
+Hooks.once('init', () => {
+	Hooks.on("renderSidebarTab", MMP.renderSidebarTab);
 });
 Hooks.once('ready', async () => {
-	await MIGRATE.init();
+	//await MIGRATE.init();
 	
 	MMP.init();
 });
@@ -47,6 +43,9 @@ Hooks.once('ready', async () => {
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 // FOUNDRY HOOKS -> MODULE FUNCTIONS
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
-Hooks.on('renderSidebarTab', MMP.updateSettingsTab);
 Hooks.on('renderModuleManagement', MMP.renderModuleManagement);
 Hooks.on('renderSettingsConfig', MMP.renderSettingsConfig);
+
+Handlebars.registerHelper("incIndex", function(value, options) {
+    return parseInt(value) + 1;
+});

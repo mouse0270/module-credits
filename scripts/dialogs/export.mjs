@@ -2,13 +2,13 @@
 import { MODULE } from '../_module.mjs';
 
 export class ExportDialog extends FormApplication {
-	constructor($packages) {
+	constructor(packages) {
 		super();
 
 		let moduleData = {};
-		$packages.each((index, module) => {
+		$(packages).each((index, module) => {
 			if ($(module).find('input[type="checkbox"]').is(':checked')) {
-				let moduleID = $(module).data('module-name');
+				let moduleID = $(module).data('module-id');
 				moduleData[moduleID] = {
 					title: game.modules.get(moduleID)?.data?.title ?? '',
 					version: game.modules.get(moduleID)?.data?.version ?? '0.0.0',

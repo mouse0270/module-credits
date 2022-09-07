@@ -1,164 +1,102 @@
+
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* FOUNDRY 9.245 - PATCH                                              */
-/* - "CSwendrowski" borrowed my condensed tags option in 9.245. To    */
-/*     keep things simplied I am hiding 9.245 fontawesome icons in    */
-/*     favor of my styling                                            */
+/* Module Management                                                  */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-.package-list .package .package-overview .tag i[class^="fa"] {
+#module-management .window-content > form > p.notes {
+	display: none;
+}
+#module-management .package-list .package .tag.unknown {
+	min-width: auto;
+}
+#module-management.module-credits-big-picture-mode {
+	top: 0px !important;
+    height: 100vw !important;
+}
+
+#module-management.module-credits-big-picture-mode .window-content > form {
+	display: flex;
+    flex-direction: column;
+}
+#module-management.module-credits-big-picture-mode .window-content > form {
+	display: flex;
+    flex-direction: column;
+}
+#module-management.module-credits-big-picture-mode .window-content > form > p.notes {
+	display: none;
+	flex: 0;
+	min-height: auto;
+}
+#module-management.module-credits-big-picture-mode .window-content > form > footer.flexrow {
+    bottom: 0px;
+    left: 0px;
+    padding: 8px;
+	position: absolute;
+    width: 100%;
+}
+#module-management.module-credits-big-picture-mode .window-content .package-list {
+	height: auto;
+	max-height: calc(100vh - 115px);
+}
+
+#module-management nav.list-filters a.filter {
     display: none;
 }
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* STYLE DEFAULT TAGS                                                 */
-#module-management.window-app .package-list .package .tag {
-    font-size: 10px;
-    height: 18px;
-    line-height: 18px;
+#module-management nav.list-filters button {
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 0px;
+    border-right-width: 0px;
+    flex: 0 0 32px;
+    height: 30px;
     margin: 0px;
-    margin-right: 3px;
-    min-width: auto;
-    padding: 0rem 0.25rem;
 }
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* REMOVE MIN-WIDTH FROM CONDENSED TAGS                               */
-.package-list .package .package-overview .tag.unknown,
-.package-list .package .package-overview .tag.version {
-    min-width: 0px;
+#module-management nav.list-filters input[type="search"]:first-child,
+#module-management nav.list-filters button:first-of-type:not(:last-of-type) {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
 }
-.package-list .package .package-overview .tag.unknown:before,
-.package-list .package .package-overview .tag.version:before {
-    margin: 0 3px;
+#module-management nav.list-filters button:last-of-type {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    border-right-width: 1px;
 }
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* SETUP CSS FOR TAG ICONS */
-.package-list .package .package-overview .tag {
-    justify-content: center;
+#module-management nav.list-filters input,
+#module-management nav.list-filters select {
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 0px;
+    border-right-width: 0px;
+    height: 30px;
 }
-.package-list .package .package-overview .tag:before {
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    display: inline-block;
-    font-family: "Font Awesome 5 Free";
-    font-size: 10px;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: 900;
-    line-height: 1;
-    text-rendering: auto;
-}
-.package-list .package .package-overview .tag.author.authors-1:before{
-    content: '\f406';
-}
-.package-list .package .package-overview .tag.author.authors-2:before{
-    content: '\f500';
-}
-.package-list .package .package-overview .tag.author.authors:before{
-    content: '\f0c0';
-}
-.package-list .package .package-overview .tag.readme:before{
-    content: '\f05a';
-}
-.package-list .package .package-overview .tag.issues:before{
-    content: '\f09b';
-    font-family: "Font Awesome 5 Brands";
-    font-weight: 400;
-}
-.package-list .package .package-overview .tag.issues.bug-reporter:before{
-    content: '\f188';
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-}
-.package-list .package .package-overview .tag.changelog:before{
-    content: '\f362';
-}
-.package-list .package .package-overview .tag.socket:before{
-    content: '\f1e6';
-}
-.package-list .package .package-overview .tag.library:before{
-    content: '\f02d';
-}
-/* FOUNDRY VERSION INCOMPATIBLE  */
-.package-list .package .package-overview .tag.unknown.error {
-    background-color: rgb(244, 67, 54);
-}
-.package-list .package .package-overview .tag.unknown.error:before {
-    content: '\f54c' !important;
+#module-management nav.list-filters select {
+    flex: 0;
 }
 
-/* IF EXTERNAL ALLWAYS DISPLAY THIS ICON */
-.package-list .package .package-overview .tag.url:before {
-    content: '\f35d' !important;
-}
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* ADD ICONS FOR DEFAULT TAGS */
-.package-list .package .package-overview .tag.unknown:before {
-    content: '\f071';
-}
-.package-list .package .package-overview .tag.version:before {
-    content: '\f126';
-}
-.package-list .package .package-overview .tag.compendium:before {
-    content: '\f07c';
-}
-.package-list .package .package-overview .tag.languages:before {
-    content: '\f1ab';
-}
-.package-list .package .package-overview .tag.javascript:before {
-    content: '\f3b9';
-    font-family: "Font Awesome 5 Brands";
-    font-weight: 400;
-}
-.package-list .package .package-overview .tag.css:before {
-    content: '\f13c';
-    font-family: "Font Awesome 5 Brands";
-    font-weight: 400;
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* REMOVE TAG TEXT */
-.package-list .package .package-overview .tag:not(.version):not(.unknown) {
-    align-items: center;
-    display: flex;
+/* CENTER TAG ICONS */
+.package-list .package .package-overview .tag:not(.version) {
     font-size: 0rem;
 }
-.package-list .package .package-overview .tag:not(.version):not(.unknown):before {
-    font-size: 11px;
-    margin-right: 0rem;
+.package-list .package .package-overview .tag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+.package-list .package .package-overview .tag i {
+    font-size: var(--font-size-11);
+}
+.package-list .package .package-overview .tag.version i {
+    padding-right: 0.25rem;
+}
 /* GIVE NEW TAGS COLORS */
-.package-list .package .package-overview .tag.author {
+.package-list .package .package-overview .tag.authors {
     background-color: var(--palette-teal-500, rgb(0 150 136));
     color:  var(--palette-teal-500-contrast-text, rgb(255 255 255));
 }
-.package-list .package .package-overview .tag.author.action:hover {
+.package-list .package .package-overview .tag.authors.action:hover {
     background-color: var(--palette-teal-700, rgb(51 201 187));
     color: var(--palette-teal-700-contrast-text, rgb(255 255 255));
 	cursor: pointer;
 }
-
-.package-list .package .package-overview .tag.changelog {
-    background-color:  var(--palette-blue-500, rgb(15 121 233));
-    color:  var(--palette-blue-500-contrast-text, rgb(255 255 255));
-}
-.package-list .package .package-overview .tag.changelog:hover {
-    background-color:  var(--palette-blue-700, rgb(66 172 255));
-    color:  var(--palette-blue-700-contrast-text, rgb(255 255 255));
-	cursor: pointer;
-}
-
-.package-list .package .package-overview .tag.issues {
-    background-color: var(--palette-red-500, rgb(255 59 22));
-    color: var(--palette-red-500-contrast-text, rgb(255 255 255));
-}
-.package-list .package .package-overview .tag.issues:hover {
-    background-color: var(--palette-red-700, rgb(255  110  73));
-    color: var(--palette-red-700-contrast-text, rgb(255 255 255));
-	cursor: pointer;
-}
-
 .package-list .package .package-overview .tag.readme {
     background-color: var(--palette-deep-purple-500, rgb(108 46 196));
     color:  var(--palette-deep-purple-500-contrast-text, rgb(255 255 255));
@@ -168,15 +106,40 @@
     color:  var(--palette-deep-purple-300-contrast-text, rgb(255 255 255));
 	cursor: pointer;
 }
-
-/* GIVE NEW TAGS COLORS */
-.package-list .package .package-overview .tag.url {
-    background-color: var(--palette-teal-500, rgb(72, 0, 254));
-    color:  var(--palette-teal-500-contrast-text, rgb(255 255 255));
+.package-list .package .package-overview .tag.changelog {
+    background-color:  var(--palette-blue-500, rgb(15 121 233));
+    color:  var(--palette-blue-500-contrast-text, rgb(255 255 255));
 }
-.package-list .package .package-overview .tag.url.action:hover {
-    background-color: var(--palette-teal-700, rgb(84, 39, 197));
-    color: var(--palette-teal-700-contrast-text, rgb(255 255 255));
+.package-list .package .package-overview .tag.changelog:hover {
+    background-color:  var(--palette-blue-700, rgb(66 172 255));
+    color:  var(--palette-blue-700-contrast-text, rgb(255 255 255));
+	cursor: pointer;
+}
+.package-list .package .package-overview .tag.issues {
+    background-color: var(--palette-red-500, rgb(255 59 22));
+    color: var(--palette-red-500-contrast-text, rgb(255 255 255));
+}
+.package-list .package .package-overview .tag.issues:hover {
+    background-color: var(--palette-red-700, rgb(255  110  73));
+    color: var(--palette-red-700-contrast-text, rgb(255 255 255));
+	cursor: pointer;
+}
+.package-list .package .package-overview .tag.settings {
+    background-color: var(--palette-green-500, rgb(76 175 80));
+    color:  var(--palette-green-500-contrast-text, rgb(0 0 0));
+}
+.package-list .package .package-overview .tag.settings:hover {
+    background-color: var(--palette-green-700, rgb(56 142 60));
+    color: var(--palette-green-700-contrast-text, rgb(0 0 0));
+	cursor: pointer;
+}
+.package-list .package .package-overview .tag.website {
+    background-color: var(--palette-purple-500, rgb(72, 0, 254));
+    color:  var(--palette-purple-500-contrast-text, rgb(255 255 255));
+}
+.package-list .package .package-overview .tag.website.action:hover {
+    background-color: var(--palette-purple-700, rgb(84, 39, 197));
+    color: var(--palette-purple-700-contrast-text, rgb(255 255 255));
 	cursor: pointer;
 }
 
@@ -215,341 +178,91 @@
 .package-list .package .package-overview .tag.unknown {
     order: 11;
 }
-.package-list .package .package-overview .tag.url {
+.package-list .package .package-overview .tag.website {
     order: 12;
 }
-.package-list .package .package-overview .tag.version {
+.package-list .package .package-overview .tag.settings {
     order: 13;
+}
+.package-list .package .package-overview .tag.version {
+    order: 14;
     margin-right: 0px !important;
 }
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Expand Individual Item */
-#module-management .package-list .package .package-overview .expand {
-    margin: 0px -.75rem 0px 6px;
-    order: 99;
+#module-credits-dialog.sheet.journal-entry .sidebar.hidden {
+    display: none !important;
 }
-#module-management .package-list .package .package-overview .expand i {
-    margin: 0px;
+#module-credits-dialog.sheet.journal-entry .sidebar .action-buttons {
+    justify-content: space-between;
 }
-#module-management .package-list .package .package-overview .expand.expanded i {
-    transform: rotate(180deg);
+#module-credits-dialog.sheet.journal-entry .sidebar .action-buttons button.create {
+    margin: 0.5rem;
+}
+#module-credits-dialog .directory .directory-header .header-search input {
+    margin: 0 0.5rem;
 }
 
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* CSS for List Group Styling - Borrowed From Bootstrap */
-.module-credits-list-group {
-    border-radius: .25rem;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 0;
-    padding-left: 0;
+.module-credits-tippy-authors {
+    list-style: none;
+    margin: 0px;
+    margin-bottom: -5px;
+    margin-left: -9px;
+    margin-right: -9px;
+    margin-top: -5px;
+    padding: 0px;
 }
-.module-credits-list-group-item {
-    border: 1px solid rgba(0, 0, 0, .125);
-    display: block;
-    padding: .25rem 0.5rem;
-    position: relative;
+.module-credits-tippy-authors li.author,
+.module-credits-tippy-authors li a,
+.module-credits-tippy-authors li div {
+    align-items: center;
+    color: #fff;
+    display: flex;
+    justify-content: start;
+    padding: 0.25rem 0.5rem;
     text-decoration: none;
 }
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Make Author Tooltip a little Nicer */
-.module-credits-author-data {
-    margin: -5px -9px;
-    max-height: 300px;
-    overflow: auto;
+.module-credits-tippy-authors li.author {
+    background-color: rgba(255, 255, 255, 0.1);
 }
-.module-credits-author-data .tooltip-type-name {
-    padding: .5rem 1rem 0.25rem;
-    backdrop-filter: contrast(0.5);
-    text-transform: uppercase;
-}
-.module-credits-author-data .module-credits-tooltip {
-    color: inherit
-}
-.module-credits-author-data .module-credits-tooltip i[class^='fa'] {
-    padding-left: 0.25rem;
-    padding-right: 0.5rem;
-}
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* STYLE MORE ICONS */
-.module-credits-author-data .tooltip-type-website i[class^='fa']:before {
-    content: "\f35d";
-    font-weight: 900;
-}
-.module-credits-author-data .tooltip-type-email i[class^='fa']:before {
-    content: "\f0e0";
-    font-weight: 400;
-}
-.module-credits-author-data .tooltip-type-discord i[class^='fa']:before {
-    content: "\f392"; /* Will look nicer one day - font awesome is pretty old in foundry. */
-    font-family: "Font Awesome 5 Brands";
-    font-weight: 400;
-}
-.module-credits-author-data .tooltip-type-reddit i[class^='fa']:before {
-    content: "\f281";
-}
-.module-credits-author-data .tooltip-type-ko-fi i[class^='fa']:before {
-    content: "\f7b6";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
+.module-credits-tippy-authors li i {
+    padding-right: 0.25rem;
 }
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* BIG MODULE MANAGEMENT/CONFIGURE SETTINGS WINDOWS                   */
+/* Client Settings                                                    */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#client-settings.window-app {
-    min-height: auto; /* Fix other modules setting this value; */
+#client-settings.module-credits-hide-filter-options .window-content aside.sidebar {
+	display: none;
 }
-#client-settings.module-credits-big-picture-mode.window-app,
-#module-management.module-credits-big-picture-mode.window-app {
-    min-height: 100vh;
-    top: 0px !important;
-}
-#module-management.module-credits-big-picture-mode #module-list.package-list {
-    min-height: calc(100vh - 127px);
-}
-#module-management.module-credits-big-picture-mode #module-credits-presets ~ #module-list.package-list {
-    min-height: calc(100vh - 165px);
-}
-#client-settings.window-app section.content .settings-list {
-    min-height: 65vh;
-    max-height: 65vh;
-}
-#client-settings.window-app section.content [data-tab="modules"] .settings-list {
-    min-height: calc(65vh - 52px);
-    max-height: calc(65vh - 52px);
-
-}
-#client-settings.module-credits-big-picture-mode.window-app section.content [data-tab="modules"] .settings-list {
-    max-height: calc(100vh - 180px);
-}
-
-#client-settings.window-app .sheet-footer,
-#module-management .window-content form footer {
-    height: 50px;
-    margin-bottom: -4px;
-    margin-left: -8px;
-    margin-right: -8px;
-    margin-top: 0px;
-    padding: 10px 8px;
-}
-#client-settings.window-app nav.tabs {
-    flex: 0;
-    margin: 0px -8px;
-}
-#client-settings.window-app .sheet-footer {
-    border-top: 1px solid var(--color-border-light-tertiary);
-    flex: 0 1 50px;
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Style Conflict Notification on Manage Modules Button               */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#settings #settings-game button[data-action="modules"][data-conflicts] {
-    position: relative;
-}
-#settings #settings-game button[data-action="modules"][data-conflicts]::before {
-    content: attr(data-conflicts);
-    background-color: rgb(244, 67, 54);
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    color: rgb(255, 255, 255);
-    display: block;
-    font-size: 0.8rem;
-    position: absolute;
-    border-radius: 50%;
-    height: 20px;
-    line-height: normal;
-    width: 20px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    right: -5px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
-}
-#settings #settings-game button[data-action="modules"][data-conflicts]:hover::after {
-    content: 'Conflicts: ';
-    background-color: rgb(244, 67, 54);
-    color: rgb(255, 255, 255);
-    padding: 0px 10px 0px 5px;
-    position: absolute;
-    border-radius: 5px;
-    justify-content: center;
-    display: flex;
-    align-items: center;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
-    height: 20px;
-}
-#settings #settings-game button[data-action="modules"][data-conflicts="0"]::before,
-#settings #settings-game button[data-action="modules"][data-conflicts="0"]:hover::after {
-    content: none;
-}
-#settings #settings-game button[data-action="modules"][data-conflicts="1"]:hover::after {
-    content: 'Conflict: '
+#client-settings form.categories .category .form-group label i {
+    padding-right: 0.25rem;
 }
 
 
+
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Style Dialog for Reading Changelogs and Readme's                   */
+/* Conflicts                                                          */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#module-credits-dialog .window-content {
-    font-size: 16px;
-    padding: 0px;
-    position: relative;
-}
-#module-credits-dialog nav {
-    background: url(/ui/parchment.jpg) repeat;
-    height: 100%;
-    overflow-y: auto;
-    position: absolute;
-    width: 200px;
-}
-#module-credits-dialog nav ul {
-    height: 100%;
+.module-credits-tooltip-list {
     list-style: none;
     margin: 0px;
     padding: 0px;
+    text-align: left;
 }
-#module-credits-dialog nav ul li {
-    position: relative;
-}
-#module-credits-dialog nav ul li a {
-    border-bottom: 1px solid var(--color-border-light-primary);
-    display: block;
-    padding: 0.5rem 1rem;
-    width: 100%;
-}
-#module-credits-dialog nav ul li.active a,
-#module-credits-dialog nav ul li a:hover {
-    background-color: var(--color-border-light-primary);
-    text-shadow: none;
-}
-#module-credits-dialog nav ul li a:hover {
-    background-color: var(--color-border-light-highlight);
-}
-/* HANDLE HAS SEEN */
-#module-credits-dialog nav ul li.module-credits-has-seen a {
-    padding-left: 2rem;
-}
-#module-credits-dialog nav ul li.module-credits-has-seen:before {
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    display: inline-block;
-    font-style: normal;
-    font-variant: normal;
-    text-rendering: auto;
-    line-height: 1;
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    content: "\f070";
-    position: absolute;
-    width: 2rem;
-    text-align: center;
-    transform: translateY(-50%);
-    top: 50%;
-}
-#module-credits-dialog nav ul li.module-credits-has-seen.module-credits-has-seen-true:before {
-    content: "\f06e";
-    font-weight: 400;
-}
-
-#module-credits-dialog main.module-credits-window {
-    background: url(/ui/parchment.jpg) repeat;
-    box-shadow: rgb(0 0 0 / 25%) 0px 54px 55px, rgb(0 0 0 / 12%) 0px -12px 30px, rgb(0 0 0 / 12%) 0px 4px 6px, rgb(0 0 0 / 17%) 0px 12px 13px, rgb(0 0 0 / 9%) 0px -3px 5px;
-    height: 100%;
-    left: 194px;
-    overflow-y: auto;
-    padding: 0rem .5rem;
-    position: absolute;
-    width: calc(100% - 194px);
-    transition: all 0.3s ease-in-out;
-}
-#module-credits-dialog main.module-credits-window.full-width {
-    left: 0px;
-    width: 100%;
-}
-#module-credits-dialog main.module-credits-window h2.module-credits-dialog-title {
-    display: flex;
-    padding: .5rem 0rem;
-}
-#module-credits-dialog main.module-credits-window h2.module-credits-dialog-title .module-credits-dialog-toggle {
-    cursor: pointer;
-    padding: 0rem 0.5rem;
-    transform: rotate(90deg);
-    transition: all 0.3s ease-in-out;
-}
-#module-credits-dialog main.module-credits-window.full-width h2.module-credits-dialog-title .module-credits-dialog-toggle {
-    transform: rotate(270deg);
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* PRESETS                                                            */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#module-management .window-content form #module-credits-presets {
-    align-items: stretch;
-    display: flex;
-    flex-wrap: wrap;
+.module-credits-tooltip-list li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
     margin-bottom: 0.5rem;
-    position: relative;
-    width: 100%;
+    padding-bottom: 0.5rem; 
 }
-#module-management .window-content form #module-credits-presets > button {
-    border: 1px solid var(--color-border-light-tertiary);
-    border-right-width: 0px;
-    border-radius: 0px;
-    flex: 0 1 50px;
+
+.module-credits-tooltip-list li:last-of-type {
+    border-width: 0px;
     margin: 0px;
     padding: 0px;
-    width: 50px;
-}
-#module-management .window-content form #module-credits-presets > button:first-child {
-    border-bottom-left-radius: 0.25rem;
-    border-top-left-radius: 0.25rem;
-    border-right-width: 0px;
-}
-#module-management .window-content form #module-credits-presets > button:last-child {
-    border-bottom-right-radius: 0.25rem;
-    border-top-right-radius: 0.25rem;
-    border-right-width: 1px;
-}
-#module-management .window-content form #module-credits-presets > button i {
-    margin: 0px;
-    transform: translateY(2px);
-}
-#module-management .window-content form #module-credits-presets > input,
-#module-management .window-content form #module-credits-presets > select {
-    border-radius: .0rem;
-    border-right-width: 0px;
-    display: block;
-    flex: 1;
-    font-size: 1rem;
-    height: auto;
-    min-height: 30px;
-    padding: .25rem .75rem;
-    width: 100%;
-}
-#module-management .window-content form #module-credits-presets > input {
-    display: none;
-}
-#module-management .window-content form #module-credits-presets.adding-preset > input {
-    display: block;
-}
-#module-management .window-content form #module-credits-presets.adding-preset > select {
-    display: none;
-}
-#module-management .window-content form #module-credits-presets.adding-preset > button#module-credits-cancel-preset i:before {
-    content: '\f00d';
-    font-weight: 900;
 }
 
+
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* IMPORT                                                            */
+/* IMPORT                                                             */
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 #module-credits-import-dialog .window-content .dialog-content ul {
     display: flex;
@@ -615,348 +328,195 @@
     margin: 0 1px;
     width: 100%;
 }
-/*#module-credits-import-dialog .window-content .dialog-content ul li:first-child {
+/*#module-credits-dialog .window-content .dialog-content ul li:first-child {
     font-weight: bold;
 }
-#module-credits-import-dialog .window-content .dialog-content ul li > *:first-child {
+#module-credits-dialog .window-content .dialog-content ul li > *:first-child {
     flex: 0 1 50px;
 }
-#module-credits-import-dialog .window-content .dialog-content ul li div:nth-child(2) {
+#module-credits-dialog .window-content .dialog-content ul li div:nth-child(2) {
     flex: 1;
     text-align: left;
 }
-#module-credits-import-dialog .window-content .dialog-content ul li > label {
+#module-credits-dialog .window-content .dialog-content ul li > label {
     flex: 1;
     font-weight: bold;
     text-align: left;
 }
-#module-credits-import-dialog .window-content .dialog-buttons {
+#module-credits-dialog .window-content .dialog-buttons {
     flex: 0 1;
 }*/
 
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Style Configure Settings -> Module Settings Window                 */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#client-settings #module-credits-settings-search {
-    padding: .5rem 1rem;
-    margin: 0px -8px;
-    border-bottom: 1px solid var(--color-border-light-tertiary);
-    position: relative;
-}
-#client-settings #module-credits-settings-search input {
-    min-height: 35px;
-    padding: .5rem 1rem;
-    height: auto
-}
-#client-settings #module-credits-settings-search button {
-    display: none;
-    position: absolute;
-    right: 15px;
-    width: 35px;
-    height: 35px;
-    border-width: 0px;
-    background: none;
-    font-size: 1rem;
-}
-#client-settings #module-credits-settings-search input:not(:placeholder-shown) ~ button {
-    display: inline;
-}
-#client-settings section.content [data-tab="modules"] .settings-list {
-    margin-left: -8px;
-    margin-right: -8px;
-    overflow-y: overlay;
+#module-credits-presets-header,
+#module-credits-presets-list {
+    list-style: none;
     padding: 0px;
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group.hide-setting {
-    display: none;
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group:nth-child(even) {
-    background-color: rgba(0, 0, 0, .03);
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-header {
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: 600;
     margin: 0px;
-    padding: .35rem 1rem;
-    padding-right: 45px;
-    position: relative;
 }
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-header:nth-child(even) {
-    background-color: rgba(0, 0, 0, .03);
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-header i {
-    position: absolute;
-    right: 15px;
-    transition: all 0.3s ease-in-out;
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group.collapsed .module-header i {
-    transform: rotate(180deg);
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-settings {
-    background-color: rgba(0, 0, 0, .03);
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-}
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group {
-    align-items: flex-start;
+#module-credits-presets-header li {
     border-bottom: 1px solid var(--color-border-light-primary);
-    justify-content: flex-end;
-    margin: 0px;
-    padding: .35rem 1rem;
+    font-size: var(--font-size-14);
+    font-weight: 600;
 }
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group:last-child {
-    border-bottom: 1px solid var(--color-underline-header);
+#module-credits-presets-list {
+    max-height: 177px;
+    overflow-y: auto;
 }
-#client-settings [data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group.submenu > button {
-    flex: 1 0 100%;
-    height: auto;
-    line-height: normal;
-}
-#client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group label {
-    flex: 2;
-}
-#client-settings #config-tabs div.tab[data-tab="modules"]  .settings-list .module-settings-group .module-settings .form-group .notes {
-    flex: 0 1 100%;
-}
-#client-settings #config-tabs div.tab[data-tab="modules"]  .settings-list .module-settings-group .module-settings .form-group:nth-child(odd) {
-    /*background-color: rgba(0, 0, 0, .05);*/
-}
-
-#client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group[data-input-type="checkbox"] {
-    flex-direction: row-reverse;
-}
-#client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group[data-input-type="checkbox"] label {
-    /*flex-basis: unset;*/
-}
-#client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group[data-input-type="checkbox"] .form-fields {
-    align-self: center;
-    justify-content: flex-start;
-    flex: 0 1 25px;
-}
-#client-settings #config-tabs div.tab[data-tab="modules"] .settings-list .module-settings-group .module-settings .form-group[data-input-type="checkbox"] .notes {
-    margin: 0 0 0 25px;
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Style Conflict Notification on Manage Modules Button               */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#module-credits-tooltip {
-    background: #333;
-    color: white;
-    font-weight: bold;
-    padding: 4px 8px;
-    font-size: 13px;
-    border-radius: 4px;
-    z-index: 1;
-}
-#module-credits-tooltip[data-show] {
-    display: block;
-}
-#module-credits-tooltip #module-credits-arrow,
-#module-credits-tooltip #module-credits-arrow::before {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    background: inherit;
-}
-#module-credits-tooltip #module-credits-arrow {
-    visibility: hidden;
-}
-#module-credits-tooltip #module-credits-arrow::before {
-    visibility: visible;
-    content: '';
-    transform: rotate(45deg);
-}
-#module-credits-tooltip[data-popper-placement^='top'] > #module-credits-arrow {
-	bottom: -4px;
-}
-#module-credits-tooltip[data-popper-placement^='bottom'] > #module-credits-arrow {
-	top: -4px;
-}
-#module-credits-tooltip[data-popper-placement^='left'] > #module-credits-arrow {
-	right: -4px;
-}
-#module-credits-tooltip[data-popper-placement^='right'] > #module-credits-arrow {
-	left: -4px;
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* Clean Up Module Management Interface                               */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#module-management .window-content form > p.notes {
-    display: none; /*  Probably useful to someone, but kinda pointless and uses up space */
-}
-#module-management .window-content form .list-filters {
-    align-items: stretch;
+#module-credits-presets-list li {
+    border-bottom: 1px solid var(--color-border-light-primary);
     display: flex;
-    flex-wrap: wrap;
-    position: relative;
-    width: 100%;
+    padding: 0.25rem 0px;
 }
-#module-management .window-content form .list-filters > input[type="text"] {
-    display: block;
-    border-radius: .25rem 0rem 0rem .25rem;
-    font-size: 1rem;
-    height: auto;
-    min-height: 30px;
-    padding: .25rem .75rem;
-    padding-right: 2rem;
-    width: 100%;
+#module-credits-presets-list li label {
+    align-self: center;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-#module-management .window-content form .list-filters > input[type="text"] + button[class^="fa"] {
-    background: transparent;
-    border-width: 0px;
-    cursor: pointer;
-    font-size: 1.2rem;
-    left: 0;
-    padding: 0px;
-    position: absolute;
-    top: 50%;
-    transform: translate(2.75rem, -50%);
-    width: auto;
-}
-#module-management .window-content form .list-filters > input[type="text"] + button[class^="fa"]:hover, 
-#module-management .window-content form .list-filters > input[type="text"] + button[class^="fa"]:focus {
-    box-shadow: none;
-    outline: none;
-}
-#module-management .window-content form .list-filters > a.filter {
-    background: var(--color-bg-btn-minor-inactive);
-    border: 1px solid var(--color-border-light-tertiary);
-    border-left-width: 0px;
-    font-size: 1rem;
-    font-weight: 400;
-    margin: 0px;
-    padding: .25rem .75rem;
-    user-select: none;
-}
-#module-management .window-content form .list-filters > button {
-    background: var(--color-bg-btn-minor-inactive);
-    border: 1px solid var(--color-border-light-tertiary);
-    border-left-width: 0px;
-    border-radius:  0rem .25rem .25rem 0rem;
-    flex: 0 0 50px;
-    height: auto;
-    line-height: normal;
-    margin: 0px;
-}
-#module-management .window-content form .list-filters > button:first-child {
-    border-left-width: 1px;
+#module-credits-presets-list li button {
+    border-radius: 0px;
     border-right-width: 0px;
-    border-radius:  .25rem 0rem 0rem .25rem;
-    flex: 0 0 25px;
+    flex: 0 0 30px;
+    margin: 0px;
+    text-align: center;
 }
-#module-management .window-content form .list-filters > button:first-child i {
+#module-credits-presets-list li button:first-of-type {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+#module-credits-presets-list li button:last-of-type {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    border-right-width: 1px;
+}
+#module-credits-presets-list li button i {
     margin: 0px;
 }
-#module-management .window-content form .list-filters > button:first-child + input {
-    border-radius:  0rem;
+input[name="module-credits-preset-title"] {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    width: 100%;
 }
-#module-management .window-content form .list-filters > a.filter:hover,
-#module-management .window-content form .list-filters > button:hover,
-#module-management .window-content form .list-filters > button:focus {
-    background-color: var(--color-bg-option);
-    box-shadow: none;
-    text-shadow: none;
+input[name="module-credits-preset-title"] + textarea {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-top-width: 0px;
+    border-color: var(--color-border-light-tertiary);
 }
-#module-management .window-content form .list-filters > a.filter.active,
-#module-management .window-content form .list-filters > button[title="Collapse"] {
-    background-color: var(--color-bg-btn-minor-active);
+
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* SETTINGS TAB                                                       */
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+#settings ul#game-details li.system-buttons {
+    display: flex;
 }
-#module-management .window-content form #module-list {
-    border-bottom: 1px solid var(--color-border-light-tertiary);
-    margin-left: -8px;
-    margin-right: -8px;
-    padding: 0px;
-}
-#module-management .window-content form #module-list.package-list .package {
-    padding: 0px;
-}
-#module-management .window-content form #module-list.package-list .package .package-overview {
+#settings ul#game-details li.system-buttons button {
     align-items: center;
+    border-radius: 0px;
+    border-right-width: 0px;
+    display: flex;
+    font-size: 0rem;
+    justify-content: center;
+}
+#settings ul#game-details li.system-buttons button i {
+    font-size: var(--font-size-14);
+    margin: 0px;
+}
+#settings ul#game-details li.system-buttons button:first-of-type {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+#settings ul#game-details li.system-buttons button:last-of-type {
+    border-bottom-right-radius: 3px;
+    border-top-right-radius: 3px;
+    border-right-width: 0px;
+}
+#settings ul#game-details li.system-buttons button:first-of-type:last-of-type {
+    font-size: var(--font-size-14);
+}
+#settings ul#game-details li.system-buttons button:first-of-type:last-of-type i {
+    margin-right: 0.25rem;
+}
+
+
+
+
+
+
+
+/*#ui-left #controls ol.control-tools:first-of-type {
+    margin: 0px;
+}
+#ui-left #controls ol.control-tools:first-of-type li:first-of-type {
+    border-top-left-radius: 5px;
+}
+#ui-left #controls ol.control-tools:first-of-type li:last-of-type {
+    border-bottom-left-radius: 5px;
+}
+#ui-left #controls ol.control-tools > li  {
+    background: rgba(25, 24, 19, 0.8);
+    border-radius: 0px;
+    border: 1px solid var(--color-border-dark);
+    border-top: 0px;
+    box-shadow: none;
+    margin: 0px;
+    padding: 0.25rem;
+}
+#ui-left #controls ol.control-tools > li:first-of-type {
+    border-top: 1px solid var(--color-border-dark);
+}
+#ui-left #controls ol.control-tools.sub-controls {
+    margin-left: -1px;
+}
+#ui-left #controls ol.control-tools.sub-controls > li {
+    background: rgba(35, 34, 29, 0.5);
+}
+#ui-left #controls ol.control-tools.sub-controls li:first-of-type {
+    border-top-right-radius: 5px;
+}
+#ui-left #controls ol.control-tools.sub-controls li:last-of-type {
+    border-bottom-right-radius: 5px;
+}
+
+#ui-left #controls ol.main-controls.control-tools > li.active {
+    background: rgba(35, 34, 29, 0.5);
+}
+#ui-left #controls ol.control-tools > li.active {
+    color: var(--color-border-highlight);
+}
+
+
+
+
+
+/*#settings.settings-sidebar h2 + div {
+    margin: 1rem 1.25rem;
+}
+#settings.settings-sidebar h2 + div button {
+    border-radius: 0px;
+    margin: 0px;
+    padding: 0.25rem 0.5rem;
+    padding-left: 45px;
+    position: relative;
+}
+#settings.settings-sidebar h2 + div button:first-of-type {
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+#settings.settings-sidebar h2 + div button:last-of-type {
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#settings.settings-sidebar h2 + div button i {
+    position: absolute;
+    left: 0px;
+    width: 45px;
+    height: 100%;
     display: flex;
     justify-content: center;
-    padding: 0px .75rem;
-    min-height: 25px;
-}
-
-#module-management .window-content form #module-list.package-list .package.hidden {
-    display: none;
-}
-#module-management .window-content form #module-list.package-list .package.even {
-    background-color: rgba(0, 0, 0, .03);
-}
-#module-management .window-content form #module-list.package-list .package .package-overview .package-title {
-    text-decoration: none;
-}
-#module-management .window-content form #module-list.package-list .package-title input[type="checkbox"] {
-    margin-left: 0px;
-    margin-right: 8px;
-}
-#module-management .window-content form #module-list.package-list .package .package-title span[class*="-conflict"] {
-    margin-right: 4px;
-}
-#module-management .window-content form #module-list.package-list .package .package-description {
-    background: var(--color-text-dark-primary);
-    color: var(--color-text-light-primary);
-    font-size: 0.9rem;
-    margin: 0px;
-    padding: .5rem .75rem;
-}
-#module-management .window-content form #module-list.package-list .package .package-description .package-metadata {
-    color: var(--color-text-light-primary);
-  list-style: none;
-  margin: 0rem;
-  margin-top: .5rem; 
-  padding: 0rem;
-}
-.window-app .window-content > .dialog-content p:first-child {
-    margin-top: 0px;
-    padding-top: 0px;
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* HANDLE FOR TIDY UI                                                 */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#module-management .enhanced-module-management {
-    display: none !important;
-}
-#module-management .enhanced-module-management ~ #module-list.package-list {
-    margin-bottom: 0px;
-    min-height: calc(100vh - 130px);
-}
-#module-management .enhanced-module-management ~ #module-credits-presets ~ #module-list.package-list {
-    min-height: calc(100vh - 175px);
-}
-#module-management .enhanced-module-management ~ #module-list.package-list .package-title span[class*="-conflict"] {
-    margin-right: 8px;
-}
-
-#client-settings.user-running-tidy-ui.window-app .window-content {
-    padding: 8px;
-}
-#client-settings.user-running-tidy-ui section.content [data-tab="modules"] .settings-list {
-    padding: 0px 8px;
-}
-#client-settings.user-running-tidy-ui.app.window-app.form #config-tabs .settings-list .module-wrapper:first-of-type h2.module-header {
-    margin-top: .5rem;
-}
-#client-settings.user-running-tidy-ui.window-app section.content [data-tab="modules"] .settings-list {
-    max-height: calc(100vh - 198px);
-}
-
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-/* HANDLE FOR Socket Settings                                         */
-/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
-#client-settings section.content [data-tab="modules"] .settings-list > .form-group {
-    border-bottom: 1px solid var(--color-underline-header);
-    cursor: pointer;
+    align-items: center;
+    top: 0px;
     font-size: 1rem;
-    font-weight: 600;
-    margin: 0px;
-    padding: .35rem 1rem;
-    position: relative
+    border-right: 1px solid var(--color-border-light-primary);
 }

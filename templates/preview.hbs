@@ -1,20 +1,44 @@
-<form action="#" class="{{DIALOG.ID}}-dialog">
-	<nav>
-		<ul>
-			{{#each items}}
-    			<li {{#if ../IsGM}}class="{{../DIALOG.ID}}-has-seen {{../DIALOG.ID}}-has-seen-{{this.hasSeen}}"{{/if}}>
-					<a class="{{../DIALOG.ID}}-dialog-link" data-load="{{@key}}">{{this.title}}</a>
+<div class="journal-sheet-container">
+	<aside class="sidebar journal-sidebar directory flexcol{{#unless IsMultipleItems}} hidden{{/unless}}">
+		<header class="directory-header">
+			<div class="header-search flexrow">
+				<input type="text" name="search" value="" autocomplete="off" placeholder="{{localize 'module-credits.dialog.search'}}">
+				<a class="action-button collapse-toggle" data-action="toggleCollapse" data-tooltip="{{localize 'module-credits.dialog.collapseModeLabel'}}"><i class="fa-solid fa-caret-right"></i></a>
+			</div>
+		</header>
+		<nav class="pages-list" aria-label="{{localize 'module-credits.dialog.NavLabel'}}" data-tooltip-direction="RIGHT">
+			<ol class="directory-list scrollable">
+				{{#each items}}
+				<li class="directory-item level1" data-module-id="{{@key}}" data-file-type="{{this.type}}" draggable="true">
+					<div class="page-heading">
+						<span class="page-number" data-tooltip="{{this.title}}">{{incIndex @index}}.</span>
+						<span class="page-title">{{this.title}}</span>
+						<span class="page-ownership{{#if this.hasSeen}} observer{{/if}}{{#unless @root.IsGM}} hidden{{/unless}}"><i class="fa-regular fa-eye{{#unless this.hasSeen}}-slash{{/unless}}"></i></span>
+					</div>
 				</li>
 			{{/each}}
-		</ul>
-	</nav>
-	<main class="{{DIALOG.ID}}-window {{#if IsMultipleItems}}{{else}}full-width{{/if}}">
-		<h2 class="{{DIALOG.ID}}-dialog-title">
-			{{#if IsMultipleItems}}<div class="{{DIALOG.ID}}-dialog-toggle"><i class="fas fa-chevron-circle-down"></i></div>{{/if}}
-			<span>DISPLAY TITLE HERE</span>
-		</h2>
-		<div class="{{DIALOG.ID}}-dialog-content">
-			DISPLAY MARKDOWN CONTENT HERE
+			</ol>
+		</nav>
+		<div class="action-buttons flexrow">
+			<button class="create{{#unless @root.IsGM}} hidden{{/unless}}" type="button" data-action="markAsSeen">
+				{{localize 'module-credits.dialog.markAsSeen'}}
+			</button>
+			<button class="previous" type="button" data-action="previous" data-tooltip="{{localize 'module-credits.dialog.previousPage'}}" disabled="">
+				<i class="fa-solid fa-chevron-left"></i>
+			</button>
+			<button class="next" type="button" data-action="next" data-tooltip="{{localize 'module-credits.dialog.nextPage'}}">
+				<i class="fa-solid fa-chevron-right"></i>
+			</button>
 		</div>
-	</main>
-</form>
+	</aside>
+	<section class="journal-entry-content flexcol">
+		<form class="journal-header">
+			<input class="title" name="name" type="text" value="" placeholder="Entry Title">
+		</form>
+		<div class="journal-entry-pages editable">
+			<div class="scrollable">
+				<article class="journal-entry-page text"></article>
+			</div>
+		</div>
+	</section>
+</div>

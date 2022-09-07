@@ -1,0 +1,237 @@
+// GET MODULE CORE
+import { MODULE } from '../_module.mjs';
+
+export class PresetDialog extends FormApplication {
+	constructor(packages) {
+		super();
+	}
+
+	static get defaultOptions() {
+		return {
+			...super.defaultOptions,
+			title: `${MODULE.TITLE} - Manage Presets`,
+			id: `${MODULE.ID}-preset-dialog`,
+			classes: ['dialog'],
+			template: `./modules/${MODULE.ID}/templates/presets.hbs`,
+			resizable: false,
+			width: $(window).width() > 400 ? 400 : $(window).width() - 100,
+			height: $(window).height() > 275 ? 275 : $(window).height() - 100
+		}
+	}
+
+	getData() {
+		return {
+			DIALOG: {
+				ID: MODULE.ID,
+				TITLE: MODULE.TITLE
+			},
+			presets: MODULE.setting('presets')
+		}
+	}
+	
+	activateListeners(html) {
+		super.activateListeners(html);
+
+		const presetInfo = (event) => {
+			const presetKey = event.target.closest('li').dataset.preset;
+			let preset = MODULE.setting('presets')[presetKey];
+			let uninstalledModules = preset.modules.filter((module) => {
+				return (game.modules.get(module.id) ?? false) == false;
+			});
+			let installedModules = preset.modules.filter((module) => {
+				return (game.modules.get(module.id) ?? false) != false;
+			});
+			let output = [];
+			if (uninstalledModules.length > 0) {
+				output.push('### Uninstalled Modules');
+				uninstalledModules.forEach(module => {
+					output.push(module.title);
+				})
+			}
+			if (installedModules.length > 0) {
+				if (uninstalledModules.length > 0) output.push('');
+				output.push('### Installed Modules');
+				installedModules.forEach(module => {
+					output.push(module.title);
+				})
+			}
+
+			Dialog.prompt({
+				id: `${MODULE.ID}-create-preset`,
+				title: MODULE.localize('title'),
+				content: `<p style="margin-top: 0px;">Modules in ${preset.name}</p>
+					<textarea readonly rows="15" style="margin-bottom: 0.5rem;">${output.join('\n')}</textarea>`
+			});
+		}
+
+		const updatePreset = (event) => {
+			const presetKey = event.target.closest('li').dataset.preset;
+			let presets = MODULE.setting('presets');
+
+			// Get Active Modules
+			const packages = document.querySelectorAll('#module-management #module-list li.package');
+			let presetPackages = [];
+			packages.forEach(elemPackage => {
+				if (elemPackage.querySelector('input[type="checkbox"]:checked') ?? false) {
+					presetPackages.push({
+						id: game.modules.get(elemPackage.dataset.moduleId).id,
+						title: game.modules.get(elemPackage.dataset.moduleId).title
+					})
+				}
+			});
+
+			Dialog.confirm({
+				id: `${MODULE.ID}-update-preset`,
+				title: MODULE.localize('title'),
+				content: `<p style="margin-top: 0px;">Update this Preset to the following Modules?</p>
+					<textarea readonly rows="${presetPackages.length <= 15 ? presetPackages.length + 2 : 15}" style="margin-bottom: 0.5rem;">### Active Modules\n${presetPackages.map(module => {
+						return module.title;
+					}).join('\n')}</textarea>`,
+				yes: (elemDialog) => {
+					presets[presetKey].modules = presetPackages;
+					MODULE.setting('presets', presets).then(response => {
+						MODULE.log('UPDATE', response);
+					});
+				},
+				no: (elemDialog) => {
+					return false;
+				}
+			});
+
+		}
+		const deletePreset = (event) => {
+			const presetKey = event.target.closest('li').dataset.preset;
+			let presets = MODULE.setting('presets');
+
+			Dialog.confirm({
+				id: `${MODULE.ID}-delete-preset`,
+				title: MODULE.localize('title'),
+				content: `<p style="margin-top: 0px;">Are you sure you want to delete the preset labeled <strong>${presets[presetKey].name}</strong>?</p>
+					<p>This action can <strong>NOT</strong> be undone!</p>`,
+				yes: (elemDialog) => {
+					delete presets[presetKey];
+					MODULE.setting('presets', presets).then(response => {
+						event.target.closest('li').remove();
+					});
+				},
+				no: (elemDialog) => {
+					return false;
+				}
+			});
+		}
+		const activatePreset = (event) => {
+			const presetKey = event.target.closest('li').dataset.preset;
+			let moduleStates = game.settings.get('core', ModuleManagement.CONFIG_SETTING);
+			let preset = MODULE.setting('presets')[presetKey];
+
+			Dialog.confirm({
+				id: `${MODULE.ID}-activate-preset`,
+				title: MODULE.localize('title'),
+				content: `<p style="margin-top: 0px;">This preset will enable the following Modules?</p>
+				<textarea readonly rows="${preset.modules.length <= 15 ? preset.modules.length + 2 : 15}" style="margin-bottom: 0.5rem;">### Activate Modules\n${preset.modules.filter((module) => {
+					return (game.modules.get(module.id) ?? false) != false;
+				}).map(module => {
+					return module.title;
+				}).join('\n')}</textarea>`,
+				yes: (elemDialog) => {
+					// Disable All Modules
+					for (const property in moduleStates)  moduleStates[property] = false;
+		
+					// Enable Modules
+					preset.modules.forEach(module => {
+						if (typeof moduleStates[module.id] != undefined) {
+							moduleStates[module.id] = true;
+						}
+					});
+		
+					// Update Modules and Reload Game
+					game.settings.set('core', ModuleManagement.CONFIG_SETTING, moduleStates).then((response) => {
+						location.reload();
+					});
+				},
+				no: (elemDialog) => {
+					return false;
+				}
+			});
+		}
+
+		// Manage Presets Buttons
+		html[0].querySelectorAll(`#${MODULE.ID}-presets-list li`).forEach(elemPreset => {
+			// INFO
+			elemPreset.querySelector('button[data-action="info"]').addEventListener('click', presetInfo);
+			// UPDATE
+			elemPreset.querySelector('button[data-action="update"]').addEventListener('click', updatePreset);
+			// Delete
+			elemPreset.querySelector('button[data-action="delete"]').addEventListener('click', deletePreset);
+			// ACTIVATE
+			elemPreset.querySelector('button[data-action="activate"]').addEventListener('click', activatePreset);
+		})
+
+		// Create a New Preset
+		html[html.length - 1].querySelector('.dialog-buttons button[data-action="create"]').addEventListener('click', (event) => {
+			const packages = document.querySelectorAll('#module-management #module-list li.package');
+			let presetPackages = [];
+			packages.forEach(elemPackage => {
+				if (elemPackage.querySelector('input[type="checkbox"]:checked') ?? false) {
+					presetPackages.push({
+						id: game.modules.get(elemPackage.dataset.moduleId).id,
+						title: game.modules.get(elemPackage.dataset.moduleId).title
+					})
+				}
+			});
+
+			return Dialog.confirm({
+				id: `${MODULE.ID}-create-preset`,
+				title: MODULE.localize('title'),
+				content: `<p style="margin-top: 0px;">Create a New Preset</p>
+					<input type="text" name="${MODULE.ID}-preset-title" placeholder="Preset Title" />
+					<textarea readonly rows="${presetPackages.length <= 15 ? presetPackages.length + 2 : 15}" style="margin-bottom: 0.5rem;">### Active Modules\n${presetPackages.map(module => {
+						return module.title;
+					}).join('\n')}</textarea>`,
+				yes: (elemDialog) => {
+					if (elemDialog[0].querySelector(`input[name="${MODULE.ID}-preset-title"]`)?.value?.length == 0) {
+						throw `<strong>${MODULE.TITLE}</strong> Please enter a Preset Title.`;
+					}
+
+					const presetKey = foundry.utils.randomID();
+					MODULE.setting('presets', mergeObject(MODULE.setting('presets'), { 
+						[presetKey]: {
+							"name": elemDialog[0].querySelector(`input[name="${MODULE.ID}-preset-title"]`)?.value,
+							"modules": presetPackages
+						}
+					}, { inplace: false })).then((response) => {
+						html[0].querySelector(`#${MODULE.ID}-presets-list`).insertAdjacentHTML('beforeend', `<li data-preset="${presetKey}">
+							<label for="preset-${presetKey}">${elemDialog[0].querySelector(`input[name="${MODULE.ID}-preset-title"]`)?.value}</label>
+							<button data-action="info" data-tooltip="info">
+								<i class="fa-solid fa-circle-info"></i>
+							</button>
+							<button data-action="update" data-tooltip="Update">
+								<i class="fa-solid fa-floppy-disk"></i>
+							</button>
+							<button data-action="delete" data-tooltip="Delete">
+								<i class="fa-solid fa-trash"></i>
+							</button>
+							<button data-action="activate" data-tooltip="Activate">
+								<i class="fa-solid fa-circle-play"></i>
+							</button>
+						</li>`);
+						
+						// UPDATE
+						html[0].querySelector(`#${MODULE.ID}-presets-list li:last-of-type button[data-action="update"]`).addEventListener('click', updatePreset);
+
+						// Delete
+						html[0].querySelector(`#${MODULE.ID}-presets-list li:last-of-type button[data-action="delete"]`).addEventListener('click', deletePreset);
+
+						// ACTIVATE
+						html[0].querySelector(`#${MODULE.ID}-presets-list li:last-of-type button[data-action="activate"]`).addEventListener('click', activatePreset);
+						return true;
+					});
+				},
+				no: () => {
+					return 'Player Rejected Setting'
+				}
+			}).then(response => {
+			});
+		})
+	}
+}

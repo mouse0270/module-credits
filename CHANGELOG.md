@@ -1,3 +1,16 @@
+# Version 2.0.0 - Manifest and You
+One of the major changes I've made in this update is that I've stopped trying to parse out the manifest module manually and instead use the data provided to me via the `game.modules` class. This does mean if your manifest is improperly formatted your module may not work with Module Management+ anymore. Take for example `authors` where we used to check for things like *twitter*, *patreon*, *github*, *reddit*, and *ko-fi* by placing those fields under the `authors` tag, now they will have to be under `authors.flags`.
+
+- Added Settings Tag to Module Management to Open the settings for that specific Module
+- Added Attributions for Modules
+- Added Attributions, Readme, Changelog for Systems
+- Added Scope Icon to settings to inform user if setting is a World/Client Setting
+- Added Sync Setting button to push a setting to a specific player (right click) or all players (left click).
+- Added the Ability to Lock Settings from Being Changed by Players.
+- Updated Changelog/Readme Preview Dialog to use Foundry v10+ Journal Theme and look
+- Disabled Global Conflicts (Some people were complaining about hangups, will look into re-enabling if requested, but I suspect many didn't use this feature.)
+- Dropped Support for Using both Tidy UI - Game Settings and Module Management+ at the same time. You are still able to import Tidy UI Module Lists using MM+
+
 # Version 1.1.11 - Forgot to disable code
 - Fixed "This is not a registered game setting" error
 

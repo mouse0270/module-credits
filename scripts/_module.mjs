@@ -1,10 +1,7 @@
-// GET REQUIRED LIBRARIES
-import './libraries/marked.min.js';
-import './libraries/purify.min.js';
 
-let _STORE = {};
 export class MODULE {
 	static ID = 'module-credits';
+
 	static OPTIONS = {
 		background: '#7030A0',
 		color: '#fff',
@@ -22,19 +19,8 @@ export class MODULE {
 		return this.localize('title');
 	}
 
-	static get api() {
-		return game.modules?.get(this.ID)?.api;
-	}
-
-	static get store() {
-		return _STORE;
-	}
-	static set store(data) {
-		_STORE = foundry.utils.mergeObject(_STORE, data, { inplace: false });
-	}
-
 	static localize(stringId, data = {}) {
-		return isObjectEmpty(data.hash ?? {}) ? game.i18n.localize(`${this.ID}.${stringId}`) : game.i18n.format(`${this.ID}.${stringId}`, data);
+		return foundry.utils.isEmpty(data.hash ?? {}) ? game.i18n.localize(`${this.ID}.${stringId}`) : game.i18n.format(`${this.ID}.${stringId}`, data);
 	}
 
 	static CONSOLE = (LOG_LEVEL, ...args) => {
@@ -84,10 +70,5 @@ export class MODULE {
 				return game.settings.set(this.ID, setting, args[1]);
 			}
 		}
-	}
-
-	// CUSTOM MODULE FUNCTIONS
-	static markup = (content, markedOptions = {}, DOMPurifyOptions = {}) => {
-		return DOMPurify.sanitize(marked.parse(content, markedOptions), mergeObject({USE_PROFILES: {html: true}}, DOMPurifyOptions, { inplace: false }));
 	}
 }

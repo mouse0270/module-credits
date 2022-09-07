@@ -16,6 +16,12 @@ Hooks.once('setup', () => {
 		scope: 'world',
 		config: false
 	});
+	MODULE.setting('register', 'lockedSettings', {
+		type: Object,
+		default: {},
+		scope: 'world',
+		config: false
+	});
 
 	// SET MODULE SETTINGS
 	MODULE.setting('register', 'showNewChangelogsOnLoad', {
@@ -23,16 +29,12 @@ Hooks.once('setup', () => {
 		default: true,
 		scope: 'world',
 	});
-	/*MODULE.setting('register', 'trackedModules', {
-		type: Object,
-		default: {},
-		config: false,
-		scope: 'world',
-	});*/
+	
 	MODULE.setting('register', 'trackedChangelogs', {
 		type: Object,
 		default: {},
-		config: false
+		config: false,
+		scope: 'client'
 	});
 	MODULE.setting('register', 'presets', {
 		type: Object,
@@ -48,7 +50,8 @@ Hooks.once('setup', () => {
 	MODULE.setting('register', 'bigPictureMode', {
 		type: Boolean,
 		default: true,
-		config: true
+		config: true,
+		restricted: true
 	});
 });
 
