@@ -45,21 +45,29 @@ export class MMP {
 
 	static async setUserSetting({moduleId, settingName, settingValue}) {
 		MODULE.log('RECIEVED SETTING', moduleId, settingName, settingValue, game.settings.settings.get(`${moduleId}.${settingName}`).name);
-		//return await game.settings.set(moduleId, settingName, settingValue);
-		return await Dialog.confirm({
-			title: MODULE.localize('title'),
-			content: `<p style="margin-top:0px;">Allow Your Game master to set the following setting for you</p> 
-				<p>${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).name)}<br/>
-				${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).hint)}</p>`,
-			yes: () => {
-				game.settings.set(moduleId, settingName, settingValue).then(response => {
-					return response;
-				})
-			},
-			no: () => {
-				return 'Player Rejected Setting'
-			}
-		});
+		const setSetting = (moduleId, settingName, settingValue) => {
+			game.settings.set(moduleId, settingName, settingValue).then(response => {
+				location.reload();
+				return response;
+			})
+		}
+
+		if (MODULE.setting('disableSyncPrompt')) {
+			return await setSetting(moduleId, settingName, settingValue); 
+		}else{
+			return await Dialog.confirm({
+				title: MODULE.localize('title'),
+				content: `<p style="margin-top:0px;">Allow Your Game master to set the following setting for you</p> 
+					<p>${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).name)}<br/>
+					${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).hint)}</p>`,
+				yes: () => {
+					return setSetting(moduleId, settingName, settingValue);
+				},
+				no: () => {
+					return 'Player Rejected Setting'
+				}
+			});
+		}
 	}
 
 	// DEFINE API
@@ -281,7 +289,7 @@ export class MMP {
 
 		if (game.user.isGM) {
 			// Add Presets Button
-			elem.querySelector('nav.list-filters').insertAdjacentHTML('afterbegin', `<button type="button" class="" data-action="presets" data-tooltip="Manage Presets">
+			elem.querySelector('nav.list-filters').insertAdjacentHTML('afterbegin', `<button type="button" class="" data-action="presets" data-tooltip="${MODULE.localize('tooltips.managePresets')}">
 				<i class="fa-solid fa-list-check"></i>
 			</button>`);
 			elem.querySelector('nav.list-filters button[data-action="presets"]').addEventListener('click', (event) => {
@@ -289,7 +297,7 @@ export class MMP {
 			});
 
 			// Add Export Button
-			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="export" data-tooltip="Export Modules">
+			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="export" data-tooltip="${MODULE.localize('tooltips.exportModules')}">
 				<i class="fa-solid fa-download"></i>
 			</button>`);
 			elem.querySelector('nav.list-filters button[data-action="export"]').addEventListener('click', (event) => {
@@ -298,7 +306,7 @@ export class MMP {
 
 			// Add Import Button
 			// ? Update import logic to be pure javascript
-			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="import" data-tooltip="Import Modules">
+			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="import" data-tooltip="${MODULE.localize('tooltips.importModules')}">
 				<i class="fa-solid fa-upload"></i>
 			</button>`);
 			elem.querySelector('nav.list-filters button[data-action="import"]').addEventListener('click', (event) => {
@@ -621,9 +629,9 @@ export class MMP {
 				}
 
 				if (settingDetails.scope == "client" && game.user.isGM) {
-					settingLabel.insertAdjacentHTML('afterbegin', '<i class="fa-solid fa-user" data-tooltip="Client Setting" data-tooltip-direction="UP"></i>');
+					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-user" data-tooltip="${MODULE.localize('tooltips.clientSetting')}" data-tooltip-direction="UP"></i>`);
 					if (this.socket) {
-						settingLabel.insertAdjacentHTML('afterbegin', '<i class="fa-solid fa-arrows-rotate" data-tooltip="Sync Setting" data-tooltip-direction="UP" data-action="sync"></i>');
+						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-arrows-rotate" data-tooltip="${MODULE.localize('tooltips.syncSetting')}" data-tooltip-direction="UP" data-action="sync"></i>`);
 
 						settingLabel.querySelector('[data-action="sync"]').addEventListener('click', (event) => {
 							Dialog.confirm({
@@ -666,7 +674,7 @@ export class MMP {
 
 						new ContextMenu($(settingLabel), '[data-action="sync"]', getActiveUser());
 					}
-					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? 'Unlock' : 'Lock'} Setting" data-tooltip-direction="UP" data-action="lock"></i>`);
+					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? MODULE.localize('tooltips.unlockSetting') : MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
 					settingLabel.querySelector('[data-action="lock"]').addEventListener('click', (event) => {
 						if (isLocked(settingID)) {
 							let lockedSettings = MODULE.setting('lockedSettings');
@@ -675,7 +683,7 @@ export class MMP {
 								MODULE.log('UNLOCKING', response);
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-lock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-unlock');
-								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = "Lock Setting";
+								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.lockSetting');
 							});
 						}else{
 							MODULE.setting('lockedSettings', foundry.utils.mergeObject(MODULE.setting('lockedSettings'), {
@@ -684,7 +692,7 @@ export class MMP {
 								MODULE.log('LOCKING', response);
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-unlock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-lock');
-								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = "Unock Setting";
+								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.unlockSetting');
 							})
 						}
 					});
@@ -693,12 +701,12 @@ export class MMP {
 						settingLabel.closest('.form-group').querySelectorAll('input, select, button').forEach(input => {
 							input.disabled = true;
 						});
-						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="Locked Setting" data-tooltip-direction="UP" data-action="lock"></i>`);
+						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
 					}
 				}
 				
 				if (settingDetails.scope == "world") {
-					settingLabel.insertAdjacentHTML('afterbegin', '<i class="fa-regular fa-earth-americas" data-tooltip="World Setting" data-tooltip-direction="UP"></i>');
+					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-regular fa-earth-americas" data-tooltip="${MODULE.localize('tooltips.worldSetting')}" data-tooltip-direction="UP"></i>`);
 				}
 			}
 		})
@@ -740,7 +748,7 @@ export class MMP {
 			if (readme || changelog || attributions || license) {
 				elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterend', '<li class="system-buttons"></li>');
 				if (readme  || ((game.system.readme || "").match(APIs.github) ?? false) || ((game.system.readme || "").match(APIs.rawGithub) ?? false)) {
-					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="readme" data-tooltip="readme">
+					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="readme" data-tooltip="${MODULE.localize('tags.readme')}">
 						<i class="fa-solid fa-circle-info"></i> Read Me
 					</button>`);
 					
@@ -758,7 +766,7 @@ export class MMP {
 				}
 
 				if (changelog  || ((game.system.changelog || "").match(APIs.github) ?? false) || ((game.system.changelog || "").match(APIs.rawGithub) ?? false)) {
-					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="changelog" data-tooltip="changelogs">
+					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="changelog" data-tooltip="${MODULE.localize('tags.changelog')}">
 						<i class="fa-solid fa-list"></i> Changelogs
 					</button>`);
 					
@@ -776,7 +784,7 @@ export class MMP {
 				}
 
 				if (attributions  || ((game.system.flags.attributions || "").match(APIs.github) ?? false) || ((game.system.flags.attributions || "").match(APIs.rawGithub) ?? false)) {
-					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="attributions" data-tooltip="Attributions">
+					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="attributions" data-tooltip="${MODULE.localize('tags.attributions')}">
 						<i class="fa-brands fa-creative-commons-by"></i> Attributions
 					</button>`);
 					
@@ -792,24 +800,10 @@ export class MMP {
 						}).render(true);
 					});
 				}
-				//elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="settings" data-tooltip="System Settings"><i class="fas fa-cogs"></i> System Settings</button>`);
 			}
 
 			// Hide Active Modules
 			elem[0].querySelector('#game-details li.modules').classList.add('hidden');
-
-			// Add System Readme
-			/*elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterbegin', `<span class="readme" data-tooltip="${MODULE.localize("tags.readme")}" style="float: left;padding-right: 0.25rem;">
-				<i class="fa-solid fa-circle-info"></i>
-			</span>`);
-			// Add System Changelog
-			elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterbegin', `<span class="changelog" data-tooltip="${MODULE.localize("tags.changelog")}" style="float: left;padding-right: 0.25rem;">
-				<i class="fa-solid fa-list"></i>
-			</span>`);
-			// Add System Attributions
-			elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterbegin', `<span class="attributions" data-tooltip="${MODULE.localize("tags.attributions")}" style="float: left;padding-right: 0.25rem;">
-				<i class="fa-brands fa-creative-commons-by"></i>
-			</span>`);*/
 		}
 	}
 }

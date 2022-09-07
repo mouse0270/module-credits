@@ -1,3 +1,8 @@
+# Version 2.0.1 - The Things I forget About You.
+- Fixed missing Localization for Settings
+- Actually disabled `Global Conflicts` option for the time being
+- Sync setting no longer by default prompts users. There is a setting to enable prompt
+
 # Version 2.0.0 - Manifest and You
 One of the major changes I've made in this update is that I've stopped trying to parse out the manifest module manually and instead use the data provided to me via the `game.modules` class. This does mean if your manifest is improperly formatted your module may not work with Module Management+ anymore. Take for example `authors` where we used to check for things like *twitter*, *patreon*, *github*, *reddit*, and *ko-fi* by placing those fields under the `authors` tag, now they will have to be under `authors.flags`.
 

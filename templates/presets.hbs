@@ -8,16 +8,16 @@
 		{{#each presets}}
 		<li data-preset="{{@key}}">
 			<label for="preset-{{@key}}">{{name}}</label>
-			<button data-action="info" data-tooltip="info">
+			<button data-action="info" data-tooltip="{{localize 'module-credits.dialog.presets.info'}}">
 				<i class="fa-solid fa-circle-info"></i>
 			</button>
-			<button data-action="update" data-tooltip="Update">
+			<button data-action="update" data-tooltip="{{localize 'module-credits.dialog.presets.update'}}">
 				<i class="fa-solid fa-floppy-disk"></i>
 			</button>
-			<button data-action="delete" data-tooltip="Delete">
+			<button data-action="delete" data-tooltip="{{localize 'module-credits.dialog.presets.delete'}}">
 				<i class="fa-solid fa-trash"></i>
 			</button>
-			<button data-action="activate" data-tooltip="Activate">
+			<button data-action="activate" data-tooltip="{{localize 'module-credits.dialog.presets.activate'}}">
 				<i class="fa-solid fa-circle-play"></i>
 			</button>
 		</li>
@@ -26,6 +26,6 @@
 </div>
 <div class="dialog-buttons" style="flex: 0 1">
 	<button class="dialog-button create" data-action="create">
-		<i class="fa-solid fa-plus"></i> Create New Preset
+		<i class="fa-solid fa-plus"></i> {{localize 'module-credits.dialog.presets.create'}}
 	</button>
 </div>

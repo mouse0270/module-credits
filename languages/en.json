@@ -3,11 +3,31 @@
 		"title": "Module Management+",
 		"settings": {
 			"showNewChangelogsOnLoad": {
-				"name": "Show New Changelogs on Load"
+				"name": "Show New Changelogs on Load",
+				"hint": "If a changelog is marked as unseen and this setting is enabled a dialog will appear showing all changelogs that haven't been marked as seen."
 			},
 			"bigPictureMode": {
-				"name": "Big Picture Mode"
+				"name": "Big Picture Mode",
+				"hint": "Enabling this feature will set the Module Management and Configure Settings windows to the full height of the foundry window."
+			},
+			"enableGlobalConflicts": {
+				"name": "Enable Global Conflicts",
+				"hint": "Disabling this setting will prevent MM+ from reaching out to the web and grabbing a live list of global conflicts. If this feature is disabled you may be missing known issues and/or conflicts that were not including in modules manifest file."
+			},
+			"disableSyncPrompt": {
+				"name": "Disable Prompt when Syncing Settings",
+				"hint": "This will prevent users from getting a notification asking them to confirm if a setting should be synced or not. Instead it will force the setting with no prompt."
 			}
+		},
+		"tooltips": {
+			"managePresets": "Manage Presets",
+			"exportModules": "Export Modules",
+			"importModules": "Import Modules",
+			"worldSetting": "World Setting",
+			"clientSetting": "Client Setting",
+			"syncSetting": "Sync Setting",
+			"lockSetting": "Lock Setting",
+			"unlockSetting": "Unlock Setting"
 		},
 		"tags": {
 			"socket": "Module uses Socket API",
@@ -26,7 +46,14 @@
 			"navLabel": "Table of Contents",
 			"markAsSeen": "Mark as Seen",
 			"previousPage": "Previous Page",
-			"nextPage": "Next Page"
+			"nextPage": "Next Page",
+			"presets": {
+				"info": "Info",
+				"update": "Update",
+				"delete": "Delete",
+				"activate": "Activate",
+				"create": "Create New Preset"
+			}
 		}
 	}
 }

@@ -24,11 +24,6 @@ Hooks.once('setup', () => {
 	});
 
 	// SET MODULE SETTINGS
-	MODULE.setting('register', 'showNewChangelogsOnLoad', {
-		type: Boolean,
-		default: true,
-		scope: 'world',
-	});
 	
 	MODULE.setting('register', 'trackedChangelogs', {
 		type: Object,
@@ -41,17 +36,27 @@ Hooks.once('setup', () => {
 		default: {},
 		config: false
 	});
-	MODULE.setting('register', 'enableGlobalConflicts', {
+	MODULE.setting('register', 'disableSyncPrompt', {
 		type: Boolean,
 		default: true,
 		config: true,
+		scope: 'world'
+	});
+	MODULE.setting('register', 'showNewChangelogsOnLoad', {
+		type: Boolean,
+		default: true,
+		scope: 'world',
+	});
+	MODULE.setting('register', 'enableGlobalConflicts', {
+		type: Boolean,
+		default: true,
+		config: false,
 		scope: 'world',
 	});
 	MODULE.setting('register', 'bigPictureMode', {
 		type: Boolean,
 		default: true,
 		config: true,
-		restricted: true
 	});
 });
 
