@@ -1,3 +1,7 @@
+# Version 2.0.2 - I adore the things you do.
+- Fixed `querySelector` for triggering changelogs
+- TODO Remove marked.js and use showdown which is built into foundry
+
 # Version 2.0.1 - The Things I forget About You.
 - Fixed missing Localization for Settings
 - Actually disabled `Global Conflicts` option for the time being

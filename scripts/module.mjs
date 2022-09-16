@@ -725,7 +725,7 @@ export class MMP {
 					<i class="fa-solid fa-list"></i> Changelogs
 				</button>`);
 
-				elem[0].querySelector('#settings-documentation button[data-action="changelogs"').addEventListener('click', async (event) => {
+				elem[0].querySelector('#settings-documentation button[data-action="changelogs"]').addEventListener('click', async (event) => {
 					let changelogs = await (!game.user.isGM ?  MMP.socket.executeAsGM('getGMSetting', {moduleId: MODULE.ID, settingName: 'trackedChangelogs'}) : MODULE.setting('trackedChangelogs'));
 					new PreviewDialog(changelogs).render(true);
 				})
