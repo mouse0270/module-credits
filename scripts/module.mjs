@@ -254,13 +254,40 @@ export class MMP {
 	// F### Your Emoji (Better Title Sorting)
 	// ? Needs to be rewritten to use plain JS
 	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+	static smartLabel = (module) => {
+		// If user has overwritten Module Name, Return Overwrite
+		if (MODULE.setting('renamedModules')[module.id] ?? false) return MODULE.setting('renamedModules')[module.id];
+
+		// Handle for Smart Prefixing
+		if (MODULE.setting('smartPrefix')) {
+			// Merge Library Modules
+			if (module?.library ?? false) return `Library - ${module.title}`;
+			// Is Module a UI Module
+			if (module.title.includes('UI') ?? false) return `UI - ${module.title}`;
+			// Is Module a Map Pack
+			if (module.title.includes('Maps') || module.title.includes('Battlemap'))  return `Maps - ${module.title}`;
+		}
+		
+		// If Auto Prefix is Disabled, return Module Title
+		if (!MODULE.setting('autoPrefixModules')) return module.title;
+		// If Module does not require any other modules, return Module title
+		if ((module?.relationships?.requires ?? []).length == 0) return module.title;
+
+		// Build Prefix based off Module Requirements
+		let prefix = "";
+		(module?.relationships?.requires ?? []).forEach(requiredModule => {
+			// Exclude Library Modules
+			if (!game.modules.get(requiredModule?.id)?.library ?? false) {
+				prefix += `${MODULE.setting('renamedModules')[requiredModule?.id] ?? game.modules.get(requiredModule?.id).title} - `;
+			}
+		});
+
+		return `${prefix}${module.title}`;
+	}
+
 	static screwYourEmoji(elements, titleSelector) {
 		$(elements).each((index, element) => {
-			if (MODULE.setting('renamedModules')[element.dataset.moduleId] ?? false) {
-				//element.querySelector(titleSelector).textContent = MODULE.setting('renamedModules')[element.dataset.moduleId]
-				//element.querySelector(titleSelector).innerText = MODULE.setting('renamedModules')[element.dataset.moduleId];
-				$(element.querySelector(titleSelector)).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(MODULE.setting('renamedModules')[element.dataset.moduleId]);
-			}
+			$(element.querySelector(titleSelector)).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(this.smartLabel(game.modules.get(element.dataset.moduleId)));
 			$(element).attr('data-sort-title', $(element).find(titleSelector).text().toUpperCase().replace(/[^\w]/gi, ''));
 		});
 
@@ -446,12 +473,11 @@ export class MMP {
 				icon: '',
 				condition: game.user.isGM,
 				callback: (packageElem => {
-					MODULE.log(packageElem);
 					return Dialog.confirm({
 						id: `${MODULE.ID}-rename-module`,
 						title: MODULE.localize('title'),
 						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.renameModule')}</p>
-							<input type="text" name="${MODULE.ID}-rename-module-title" placeholder="${MODULE.localize('dialog.renameModule')}" value="${packageElem[0].querySelector('label.package-title').textContent.trim()}"/>`,
+							<input type="text" name="${MODULE.ID}-rename-module-title" value="${packageElem[0].querySelector('label.package-title').textContent.trim()}"/>`,
 						yes: (elemDialog) => {
 							if (elemDialog[0].querySelector(`input[name="${MODULE.ID}-rename-module-title"]`).value.length >= 0) {
 								MODULE.setting('renamedModules', foundry.utils.mergeObject(MODULE.setting('renamedModules'), {

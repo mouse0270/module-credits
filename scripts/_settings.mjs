@@ -31,6 +31,8 @@ Hooks.once('setup', () => {
 
 	// SET MODULE SETTINGS
 	const trackedChangelogs =  {
+		name: 'lib-themer.settings.trackedChangelogs.name',
+		hint: 'lib-themer.settings.trackedChangelogs.hint',
 		type: Object,
 		default: {},
 		config: false,
@@ -42,6 +44,8 @@ Hooks.once('setup', () => {
 		scope: 'world',
 	}
 	const showNewChangelogsOnLoad = {
+		name: `${MODULE.ID}.settings.showNewChangelogsOnLoad.name`,
+		hint: `${MODULE.ID}.settings.showNewChangelogsOnLoad.hint`,
 		type: Boolean,
 		default: true,
 		scope: 'world',
@@ -51,17 +55,35 @@ Hooks.once('setup', () => {
 		default: {},
 		config: false
 	}
+	const autoPrefixModules = {
+		name: `${MODULE.ID}.settings.autoPrefixModules.name`,
+		hint: `${MODULE.ID}.settings.autoPrefixModules.hint`,
+		type: Boolean,
+		default: {},
+		config: true
+	}
+	const smartPrefix = {
+		name: `${MODULE.ID}.settings.smartPrefix.name`,
+		hint: `${MODULE.ID}.settings.smartPrefix.hint`,
+		type: Boolean,
+		default: {},
+		config: true
+	}
 	if (game.modules.get('lib-server-setting')?.active ?? false) {
 		Hooks.once('lib-server-setting.Setup', async (SETTING) => {
 			SETTING(MODULE.ID, 'trackedChangelogs', trackedChangelogs);
 			SETTING(MODULE.ID, 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
 			SETTING(MODULE.ID, 'renamedModules', renamedModules);
+			SETTING(MODULE.ID, 'autoPrefixModules', autoPrefixModules);
+			SETTING(MODULE.ID, 'smartPrefix', smartPrefix);
 			SETTING(MODULE.ID, 'presets', presets);
 		});
 	}else{
 		MODULE.setting('register', 'trackedChangelogs', trackedChangelogs);
 		MODULE.setting('register', 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
 		MODULE.setting('register', 'renamedModules', renamedModules);
+		MODULE.setting('register', 'autoPrefixModules', autoPrefixModules);
+		MODULE.setting('register', 'smartPrefix', smartPrefix);
 		MODULE.setting('register', 'presets', presets);
 	}
 

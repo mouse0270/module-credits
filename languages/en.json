@@ -17,6 +17,14 @@
 			"disableSyncPrompt": {
 				"name": "Disable Prompt when Syncing Settings",
 				"hint": "This will prevent users from getting a notification asking them to confirm if a setting should be synced or not. Instead it will force the setting with no prompt."
+			},
+			"autoPrefixModules": {
+				"name": "Auto Prefix Modules",
+				"hint": "This will prefix the modules title with any required module titles."
+			},
+			"smartPrefix": {
+				"name": "Smart Prefix",
+				"hint": "This attempts to prefix titles based on what it thinks is best. For example modules with the library flag will be prefixed with Library, and modules with the would UI in the title will be prefixed with UI. This may not correctly prefix modules, you can override the prefix by right clicking and assigning an override name."
 			}
 		},
 		"tooltips": {
