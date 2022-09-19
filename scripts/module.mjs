@@ -470,7 +470,7 @@ export class MMP {
 			// Add Ability to Rename Package Title for Better Sorting
 			new ContextMenu($(elemPackage), '.package-overview ', [{
 				name: 'Rename Module',
-				icon: '',
+				icon: '<i class="fa-duotone fa-pen-to-square"></i>',
 				condition: game.user.isGM,
 				callback: (packageElem => {
 					return Dialog.confirm({
@@ -492,6 +492,17 @@ export class MMP {
 						}
 					}).then(response => {
 					});
+				})
+			}, {
+				name: 'Restore Default Name',
+				icon: '<i class="fa-duotone fa-rotate"></i>',
+				condition: game.user.isGM && (MODULE.setting('renamedModules')[moduleKey] ?? false),
+				callback: (packageElem => {
+					let renamedModules = MODULE.setting('renamedModules');
+					delete MODULE.setting('renamedModules')[moduleKey];
+					MODULE.setting('renamedModules', renamedModules).then(response => {
+						new ModuleManagement().render(true);
+					})
 				})
 			}]);
 

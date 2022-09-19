@@ -1,6 +1,9 @@
 # Version 2.0.2 - I adore the things you do.
 - Fixed `querySelector` for triggering changelogs
-- TODO Remove marked.js and use showdown which is built into foundry
+- Added the ability to rename modules text to allow you to better organize your modules.
+- Added settings for auto prefix and smart prefix module titles
+- remove `lib - ` when using smart prefix since smart prefix adds `Library - ` which is just the longer version of that.
+- Remove marked.js and use showdown which is built into foundry
 
 # Version 2.0.1 - The Things I forget About You.
 - Fixed missing Localization for Settings

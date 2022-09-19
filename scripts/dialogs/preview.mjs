@@ -1,6 +1,4 @@
 // GET REQUIRED LIBRARIES
-import '../libraries/marked.min.js';
-import '../libraries/purify.min.js';
 
 // GET MODULE CORE
 import { MODULE } from '../_module.mjs';
@@ -55,7 +53,7 @@ export class PreviewDialog extends FormApplication {
 					elem.classList.add('active');
 					// Set changelog content
 					game.modules.get(MODULE.ID).API.getContent(this.IsSystem ? game.system : game.modules.get(elem.dataset.moduleId), elem.dataset.fileType, { dir: this.IsSystem ? 'systems' : 'modules'}).then(response => {
-						let content = DOMPurify.sanitize(marked.parse(response, {}), mergeObject({USE_PROFILES: {html: true}}, {}, { inplace: false }));
+						let content = new showdown.Converter().makeHtml(response)
 						html[0].querySelector('section.journal-entry-content .journal-header input.title').value = (this.IsSystem ? game.system : game.modules.get(elem.dataset.moduleId)).title;
 						html[0].querySelector('section.journal-entry-content .journal-entry-page').innerHTML = content;
 
