@@ -30,6 +30,18 @@ Hooks.once('setup', () => {
 	});
 
 	// SET MODULE SETTINGS
+	MODULE.setting('register', 'disableSyncPrompt', {
+		type: Boolean,
+		default: true,
+		config: true,
+		scope: 'world'
+	});
+	MODULE.setting('register', 'bigPictureMode', {
+		type: Boolean,
+		default: true,
+		config: true,
+	});
+
 	const trackedChangelogs =  {
 		name: 'lib-themer.settings.trackedChangelogs.name',
 		hint: 'lib-themer.settings.trackedChangelogs.hint',
@@ -86,17 +98,5 @@ Hooks.once('setup', () => {
 		MODULE.setting('register', 'smartPrefix', smartPrefix);
 		MODULE.setting('register', 'presets', presets);
 	}
-
-	MODULE.setting('register', 'disableSyncPrompt', {
-		type: Boolean,
-		default: true,
-		config: true,
-		scope: 'world'
-	});
-	MODULE.setting('register', 'bigPictureMode', {
-		type: Boolean,
-		default: true,
-		config: true,
-	});
 });
 

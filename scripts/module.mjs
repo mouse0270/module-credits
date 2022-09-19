@@ -261,7 +261,7 @@ export class MMP {
 		// Handle for Smart Prefixing
 		if (MODULE.setting('smartPrefix')) {
 			// Merge Library Modules
-			if (module?.library ?? false) return `Library - ${module.title}`;
+			if (module?.library ?? false) return `Library - ${module.title.replace('lib - ', '')}`;
 			// Is Module a UI Module
 			if (module.title.includes('UI') ?? false) return `UI - ${module.title}`;
 			// Is Module a Map Pack
