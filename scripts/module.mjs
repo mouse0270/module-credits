@@ -256,6 +256,11 @@ export class MMP {
 	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 	static screwYourEmoji(elements, titleSelector) {
 		$(elements).each((index, element) => {
+			if (MODULE.setting('renamedModules')[element.dataset.moduleId] ?? false) {
+				//element.querySelector(titleSelector).textContent = MODULE.setting('renamedModules')[element.dataset.moduleId]
+				//element.querySelector(titleSelector).innerText = MODULE.setting('renamedModules')[element.dataset.moduleId];
+				$(element.querySelector(titleSelector)).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(MODULE.setting('renamedModules')[element.dataset.moduleId]);
+			}
 			$(element).attr('data-sort-title', $(element).find(titleSelector).text().toUpperCase().replace(/[^\w]/gi, ''));
 		});
 
@@ -265,7 +270,7 @@ export class MMP {
 		}).appendTo($(elements).parent())
 	}
 
-	static async renderModuleManagement(ModuleManagement, elem, options) {
+	static async renderModuleManagement(app, elem, options) {
 		// Supported Remote APIs
 		const APIs = {
 			github: /https?:\/\/github.com\/(?<user>[^/]+)\/(?<repo>[^/]+)\/blob\/[^/]+\/(?<path>.*)/,
@@ -434,6 +439,35 @@ export class MMP {
 			let attributions = getFiles ? getFiles.filter(file => file.toLowerCase().endsWith('ATTRIBUTIONS.md'.toLowerCase()))[0] : false;
 			// Get License File
 			let license = false; // Foundry File Picker Does not Display this File
+
+			// Add Ability to Rename Package Title for Better Sorting
+			new ContextMenu($(elemPackage), '.package-overview ', [{
+				name: 'Rename Module',
+				icon: '',
+				condition: game.user.isGM,
+				callback: (packageElem => {
+					MODULE.log(packageElem);
+					return Dialog.confirm({
+						id: `${MODULE.ID}-rename-module`,
+						title: MODULE.localize('title'),
+						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.renameModule')}</p>
+							<input type="text" name="${MODULE.ID}-rename-module-title" placeholder="${MODULE.localize('dialog.renameModule')}" value="${packageElem[0].querySelector('label.package-title').textContent.trim()}"/>`,
+						yes: (elemDialog) => {
+							if (elemDialog[0].querySelector(`input[name="${MODULE.ID}-rename-module-title"]`).value.length >= 0) {
+								MODULE.setting('renamedModules', foundry.utils.mergeObject(MODULE.setting('renamedModules'), {
+									[packageElem[0].closest('li.package').dataset.moduleId]: elemDialog[0].querySelector(`input[name="${MODULE.ID}-rename-module-title"]`).value
+								}, { inplace: false })).then(response => {
+									new ModuleManagement().render(true);
+								});
+							}
+						},
+						no: () => {
+							return false;
+						}
+					}).then(response => {
+					});
+				})
+			}]);
 
 			// Add Setting Tag if Module has Editable Tags
 			if (hasSettings?.[moduleKey] ?? false) {

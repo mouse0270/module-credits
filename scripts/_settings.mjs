@@ -28,12 +28,6 @@ Hooks.once('setup', () => {
 		scope: 'world',
 		config: false
 	});
-	MODULE.setting('register', 'renamedModules', {
-		type: Object,
-		default: {},
-		scope: 'world',
-		config: false
-	});
 
 	// SET MODULE SETTINGS
 	const trackedChangelogs =  {
@@ -41,29 +35,41 @@ Hooks.once('setup', () => {
 		default: {},
 		config: false,
 	}
-	if (game.modules.get('lib-server-setting')?.active ?? false) {
-		Hooks.once('lib-server-setting.Setup', async (SETTING) => {
-			SETTING(MODULE.ID, 'trackedChangelogs', trackedChangelogs);
-		});
-	}else{
-		MODULE.setting('register', 'trackedChangelogs', trackedChangelogs);
+	const presets = {
+		type: Object,
+		default: {},
+		config: false,
+		scope: 'world',
 	}
-
-	MODULE.setting('register', 'presets', {
+	const showNewChangelogsOnLoad = {
+		type: Boolean,
+		default: true,
+		scope: 'world',
+	}
+	const renamedModules = {
 		type: Object,
 		default: {},
 		config: false
-	});
+	}
+	if (game.modules.get('lib-server-setting')?.active ?? false) {
+		Hooks.once('lib-server-setting.Setup', async (SETTING) => {
+			SETTING(MODULE.ID, 'trackedChangelogs', trackedChangelogs);
+			SETTING(MODULE.ID, 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
+			SETTING(MODULE.ID, 'renamedModules', renamedModules);
+			SETTING(MODULE.ID, 'presets', presets);
+		});
+	}else{
+		MODULE.setting('register', 'trackedChangelogs', trackedChangelogs);
+		MODULE.setting('register', 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
+		MODULE.setting('register', 'renamedModules', renamedModules);
+		MODULE.setting('register', 'presets', presets);
+	}
+
 	MODULE.setting('register', 'disableSyncPrompt', {
 		type: Boolean,
 		default: true,
 		config: true,
 		scope: 'world'
-	});
-	MODULE.setting('register', 'showNewChangelogsOnLoad', {
-		type: Boolean,
-		default: true,
-		scope: 'world',
 	});
 	MODULE.setting('register', 'bigPictureMode', {
 		type: Boolean,
