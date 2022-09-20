@@ -1,3 +1,6 @@
+# Version 2.0.3 - Wait required Modules can be missing?!?!?
+- Added Check to verify that when trying to prefix modules, that the required module exists.
+
 # Version 2.0.2 - I adore the things you do.
 - Fixed `querySelector` for triggering changelogs
 - Added the ability to rename modules text to allow you to better organize your modules.

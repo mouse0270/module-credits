@@ -277,7 +277,7 @@ export class MMP {
 		let prefix = "";
 		(module?.relationships?.requires ?? []).forEach(requiredModule => {
 			// Exclude Library Modules
-			if (!game.modules.get(requiredModule?.id)?.library ?? false) {
+			if ((!game.modules.get(requiredModule?.id)?.library ?? false) && (game.modules.get(requiredModule?.id)?.title ?? false)) {
 				prefix += `${MODULE.setting('renamedModules')[requiredModule?.id] ?? game.modules.get(requiredModule?.id).title} - `;
 			}
 		});
