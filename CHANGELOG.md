@@ -1,3 +1,6 @@
+# Version 2.0.5 - Hey Are you Still there?!?!?
+- Added Check to make sure migration can get `namespace` and `key`.
+
 # Version 2.0.4 - Chains and Padlocks ;)
 - Fixed issue with Locked Setting locking all Settings
 - Added Option to Hide Locked Settings from Client
