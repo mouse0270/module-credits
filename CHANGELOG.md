@@ -3,6 +3,8 @@
 - Added Option to Hide Locked Settings from Client
 - Added Migration Control
 - Locked Setting Should now update Live for Players as GM changes them
+- Sync button is hidden on a locked setting as a locked setting has its setting automatically synced to all users
+- Fixed type in `Smart Prefix` hint text to properly read `word`
 - Known Issue: Because of the way I hide settings, there is a small flash for players when opening the settings window
 - Known Issue: The setting counter does not update when settings are hidden from player.
 

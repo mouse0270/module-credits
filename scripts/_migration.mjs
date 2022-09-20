@@ -6,7 +6,7 @@ Hooks.once('ready', () => {
 
 	if (foundry.utils.isNewerVersion('2.0.4', MODULE.setting('clientMigratedVersion')) || foundry.utils.isNewerVersion('2.0.4', MODULE.setting('worldMigratedVersion'))) {
 		// Migrate Locked Settings.
-		ui.notifications.info(`<div class="${MODULE.ID}-migration-tooltip-203"><strong>${MODULE.TITLE}:</strong> ${MODULE.localize('migration.v203.starting')}</div>`, { permanent: true});
+		ui.notifications.info(`<div class="${MODULE.ID}-migration-tooltip-203"><strong>${MODULE.TITLE}:</strong> ${MODULE.localize('migration.v204.starting')}</div>`, { permanent: true});
 
 		let newLockedSettings = {};
 		for (const [key, value] of Object.entries(MODULE.setting('lockedSettings'))) {
@@ -21,7 +21,7 @@ Hooks.once('ready', () => {
 			Dialog.prompt({
 				id: `${MODULE.ID}-migration-complete`,
 				title: MODULE.TITLE,
-				content: `<p>${MODULE.localize('migration.v203.complete')}</p>`,
+				content: `<p>${MODULE.localize('migration.v204.complete')}</p>`,
 				callback: () => {
 					MODULE.setting('clientMigratedVersion', '2.0.4').then(response => {
 						MODULE.setting('worldMigratedVersion', '2.0.4').then(response => {

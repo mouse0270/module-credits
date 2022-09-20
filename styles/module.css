@@ -236,6 +236,9 @@
 #client-settings form.categories .category .form-group label i {
     padding-right: 0.25rem;
 }
+#client-settings form.categories .category .form-group label i.fa-lock[data-action="lock"] + [data-action="sync"] {
+    display: none;
+}
 
 
 

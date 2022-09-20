@@ -28,7 +28,7 @@
 			},
 			"smartPrefix": {
 				"name": "Smart Prefix",
-				"hint": "This attempts to prefix titles based on what it thinks is best. For example modules with the library flag will be prefixed with Library, and modules with the would UI in the title will be prefixed with UI. This may not correctly prefix modules, you can override the prefix by right clicking and assigning an override name."
+				"hint": "This attempts to prefix titles based on what it thinks is best. For example modules with the library flag will be prefixed with Library, and modules with the word UI in the title will be prefixed with UI. This may not correctly prefix modules, you can override the prefix by right clicking and assigning an override name."
 			}
 		},
 		"tooltips": {
@@ -68,7 +68,7 @@
 			}
 		},
 		"migration": {
-			"v203": {
+			"v204": {
 				"starting": "Migrating Locked Settings, Please wait.",
 				"complete": "Migration to v2.0.3 is complete and requires you to reload your page."
 			}
