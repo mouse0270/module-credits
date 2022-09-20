@@ -2,7 +2,7 @@
 import { MODULE } from './_module.mjs';
 
 Hooks.once('ready', () => {
-	const moduleDetails = game.modules.get(MODULE.id)
+	const moduleDetails = game.modules.get(MODULE.ID)
 
 	if (foundry.utils.isNewerVersion('2.0.4', MODULE.setting('clientMigratedVersion')) || foundry.utils.isNewerVersion('2.0.4', MODULE.setting('worldMigratedVersion'))) {
 		// Migrate Locked Settings.
@@ -12,7 +12,7 @@ Hooks.once('ready', () => {
 		for (const [key, value] of Object.entries(MODULE.setting('lockedSettings'))) {
 			const settingDetails = game.settings.settings.get(key.replace('_', '.'))
 			
-			if (game.settings.get(settingDetails.namespace, settingDetails.key) ?? false) {
+			if ((settingDetails?.namespace ?? false) && (settingDetails?.namespace ?? false) && (game.settings.get(settingDetails.namespace, settingDetails.key) ?? false)) {
 				newLockedSettings[`${settingDetails.namespace}.${settingDetails.key}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
 			}
 		}
@@ -23,8 +23,8 @@ Hooks.once('ready', () => {
 				title: MODULE.TITLE,
 				content: `<p>${MODULE.localize('migration.v204.complete')}</p>`,
 				callback: () => {
-					MODULE.setting('clientMigratedVersion', '2.0.4').then(response => {
-						MODULE.setting('worldMigratedVersion', '2.0.4').then(response => {
+					MODULE.setting('clientMigratedVersion', moduleDetails.version).then(response => {
+						MODULE.setting('worldMigratedVersion', moduleDetails.version).then(response => {
 							location.reload();
 						})
 					})
