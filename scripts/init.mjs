@@ -1,8 +1,14 @@
 // GET MODULE FUNCTIONS
 import { MODULE } from './_module.mjs';
 
+// GET SETTINGS 
+import './_settings.mjs';
+
 // GET CORE MODULE
 import { MMP } from './module.mjs';
+
+// GET MIGRATION
+import './_migration.mjs';
 
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 // 🧙 DEVELOPER MODE HOOKS -> devModeReady
@@ -45,6 +51,8 @@ Hooks.once('ready', async () => {
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 Hooks.on('renderModuleManagement', MMP.renderModuleManagement);
 Hooks.on('renderSettingsConfig', MMP.renderSettingsConfig);
+Hooks.on('renderApplication', MMP.renderApplication);
+Hooks.on('closeSettingsConfig', MMP.closeSettingsConfig);
 
 Handlebars.registerHelper("incIndex", function(value, options) {
     return parseInt(value) + 1;

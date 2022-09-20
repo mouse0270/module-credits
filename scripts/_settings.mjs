@@ -26,7 +26,23 @@ Hooks.once('setup', () => {
 		type: Object,
 		default: {},
 		scope: 'world',
-		config: false
+		config: false,
+		onChange: async (settings) => {
+			if (!game.user.isGM) {
+				for (const [key, value] of Object.entries(settings)) {
+					const settingDetails = game.settings.settings.get(key);
+					await game.settings.set(settingDetails.namespace, settingDetails.key, value);
+				}
+				if (document.querySelector('#client-settings') ?? false) {
+					game.settings.sheet.render(true);
+				}
+			}
+		}
+	});
+	MODULE.setting('register', 'hideLockedSettings', {
+		type: Boolean,
+		default: true,
+		scope: 'world',
 	});
 
 	// SET MODULE SETTINGS

@@ -9,12 +9,10 @@ import { ExportDialog } from './dialogs/export.mjs';
 import { ImportDialog } from './dialogs/import.mjs';
 import { PresetDialog } from './dialogs/presets.mjs';
 
-// IMPORT SETTINGS -> Settings Register on Hooks.Setup
-import './_settings.mjs';
-
 // DEFINE MODULE CLASS
 export class MMP {
 	static socket = false;
+	static #LockedSettings = {};
 
 	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 	// MODULE SUPPORT CODE
@@ -90,6 +88,8 @@ export class MMP {
 		this.installAPI();
 
 		this.getChangelogs();
+
+		MMP.#LockedSettings = MODULE.setting('lockedSettings');
 	}
 
 	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
@@ -685,21 +685,20 @@ export class MMP {
 			let settingValue = "UNKNOWN"
 			if (settingElem.querySelectorAll('input[name],select[name]').length > 0) {
 				settingValue = settingElem.querySelectorAll('input[name],select[name]')[0].getAttribute("name");
-				settingDetails = game.settings.settings.get(settingElem.querySelectorAll('input[name],select[name]')[0].getAttribute("name"));
 			}else if (settingElem.querySelectorAll('button[data-key]').length > 0) {
 				settingValue = settingElem.querySelectorAll('button[data-key]')[0].dataset.key;
-				settingDetails = game.settings.settings.get(settingElem.querySelectorAll('button[data-key]')[0].dataset.key);
 			}
+			settingDetails = game.settings.settings.get(settingValue);
 
 			if (settingDetails ?? false) {
 				let settingLabel = settingElem.querySelector('label');
-				const settingID = settingLabel.closest('div[data-settings-key]')?.dataset?.settingsKey ?? '';
+				const settingID = settingValue ?? false;
 				// Lock Settings
 				const isLocked = (settingID) => {
-					return MODULE.setting('lockedSettings').hasOwnProperty(`${(settingID ?? '').replace('.', '_')}`) ?? false;
+					return MMP.#LockedSettings.hasOwnProperty(`${(settingID ?? 'MMP-INVALID')}`) ?? false;
 				}
 
-				if (settingDetails.scope == "client" && game.user.isGM) {
+				if (settingDetails.scope == "client" && game.user.isGM && settingID) {
 					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-user" data-tooltip="${MODULE.localize('tooltips.clientSetting')}" data-tooltip-direction="UP"></i>`);
 					if (this.socket) {
 						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-arrows-rotate" data-tooltip="${MODULE.localize('tooltips.syncSetting')}" data-tooltip-direction="UP" data-action="sync"></i>`);
@@ -748,18 +747,17 @@ export class MMP {
 					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? MODULE.localize('tooltips.unlockSetting') : MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
 					settingLabel.querySelector('[data-action="lock"]').addEventListener('click', (event) => {
 						if (isLocked(settingID)) {
-							let lockedSettings = MODULE.setting('lockedSettings');
-							delete lockedSettings[`${settingID.replace('.', '_')}`];
-							MODULE.setting('lockedSettings', lockedSettings).then(response => {
+							delete MMP.#LockedSettings[`${settingID}`];
+							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
 								MODULE.log('UNLOCKING', response);
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-lock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-unlock');
 								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.lockSetting');
 							});
 						}else{
-							MODULE.setting('lockedSettings', foundry.utils.mergeObject(MODULE.setting('lockedSettings'), {
-								[`${settingID.replace('.', '_')}`]: true
-							}, { inplace: false })).then(response => {
+							MMP.#LockedSettings[`${settingID}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
+
+							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
 								MODULE.log('LOCKING', response);
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-unlock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-lock');
@@ -773,6 +771,9 @@ export class MMP {
 							input.disabled = true;
 						});
 						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
+						if (MODULE.setting('hideLockedSettings')) {
+							settingLabel.closest('.form-group').classList.add('hidden');
+						}
 					}
 				}
 				
@@ -781,6 +782,64 @@ export class MMP {
 				}
 			}
 		})
+	}
+
+	static async renderApplication(app, elem, options) {
+		elem = elem[0];
+
+		if (app.id == 'client-settings') {
+			elem.querySelectorAll('.categories .category .form-group').forEach(settingElem => {
+				let settingDetails = null;
+				let settingValue = "UNKNOWN"
+				if (settingElem.querySelectorAll('input[name],select[name]').length > 0) {
+					settingValue = settingElem.querySelectorAll('input[name],select[name]')[0].getAttribute("name");
+				}else if (settingElem.querySelectorAll('button[data-key]').length > 0) {
+					settingValue = settingElem.querySelectorAll('button[data-key]')[0].dataset.key;
+				}
+				settingDetails = game.settings.settings.get(settingValue);
+
+				if (settingDetails ?? false) {
+					let settingLabel = settingElem.querySelector('label');
+					const settingID = settingValue ?? false;
+					// Lock Settings
+					const isLocked = (settingID) => {
+						return MODULE.setting('lockedSettings').hasOwnProperty(`${(settingID ?? 'MMP-INVALID')}`) ?? false;
+					}
+
+					if (settingDetails.scope == "client" && !game.user.isGM) {
+						settingLabel.closest('.form-group').querySelectorAll('input, select, button').forEach(input => {
+							input.disabled = isLocked(settingID);
+						});
+						if (isLocked(settingID)) {
+							if (!settingLabel.querySelector('[data-action="lock"]') ?? false) {
+								settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
+							}
+						}else{
+							settingLabel.querySelector('[data-action="lock"]')?.remove() ?? false;
+						}
+
+						if (MODULE.setting('hideLockedSettings') && isLocked(settingID)) {
+							setTimeout(() => {
+								settingLabel.closest('.form-group').classList.add('hidden');
+							}, 300);
+						}
+					}
+				}
+			});
+		}
+	}
+
+	static async closeSettingsConfig(app, elem) {
+		if (game.user.isGM) {
+			for (const [key, value] of Object.entries(MMP.#LockedSettings)) {
+				const settingDetails = game.settings.settings.get(key);
+				MMP.#LockedSettings[`${key}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
+			}
+
+			MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
+				MODULE.log('UPDATED LOCKED SETTINGS', MMP.#LockedSettings);
+			});
+		}
 	}
 
 	static async renderSidebarTab (app, elem, options) {

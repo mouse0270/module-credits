@@ -1,3 +1,9 @@
+# Version 2.0.4 - Chains and Padlocks ;)
+- Fixed issue with Locked Setting locking all Settings
+- Added Option to Hide Locked Settings from Client
+- Added Migration Control
+- Locked Setting Should now update Live for Players as GM changes them
+
 # Version 2.0.3 - Wait required Modules can be missing?!?!?
 - Added Check to verify that when trying to prefix modules, that the required module exists.
 

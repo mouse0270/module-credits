@@ -2,6 +2,10 @@
 	"module-credits": {
 		"title": "Module Management+",
 		"settings": {
+			"hideLockedSettings": {
+				"name": "Hide Locked Settings",
+				"hint": "This setting will hide settings that are locked from players."
+			},
 			"showNewChangelogsOnLoad": {
 				"name": "Show New Changelogs on Load",
 				"hint": "If a changelog is marked as unseen and this setting is enabled a dialog will appear showing all changelogs that haven't been marked as seen."
@@ -61,6 +65,12 @@
 				"delete": "Delete",
 				"activate": "Activate",
 				"create": "Create New Preset"
+			}
+		},
+		"migration": {
+			"v203": {
+				"starting": "Migrating Locked Settings, Please wait.",
+				"complete": "Migration to v2.0.3 is complete and requires you to reload your page."
 			}
 		}
 	}
