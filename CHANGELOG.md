@@ -3,6 +3,8 @@
 - Added Option to Hide Locked Settings from Client
 - Added Migration Control
 - Locked Setting Should now update Live for Players as GM changes them
+- Known Issue: Because of the way I hide settings, there is a small flash for players when opening the settings window
+- Known Issue: The setting counter does not update when settings are hidden from player.
 
 # Version 2.0.3 - Wait required Modules can be missing?!?!?
 - Added Check to verify that when trying to prefix modules, that the required module exists.
