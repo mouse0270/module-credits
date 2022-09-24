@@ -2,20 +2,20 @@
 <div class="dialog-content">
 	{{#if IsTidyUI}}
 	<div class="notification warning" style="">
-		<strong>Import Type is TidyUI</strong><br/>
-		<p>When importing a TidyUI file you will be unable to import Client or World level settings.</p>
+		<strong>{{localizae 'module-credits.dialog.presets.imports.tidyUI.title'}}</strong><br/>
+		<p>{{localizae 'module-credits.dialog.presets.imports.tidyUI.message'}}</p>
 	</div>
 	{{/if}}
 	<ul id="{{DIALOG.ID}}-import-header">
     	<li>
 			<input name="import-toggle-modules" type="checkbox">
-			<div>Module Title</div>
+			<div>{{localizae 'module-credits.dialog.presets.imports.table.moduleTitle'}}</div>
 			{{#if IsTidyUI}}{{else}}
 			<label for="import-toggle-client-settings">
-				Client <input id="import-toggle-client-settings" name="import-toggle-client-settings" type="checkbox">
+				{{localizae 'module-credits.dialog.presets.imports.table.client'}} <input id="import-toggle-client-settings" name="import-toggle-client-settings" type="checkbox">
 			</label>
 			<label for="import-toggle-world-settings">
-				World <input id="import-toggle-world-settings" name="import-toggle-world-settings" type="checkbox">
+				{{localizae 'module-credits.dialog.presets.imports.table.world'}} <input id="import-toggle-world-settings" name="import-toggle-world-settings" type="checkbox">
 			</label>
 			{{/if}}
 		</li>
@@ -26,7 +26,7 @@
 			<input id="import-{{@key}}-module" name="import-module" type="checkbox" {{#if isInstalled}}checked{{else}}disabled{{/if}}>
 			<label for="import-{{@key}}-module">
 				{{title}}
-				{{#if isInstalled}}{{else}}<span class="tag unknown">Module Not Installed</span>{{/if}}
+				{{#if isInstalled}}{{else}}<span class="tag unknown">{{localizae 'module-credits.dialog.presets.imports.notInstalled'}}</span>{{/if}}
 			</label>
 			{{#if ../IsTidyUI}}{{else}}
 			<label for="import-settings-client">
@@ -42,9 +42,9 @@
 </div>
 <div class="dialog-buttons" style="flex: 0 1">
 	<Label class="keep-enabled" data-button="keep-enabled">
-		<input name="keep-enabled-modules" type="checkbox"> Keep Current Modules Enabled
+		<input name="keep-enabled-modules" type="checkbox"> {{localizae 'module-credits.dialog.presets.imports.buttons.keep'}}
 	</Label>
 	<button class="dialog-button import" data-button="import">
-		<i class="fas fa-upload"></i> Import
+		<i class="fas fa-upload"></i> {{localizae 'module-credits.dialog.presets.imports.buttons.import'}}
 	</button>
 </div>

@@ -66,6 +66,16 @@
 			"bugReporter": "Report Bug with 🐛 Bug Reporter"
 		},
 		"dialog": {
+			"titles": {
+				"export": "Export Modules",
+				"import": "Import Modules",
+				"presets": "Manage Presets"
+			},
+			"activeModules": "Active Modules",
+			"activeModulesCopied": "Active Module List has been Copied to Your Clipboard!",
+			"uninstalledModules": "Uninstalled Modules",
+			"installedModules": "Installed Modules",
+			"bugsUrl": "Bugs URL",
 			"search": "Search Changelogs",
 			"collapseModeLabel": "Collapse Sidebar",
 			"navLabel": "Table of Contents",
@@ -73,17 +83,65 @@
 			"previousPage": "Previous Page",
 			"nextPage": "Next Page",
 			"presets": {
+				"presetName": "Preset Name",
 				"info": "Info",
 				"update": "Update",
 				"delete": "Delete",
 				"activate": "Activate",
-				"create": "Create New Preset"
+				"create": "Create New Preset",
+				"modulesIn": "Modules in {name}",
+				"updateWith": "Update this Preset to the following Modules?",
+				"deletePreset": "Are you sure you want to delete the preset labeled <strong>{name}</strong>?",
+				"deletePresetWarning": "This action can <strong>NOT</strong> be undone!",
+				"activatePreset": "This preset will enable the following Modules?",
+				"createNew": {
+					"title": "Create a New Preset",
+					"placeholder": "Preset Title",
+					"noTitleError": "Please enter a Preset Title."
+				},
+				"exports": {
+					"title": "Export your Active Modules!",
+					"buttons": {
+						"copy": "Copy",
+						"export": "Export"
+					}
+				},
+				"imports": {
+					"tidyUI": {
+						"title": "Import Type is TidyUI",
+						"message": "When importing a TidyUI file you will be unable to import Client or World level settings."
+					},
+					"table": {
+						"moduleTitle": "Module Title",
+						"client": "Client",
+						"world": "World"
+					},
+					"notInstalled": "Module Not Installed",
+					"buttons": {
+						"keep": "Keep Current Modules Enabled",
+						"import": "Import"
+					}
+				}
 			},
+			"lockedModules": "Locked Modules",
 			"rollback": "Restore Previous Module List",
 			"deactivateModules": "Deactivate All Unlocked Modules",
 			"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
-			"lockModule": "Lock Module",
-			"unlockModule": "Unlock Module"
+			"syncSetting": {
+				"askPermission": "Allow Your Game master to set the following setting for you?",
+				"sendToAll": "Send this setting to all other users?"
+			},
+			"contextMenu": {
+				"renameModule": "Rename Module",
+				"restoreModuleName": "Restore Default Modle Name",
+				"lockModule": "Lock Module",
+				"unlockModule": "Unlock Module"
+			}
+		},
+		"smartPrefix": {
+			"library": "Library",
+			"maps": "Maps",
+			"ui": "UI"
 		},
 		"migration": {
 			"v204": {

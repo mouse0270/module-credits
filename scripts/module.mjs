@@ -55,7 +55,7 @@ export class MMP {
 		}else{
 			return await Dialog.confirm({
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top:0px;">Allow Your Game master to set the following setting for you</p> 
+				content: `<p style="margin-top:0px;">${MODULE.localize('dialog.syncSetting.askPermission')}</p> 
 					<p>${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).name)}<br/>
 					${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).hint)}</p>`,
 				yes: () => {
@@ -261,11 +261,11 @@ export class MMP {
 		// Handle for Smart Prefixing
 		if (MODULE.setting('smartPrefix')) {
 			// Merge Library Modules
-			if (module?.library ?? false) return `Library - ${module.title.replace('lib - ', '')}`;
+			if (module?.library ?? false) return `${MODULE.localize('smartPrefix.library')} - ${module.title.replace('lib - ', '')}`;
 			// Is Module a UI Module
-			if (module.title.includes('UI') ?? false) return `UI - ${module.title}`;
+			if (module.title.includes('UI') ?? false) return `${MODULE.localize('smartPrefix.ui')} - ${module.title}`;
 			// Is Module a Map Pack
-			if (module.title.includes('Maps') || module.title.includes('Battlemap'))  return `Maps - ${module.title}`;
+			if (module.title.includes('Maps') || module.title.includes('Battlemap'))  return `${MODULE.localize('smartPrefix.maps')} - ${module.title}`;
 		}
 		
 		// If Auto Prefix is Disabled, return Module Title
@@ -394,6 +394,23 @@ export class MMP {
 
 			// Convert Filters To Dropdown
 			if (elem.querySelectorAll(`nav.list-filters a.filter`)?.length > 0 ?? false) {
+				
+				let lastFilter = Array.from(elem.querySelectorAll('nav.list-filters a.filter')).pop();
+				let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
+				lastFilter.insertAdjacentHTML('afterend', `<a class="filter" data-filter="locked">${MODULE.localize('dialog.lockedModules')} (${lockedCount})</a>`);
+				elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').addEventListener('click', (event) => {
+					elem.querySelector('nav.list-filters a.filter.active').classList.remove('active');
+					event.target.classList.add('active');
+
+					elem.querySelectorAll(`.package-list .package`).forEach(elemPackage => {
+						elemPackage.classList.add('hidden');
+					});
+					
+					for (const [key, value] of Object.entries(MODULE.setting('lockedModules'))) {
+						elem.querySelector(`.package-list .package[data-module-id="${key}"]`).classList.remove('hidden');
+					}
+				})
+
 				elem.querySelector('nav.list-filters input[type="search"]').insertAdjacentHTML('afterend', `<select data-action="filter"></select>`);
 				elem.querySelectorAll('nav.list-filters a.filter').forEach(filterOpt => {
 					elem.querySelector('nav.list-filters select[data-action="filter"]').insertAdjacentHTML('beforeend', `<option value="${filterOpt.dataset.filter}">${filterOpt.innerHTML}</option>`)
@@ -469,7 +486,7 @@ export class MMP {
 
 			// Add Ability to Rename Package Title for Better Sorting
 			new ContextMenu($(elemPackage), '.package-overview ', [{
-				name: 'Rename Module',
+				name: `${MODULE.localize('dialog.contextMenu.renameModule')}`,
 				icon: '<i class="fa-duotone fa-pen-to-square"></i>',
 				condition: game.user.isGM,
 				callback: (packageElem => {
@@ -494,7 +511,7 @@ export class MMP {
 					});
 				})
 			}, {
-				name: 'Restore Default Name',
+				name: `${MODULE.localize('dialog.contextMenu.restoreModuleName')}`,
 				icon: '<i class="fa-duotone fa-rotate"></i>',
 				condition: game.user.isGM && (MODULE.setting('renamedModules')[moduleKey] ?? false),
 				callback: (packageElem => {
@@ -505,47 +522,46 @@ export class MMP {
 					})
 				})
 			}, {
-				name: MODULE.localize((MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) ? 'dialog.unlockModule' : 'dialog.lockModule'),
-				icon: (MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) ? '<i class="fa-duotone fa-lock-open"></i>' : '<i class="fa-duotone fa-lock"></i>',
-				condition: game.user.isGM,
+				name: MODULE.localize('dialog.contextMenu.lockModule'),
+				icon: '<i class="fa-duotone fa-lock"></i>',
+				condition: () => game.user.isGM && !MODULE.setting('lockedModules').hasOwnProperty(moduleKey),
 				callback: (packageElem => {
 					let lockedModules = MODULE.setting('lockedModules');
-					if (lockedModules.hasOwnProperty(moduleKey)) {
-						delete lockedModules[moduleKey];
-						MODULE.setting('lockedModules', lockedModules).then(response => {
-							packageElem[0].querySelector('.package-title i.fa-duotone.fa-lock').remove();
+					lockedModules[moduleKey] = true;
+					MODULE.setting('lockedModules', lockedModules).then(response => {
+						packageElem[0].querySelector('.package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
 							
-							if (MODULE.setting('disableLockedModules')) {
-								packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = false;
-							}
-						});
-					}else{
-						lockedModules[moduleKey] = true;
-						MODULE.setting('lockedModules', lockedModules).then(response => {
-							packageElem[0].querySelector('.package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
-							
-							if (MODULE.setting('disableLockedModules')) {
-								packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = true;
-							}
-							packageElem[0].querySelector('.package-title input[type="checkbox"]').checked = true;
-							packageElem[0].querySelector('.package-title input[type="checkbox"]').dispatchEvent(new Event('change'));
-						});
-					}
-				})
-			}], {
-				onOpen: (targetElement) => {
-					setTimeout(() => {
-						let elemContextMenu = targetElement.closest('li').querySelector('nav#context-menu');
-						let elemToggleLock = Array.from(elemContextMenu.querySelectorAll('ol li')).pop();
-						
-						if (MODULE.setting('lockedModules').hasOwnProperty(moduleKey)) {
-							elemToggleLock.innerHTML = `<i class="fa-duotone fa-lock-open"></i> ${MODULE.localize('dialog.unlockModule')}`;
-						}else{
-							elemToggleLock.innerHTML = `<i class="fa-duotone fa-lock"></i> ${MODULE.localize('dialog.lockModule')}`;
+						if (MODULE.setting('disableLockedModules')) {
+							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = true;
 						}
-					}, 0)
-				}
-			});
+						packageElem[0].querySelector('.package-title input[type="checkbox"]').checked = true;
+						packageElem[0].querySelector('.package-title input[type="checkbox"]').dispatchEvent(new Event('change'));
+
+						let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
+						elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
+						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
+					});
+				})
+			}, {
+				name: MODULE.localize('dialog.contextMenu.unlockModule'),
+				icon: '<i class="fa-duotone fa-lock-open"></i>',
+				condition: () => game.user.isGM && MODULE.setting('lockedModules').hasOwnProperty(moduleKey),
+				callback: (packageElem => {
+					let lockedModules = MODULE.setting('lockedModules');
+					delete lockedModules[moduleKey];
+					MODULE.setting('lockedModules', lockedModules).then(response => {
+						packageElem[0].querySelector('.package-title i.fa-duotone.fa-lock').remove();
+							
+						if (MODULE.setting('disableLockedModules')) {
+							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = false;
+						}
+
+						let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
+						elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
+						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
+					});
+				})
+			}]);
 
 			// Add Setting Tag if Module has Editable Tags
 			if (hasSettings?.[moduleKey] ?? false) {
@@ -687,7 +703,9 @@ export class MMP {
 						// Version Checking
 						if ((foundry.utils.isNewerVersion(game.modules.get(conflict.id).version, conflict.compatibility.minimum ?? '0.0.0') || game.modules.get(conflict.id).version == conflict.compatibility.minimum) 
 							&& foundry.utils.isNewerVersion(conflict.compatibility.maximum, game.modules.get(conflict.id).version)) {
-							addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: moduleData.id}, { inplace: false }));
+							if (conflict.id != moduleData.id) {
+								addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: moduleData.id}, { inplace: false }));
+							}
 							addConflict(moduleData, conflict);
 						}
 					}
@@ -748,7 +766,7 @@ export class MMP {
 						id: `${MODULE.ID}-rollback-modules`,
 						title: MODULE.localize('title'),
 						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.rollback')}</p>
-						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### Activate Modules\n${Object.entries(rollBackModules).filter(([key, value]) => {
+						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### ${MODULE.log('dialog.activeModules')}\n${Object.entries(rollBackModules).filter(([key, value]) => {
 							return (game.modules.get(key)?.title ?? '') != '' && (value != false);
 						}).map(([key, value]) => {
 							return game.modules.get(key)?.title;
@@ -809,7 +827,7 @@ export class MMP {
 						settingLabel.querySelector('[data-action="sync"]').addEventListener('click', (event) => {
 							Dialog.confirm({
 								title: MODULE.localize('title'),
-								content: `<p style="margin-top:0px;">Send this setting to all other users?</p>`,
+								content: `<p style="margin-top:0px;">${MODULE.localize('syncSetting.sendToAll')}</p>`,
 								yes: () => {
 									this.socket.executeForOthers("setUserSetting", {
 										moduleId: settingDetails.namespace,
@@ -852,7 +870,6 @@ export class MMP {
 						if (isLocked(settingID)) {
 							delete MMP.#LockedSettings[`${settingID}`];
 							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
-								MODULE.log('UNLOCKING', response);
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-lock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-unlock');
 								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.lockSetting');
@@ -861,7 +878,6 @@ export class MMP {
 							MMP.#LockedSettings[`${settingID}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
 
 							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
-								MODULE.log('LOCKING', response);
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-unlock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-lock');
 								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.unlockSetting');
@@ -982,7 +998,7 @@ export class MMP {
 				elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterend', '<li class="system-buttons"></li>');
 				if (readme  || ((game.system.readme || "").match(APIs.github) ?? false) || ((game.system.readme || "").match(APIs.rawGithub) ?? false)) {
 					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="readme" data-tooltip="${MODULE.localize('tags.readme')}">
-						<i class="fa-solid fa-circle-info"></i> Read Me
+						<i class="fa-solid fa-circle-info"></i> ${MODULE.localize('tags.readme')}
 					</button>`);
 					
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="readme"]').addEventListener('click', (event) => {
@@ -1000,7 +1016,7 @@ export class MMP {
 
 				if (changelog  || ((game.system.changelog || "").match(APIs.github) ?? false) || ((game.system.changelog || "").match(APIs.rawGithub) ?? false)) {
 					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="changelog" data-tooltip="${MODULE.localize('tags.changelog')}">
-						<i class="fa-solid fa-list"></i> Changelogs
+						<i class="fa-solid fa-list"></i> ${MODULE.localize('tags.changelog')}
 					</button>`);
 					
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="changelog"]').addEventListener('click', (event) => {
@@ -1018,7 +1034,7 @@ export class MMP {
 
 				if (attributions  || ((game.system.flags.attributions || "").match(APIs.github) ?? false) || ((game.system.flags.attributions || "").match(APIs.rawGithub) ?? false)) {
 					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="attributions" data-tooltip="${MODULE.localize('tags.attributions')}">
-						<i class="fa-brands fa-creative-commons-by"></i> Attributions
+						<i class="fa-brands fa-creative-commons-by"></i> ${MODULE.localize('tags.attributions')}
 					</button>`);
 					
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="attributions"]').addEventListener('click', (event) => {

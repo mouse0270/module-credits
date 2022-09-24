@@ -1,3 +1,9 @@
+# Version 2.1.1 - Totalmente localizado
+- Went through all of the code and made sure to localize the entire project
+- Fixed Context Menu (un)lock logic thanks to Mana
+- By assigning your modules id as the id for a conflict, it will now only create one instance of this text. Good for displaying known issues.
+- Added filter option to view Locked Modules
+
 # Version 2.1.0 - Roads? Where we're going, we don't need roads.
 - Added the ability to go to a previous Module Load Order
 - Added setting to store X number of Previous Module Load Orders from 0 to 10 where 0 is infinite

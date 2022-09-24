@@ -9,7 +9,7 @@ export class PresetDialog extends FormApplication {
 	static get defaultOptions() {
 		return {
 			...super.defaultOptions,
-			title: `${MODULE.TITLE} - Manage Presets`,
+			title: `${MODULE.TITLE} - ${MODULE.localize('dialog.titles.presets')}`,
 			id: `${MODULE.ID}-preset-dialog`,
 			classes: ['dialog'],
 			template: `./modules/${MODULE.ID}/templates/presets.hbs`,
@@ -43,23 +43,22 @@ export class PresetDialog extends FormApplication {
 			});
 			let output = [];
 			if (uninstalledModules.length > 0) {
-				output.push('### Uninstalled Modules');
+				output.push(`### ${MODULE.localize('dialog.uninstalledModules')}`);
 				uninstalledModules.forEach(module => {
 					output.push(module.title);
 				})
 			}
 			if (installedModules.length > 0) {
 				if (uninstalledModules.length > 0) output.push('');
-				output.push('### Installed Modules');
+				output.push(`### ${MODULE.localize('dialog.installedModules')}`);
 				installedModules.forEach(module => {
 					output.push(module.title);
 				})
 			}
-
 			Dialog.prompt({
 				id: `${MODULE.ID}-create-preset`,
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top: 0px;">Modules in ${preset.name}</p>
+				content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.presets.modulesIn', {name: preset.name})}</p>
 					<textarea readonly rows="15" style="margin-bottom: 0.5rem;">${output.join('\n')}</textarea>`
 			});
 		}
@@ -83,8 +82,8 @@ export class PresetDialog extends FormApplication {
 			Dialog.confirm({
 				id: `${MODULE.ID}-update-preset`,
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top: 0px;">Update this Preset to the following Modules?</p>
-					<textarea readonly rows="${presetPackages.length <= 15 ? presetPackages.length + 2 : 15}" style="margin-bottom: 0.5rem;">### Active Modules\n${presetPackages.map(module => {
+				content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.presets.updateWith')}</p>
+					<textarea readonly rows="${presetPackages.length <= 15 ? presetPackages.length + 2 : 15}" style="margin-bottom: 0.5rem;">### ${MODULE.localize('dialog.activeModules')}\n${presetPackages.map(module => {
 						return module.title;
 					}).join('\n')}</textarea>`,
 				yes: (elemDialog) => {
@@ -106,8 +105,8 @@ export class PresetDialog extends FormApplication {
 			Dialog.confirm({
 				id: `${MODULE.ID}-delete-preset`,
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top: 0px;">Are you sure you want to delete the preset labeled <strong>${presets[presetKey].name}</strong>?</p>
-					<p>This action can <strong>NOT</strong> be undone!</p>`,
+				content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.presets.deletePreset', {name: presets[presetKey].name})}</p>
+					<p>${MODULE.localize('dialog.presets.deletePresetWarning')}</p>`,
 				yes: (elemDialog) => {
 					delete presets[presetKey];
 					MODULE.setting('presets', presets).then(response => {
@@ -127,8 +126,8 @@ export class PresetDialog extends FormApplication {
 			Dialog.confirm({
 				id: `${MODULE.ID}-activate-preset`,
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top: 0px;">This preset will enable the following Modules?</p>
-				<textarea readonly rows="${preset.modules.length <= 15 ? preset.modules.length + 2 : 15}" style="margin-bottom: 0.5rem;">### Activate Modules\n${preset.modules.filter((module) => {
+				content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.presets.activatePreset')}</p>
+				<textarea readonly rows="${preset.modules.length <= 15 ? preset.modules.length + 2 : 15}" style="margin-bottom: 0.5rem;">### ${MODULE.localize('dialog.activeModules')}\n${preset.modules.filter((module) => {
 					return (game.modules.get(module.id) ?? false) != false;
 				}).map(module => {
 					return module.title;
@@ -184,14 +183,14 @@ export class PresetDialog extends FormApplication {
 			return Dialog.confirm({
 				id: `${MODULE.ID}-create-preset`,
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top: 0px;">Create a New Preset</p>
-					<input type="text" name="${MODULE.ID}-preset-title" placeholder="Preset Title" />
-					<textarea readonly rows="${presetPackages.length <= 15 ? presetPackages.length + 2 : 15}" style="margin-bottom: 0.5rem;">### Active Modules\n${presetPackages.map(module => {
+				content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.presets.createNew.title')}</p>
+					<input type="text" name="${MODULE.ID}-preset-title" placeholder="${MODULE.localize('dialog.presets.createNew.placeholder')}" />
+					<textarea readonly rows="${presetPackages.length <= 15 ? presetPackages.length + 2 : 15}" style="margin-bottom: 0.5rem;">### ${MODULE.localize('dialog.activeModules')}\n${presetPackages.map(module => {
 						return module.title;
 					}).join('\n')}</textarea>`,
 				yes: (elemDialog) => {
 					if (elemDialog[0].querySelector(`input[name="${MODULE.ID}-preset-title"]`)?.value?.length == 0) {
-						throw `<strong>${MODULE.TITLE}</strong> Please enter a Preset Title.`;
+						throw `<strong>${MODULE.TITLE}</strong> ${MODULE.localize('dialog.presets.createNew.noTitleError')}`;
 					}
 
 					const presetKey = foundry.utils.randomID();
@@ -203,16 +202,16 @@ export class PresetDialog extends FormApplication {
 					}, { inplace: false })).then((response) => {
 						html[0].querySelector(`#${MODULE.ID}-presets-list`).insertAdjacentHTML('beforeend', `<li data-preset="${presetKey}">
 							<label for="preset-${presetKey}">${elemDialog[0].querySelector(`input[name="${MODULE.ID}-preset-title"]`)?.value}</label>
-							<button data-action="info" data-tooltip="info">
+							<button data-action="info" data-tooltip="${MODULE.localize('dialog.presets.info')}">
 								<i class="fa-solid fa-circle-info"></i>
 							</button>
-							<button data-action="update" data-tooltip="Update">
+							<button data-action="update" data-tooltip="${MODULE.localize('dialog.presets.update')}">
 								<i class="fa-solid fa-floppy-disk"></i>
 							</button>
-							<button data-action="delete" data-tooltip="Delete">
+							<button data-action="delete" data-tooltip="${MODULE.localize('dialog.presets.delete')}">
 								<i class="fa-solid fa-trash"></i>
 							</button>
-							<button data-action="activate" data-tooltip="Activate">
+							<button data-action="activate" data-tooltip="${MODULE.localize('dialog.presets.activate')}">
 								<i class="fa-solid fa-circle-play"></i>
 							</button>
 						</li>`);

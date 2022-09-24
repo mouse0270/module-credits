@@ -115,8 +115,8 @@ Hooks.once('setup', () => {
 	});
 
 	const trackedChangelogs =  {
-		name: 'lib-themer.settings.trackedChangelogs.name',
-		hint: 'lib-themer.settings.trackedChangelogs.hint',
+		name: `${MODULE.ID}.settings.trackedChangelogs.name`,
+		hint: `${MODULE.ID}.settings.trackedChangelogs.hint`,
 		type: Object,
 		default: {},
 		config: false,

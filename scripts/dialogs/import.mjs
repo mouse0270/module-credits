@@ -22,7 +22,7 @@ export class ImportDialog extends FormApplication {
 	static get defaultOptions() {
 		return {
 			...super.defaultOptions,
-			title: `${MODULE.TITLE} - Import Modules`,
+			title: `${MODULE.TITLE} - ${MODULE.localize('dialog.titles.import')}`,
 			id: `${MODULE.ID}-import-dialog`,
 			classes: ['dialog'],
 			template: `./modules/${MODULE.ID}/templates/import.hbs`,
