@@ -1,5 +1,6 @@
-# Version 2.1.1 - Totalmente localizado
+# Version 2.1.1 - Totalement localisable
 - Went through all of the code and made sure to localize the entire project
+> Please note, I just regoranized and made sure every string was localizable, I did not create any other localizations other than english, cause I only know english
 - Fixed Context Menu (un)lock logic thanks to Mana
 - By assigning your modules id as the id for a conflict, it will now only create one instance of this text. Good for displaying known issues.
 - Added filter option to view Locked Modules
