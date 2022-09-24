@@ -164,8 +164,9 @@ export class ImportDialog extends FormApplication {
 			});
 
 			Promise.allSettled(settingsCalls).then((response) => {
+				if (!MODULE.setting('storePreviousOnPreset')) MODULE.setting('storedRollback', {});
 				game.settings.set('core', ModuleManagement.CONFIG_SETTING, moduleStates).then((response) => {
-					location.reload();
+					SettingsConfig.reloadConfirm({world: true});
 				});
 			});
 		})

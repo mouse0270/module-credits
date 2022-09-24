@@ -70,7 +70,5 @@ Module Management+ supports importing module lists that were exported from [Tidy
 
 ## Credits
 Libraries used in creating Module Management+
-- [Marked.js](https://github.com/markedjs/marked) 
-- [DOMPurify](https://github.com/cure53/DOMPurify) 
 - [Tippy.js](https://atomiks.github.io/tippyjs/) 
 - [Popper.js](https://popper.js.org/) 

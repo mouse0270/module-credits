@@ -504,7 +504,48 @@ export class MMP {
 						new ModuleManagement().render(true);
 					})
 				})
-			}]);
+			}, {
+				name: MODULE.localize((MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) ? 'dialog.unlockModule' : 'dialog.lockModule'),
+				icon: (MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) ? '<i class="fa-duotone fa-lock-open"></i>' : '<i class="fa-duotone fa-lock"></i>',
+				condition: game.user.isGM,
+				callback: (packageElem => {
+					let lockedModules = MODULE.setting('lockedModules');
+					if (lockedModules.hasOwnProperty(moduleKey)) {
+						delete lockedModules[moduleKey];
+						MODULE.setting('lockedModules', lockedModules).then(response => {
+							packageElem[0].querySelector('.package-title i.fa-duotone.fa-lock').remove();
+							
+							if (MODULE.setting('disableLockedModules')) {
+								packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = false;
+							}
+						});
+					}else{
+						lockedModules[moduleKey] = true;
+						MODULE.setting('lockedModules', lockedModules).then(response => {
+							packageElem[0].querySelector('.package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
+							
+							if (MODULE.setting('disableLockedModules')) {
+								packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = true;
+							}
+							packageElem[0].querySelector('.package-title input[type="checkbox"]').checked = true;
+							packageElem[0].querySelector('.package-title input[type="checkbox"]').dispatchEvent(new Event('change'));
+						});
+					}
+				})
+			}], {
+				onOpen: (targetElement) => {
+					setTimeout(() => {
+						let elemContextMenu = targetElement.closest('li').querySelector('nav#context-menu');
+						let elemToggleLock = Array.from(elemContextMenu.querySelectorAll('ol li')).pop();
+						
+						if (MODULE.setting('lockedModules').hasOwnProperty(moduleKey)) {
+							elemToggleLock.innerHTML = `<i class="fa-duotone fa-lock-open"></i> ${MODULE.localize('dialog.unlockModule')}`;
+						}else{
+							elemToggleLock.innerHTML = `<i class="fa-duotone fa-lock"></i> ${MODULE.localize('dialog.lockModule')}`;
+						}
+					}, 0)
+				}
+			});
 
 			// Add Setting Tag if Module has Editable Tags
 			if (hasSettings?.[moduleKey] ?? false) {
@@ -616,6 +657,15 @@ export class MMP {
 				</span>`);
 			}
 
+			// Add Locked Status
+			if (MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) {
+				elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
+				if (MODULE.setting('disableLockedModules')) {
+					elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').disabled = true;
+				}
+			}
+
+			// Add Conflicts
 			const addConflict = (module, conflict) => {
 				let conflictElem = elem.querySelector(`#module-list > li.package[data-module-id="${conflict.id}"]`) ?? false;
 				if (conflictElem) {
@@ -631,8 +681,6 @@ export class MMP {
 					}
 				}
 			}
-
-			
 			if (moduleData?.relationships?.conflicts?.size > 0) {
 				moduleData?.relationships?.conflicts.forEach(conflict => {
 					if (game.modules.get(conflict.id) ?? false) {
@@ -666,6 +714,61 @@ export class MMP {
 				game.modules.get("bug-reporter").api.bugWorkflow(moduleId);
 			});
 		});
+
+		// Update Deactivate Modules
+		if (elem.querySelector('footer button[name="deactivate"]') ?? false) {
+			elem.querySelector('footer button[name="deactivate"]').innerHTML = `<span class="fa-stack">
+				<i class="fa-regular fa-square-check fa-stack-1x"></i>
+				<i class="fa-sharp fa-solid fa-slash fa-stack-1x"></i>
+			</span>${MODULE.localize('dialog.deactivateModules')}`;
+			elem.querySelector('footer button[name="deactivate"]').dataset.tooltip = MODULE.localize('dialog.deactivateModulesAlt');
+
+			elem.querySelector('footer button[name="deactivate"]').addEventListener('click', (event) => {
+				if (event.ctrlKey) {
+					MODULE.log('USER WAS HOLDING DOWN CONTROL KEY')
+				}else{
+					for (const [key, value] of Object.entries(MODULE.setting('lockedModules'))) {
+						elem.querySelector(`.package-list .package[data-module-id="${key}"] input[type="checkbox"]`).checked = true;
+					}
+				}
+			});
+		}
+
+		// Add Rollback || ONLY FOR GM
+		if (game.user.isGM) {
+			MODULE.setting('storedRollback', game.settings.get(`core`, `${ModuleManagement.CONFIG_SETTING}`));
+			if (MODULE.setting('presetsRollbacks').length > 0) {
+				elem.querySelector('footer button[type="submit"]').insertAdjacentHTML('beforebegin', `<button type="button" name="rollback" data-tooltip="${MODULE.localize('dialog.rollback')}">
+					<i class="fa-regular fa-rotate-left"></i>
+				</button>`);
+
+				elem.querySelector('footer button[name="rollback"]').addEventListener('click', (event) => {
+					let rollBackModules = MODULE.setting('presetsRollbacks').pop();
+					Dialog.confirm({
+						id: `${MODULE.ID}-rollback-modules`,
+						title: MODULE.localize('title'),
+						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.rollback')}</p>
+						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### Activate Modules\n${Object.entries(rollBackModules).filter(([key, value]) => {
+							return (game.modules.get(key)?.title ?? '') != '' && (value != false);
+						}).map(([key, value]) => {
+							return game.modules.get(key)?.title;
+						}).join('\n')}</textarea>`,
+						yes: (elemDialog) => {			
+							// Update Modules and Reload Game
+							MODULE.setting('storedRollback', {});
+							game.settings.set(`core`, `${ModuleManagement.CONFIG_SETTING}`, rollBackModules).then((response) => {
+								MODULE.setting('presetsRollbacks', MODULE.setting('presetsRollbacks').slice(-1) ?? []).then(response => {
+									SettingsConfig.reloadConfirm({world: true});
+								})
+							});
+						},
+						no: (elemDialog) => {
+							return false;
+						}
+					});
+				});
+			}
+		}
 
 		// HIDE TOOLTIPS WHEN USER SCROLLS IN MODULE LIST
 		$("#module-management #module-list").on('scroll', (event) => {

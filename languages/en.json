@@ -2,6 +2,18 @@
 	"module-credits": {
 		"title": "Module Management+",
 		"settings": {
+			"storePreviousOnPreset": {
+				"name": "Store Rollback when Loading Preset",
+				"hint": "When this value is enabled, a rollback will be created when activating a preset or when importing a preset"
+			},
+			"keepPresetsRollbacks": {
+				"name": "Number of Rollbacks to keep?",
+				"hint": "This setting indicates the number of module rollbacks you can do between 0 and 10. If this value is set to 0, it will keep an infinite number of rollbacks. It is suggested not to do this as it will cause bloated data."
+			},
+			"disableLockedModules": {
+				"name": "Disable Locked Modules?",
+				"hint": "This setting will disable the checkbox of locked modules. This is used to prevent uncheck a locked module by accident."
+			},
 			"hideLockedSettings": {
 				"name": "Hide Locked Settings",
 				"hint": "This setting will hide settings that are locked from players."
@@ -39,7 +51,8 @@
 			"clientSetting": "Client Setting",
 			"syncSetting": "Sync Setting",
 			"lockSetting": "Lock Setting",
-			"unlockSetting": "Unlock Setting"
+			"unlockSetting": "Unlock Setting",
+			"moduleLocked": "This module will not be deactivated when deactivating modules."
 		},
 		"tags": {
 			"socket": "Module uses Socket API",
@@ -65,7 +78,12 @@
 				"delete": "Delete",
 				"activate": "Activate",
 				"create": "Create New Preset"
-			}
+			},
+			"rollback": "Restore Previous Module List",
+			"deactivateModules": "Deactivate All Unlocked Modules",
+			"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
+			"lockModule": "Lock Module",
+			"unlockModule": "Unlock Module"
 		},
 		"migration": {
 			"v204": {

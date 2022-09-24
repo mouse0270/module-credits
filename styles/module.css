@@ -69,6 +69,12 @@
 #module-management nav.list-filters select {
     flex: 0;
 }
+#module-management footer button[name="rollback"] {
+    flex: 0;
+}
+#module-management footer button[name="rollback"] i {
+    margin-right: 0px;
+}
 
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */

@@ -1,3 +1,11 @@
+# Version 2.1.0 - Roads? Where we're going, we don't need roads.
+- Added the ability to go to a previous Module Load Order
+- Added setting to store X number of Previous Module Load Orders from 0 to 10 where 0 is infinite
+- Added the ability to lock a module so it wont get deactivated when Deactivating All Modules
+- Changed text on `Deactivate All Modules` to `Deactivate All Unlocked Modules`
+- Added functionality to `Deactivate All Modules` that when holding down `ctrl` all Modules, locked or unlocked, will be deactivated
+- Added a Setting to Disable Locked Modules checkbox. This setting is disabled by default, and is an opt-in feature
+
 # Version 2.0.5 - Hey Are you Still there?!?!?
 - Added Check to make sure migration can get `namespace` and `key`.
 

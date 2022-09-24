@@ -145,8 +145,9 @@ export class PresetDialog extends FormApplication {
 					});
 		
 					// Update Modules and Reload Game
+					if (!MODULE.setting('storePreviousOnPreset')) MODULE.setting('storedRollback', {});
 					game.settings.set('core', ModuleManagement.CONFIG_SETTING, moduleStates).then((response) => {
-						location.reload();
+						SettingsConfig.reloadConfirm({world: true});
 					});
 				},
 				no: (elemDialog) => {

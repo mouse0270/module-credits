@@ -1,6 +1,9 @@
 // GET MODULE CORE
 import { MODULE } from './_module.mjs';
 
+// GET CORE MODULE
+import { MMP } from './module.mjs';
+
 // FOUNDRY HOOKS -> SETUP
 Hooks.once('setup', () => {
 	// SET MODULE MIGRATE SETTINGS
@@ -39,13 +42,66 @@ Hooks.once('setup', () => {
 			}
 		}
 	});
+	MODULE.setting('register', 'storePreviousOnPreset', {
+		type: Boolean,
+		default: true,
+		scope: 'world',
+	});
+	MODULE.setting('register', 'storedRollback', {
+		type: Object,
+		default: {},
+		scope: 'world',
+		config: false,
+	});
+	MODULE.setting('register', 'presetsRollbacks', {
+		type: Array,
+		default: [],
+		scope: 'world',
+		config: false,
+	});
+	MODULE.setting('register', 'lockedModules', {
+		type: Object,
+		default: {
+			'module-credits': true
+		},
+		scope: 'world',
+		config: false,
+	});
+
+	// SET MODULE SETTINGS
+	MODULE.setting('register', 'keepPresetsRollbacks', {
+		type: Number,
+		default: 5,
+		scope: 'world',
+		range: {
+			min: 0,
+			max: 10,
+			step: 1
+		},
+		onChange: (numberOfRollbacks) => {
+			let rollbacks = MODULE.setting('presetsRollbacks') ?? [];
+				
+			if (numberOfRollbacks > 0 && rollbacks.length > numberOfRollbacks) {
+				const deleteRollbacks = rollbacks.length - numberOfRollbacks;
+				for (let index = 0; index < deleteRollbacks; index++) {
+					rollbacks.shift()
+				}
+
+				MODULE.setting('presetsRollbacks', rollbacks);
+			}
+
+		}
+	});
+	MODULE.setting('register', 'disableLockedModules', {
+		type: Boolean,
+		default: false,
+		scope: 'world'
+	});
 	MODULE.setting('register', 'hideLockedSettings', {
 		type: Boolean,
 		default: true,
 		scope: 'world',
 	});
-
-	// SET MODULE SETTINGS
 	MODULE.setting('register', 'disableSyncPrompt', {
 		type: Boolean,
 		default: true,
@@ -114,5 +170,24 @@ Hooks.once('setup', () => {
 		MODULE.setting('register', 'smartPrefix', smartPrefix);
 		MODULE.setting('register', 'presets', presets);
 	}
+
+	// Handle Module Management Config onChange Event
+	game.settings.settings.set(`core.${ModuleManagement.CONFIG_SETTING}`, foundry.utils.mergeObject(game.settings.settings.get(`core.${ModuleManagement.CONFIG_SETTING}`), {
+		onChange: (moduleManagementData) => {
+			if (Object.keys(MODULE.setting('storedRollback')).length > 0) {
+				let rollbacks = MODULE.setting('presetsRollbacks') ?? [];
+				rollbacks.push(MODULE.setting('storedRollback'));
+				
+				if (MODULE.setting('keepPresetsRollbacks') > 0 && rollbacks.length > MODULE.setting('keepPresetsRollbacks')) {
+					const deleteRollbacks = rollbacks.length - MODULE.setting('keepPresetsRollbacks');
+					for (let index = 0; index < deleteRollbacks; index++) {
+						rollbacks.shift()
+					}
+				}
+
+				MODULE.setting('presetsRollbacks', rollbacks);
+			}
+		}
+	}, {inplace: false}))
 });
 
