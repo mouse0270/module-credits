@@ -1,3 +1,6 @@
+.package-list .package .package-overview {
+	position: relative;
+}
 #module-list.package-list .package .package-title.checkbox > input[type="checkbox"] {
 	display: none;
 }
@@ -23,10 +26,10 @@
 	display: flex;
 	flex: 0 0 20px;
 	height: 16px;
-	left: 0.5rem;
+	left: 0rem;
 	margin-right: 0.25rem;
 	position: absolute;
-	top: 6px;
+	top: 2px;
 	width: 16px;
 
 	/* ADD FONT AWESOME CHECKMARK */
