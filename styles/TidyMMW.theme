@@ -1,0 +1,25 @@
+{
+	"title": "module-credits.title",
+	"cssTidyMMW":{
+		"name": "module-credits.lib-themer.cssTidyMMW.name",
+		"hint": "module-credits.lib-themer.cssTidyMMW.hint",
+		"type": "library",
+		"default": false,
+		"files": [{
+			"name": "./modules/module-credits/styles/tidy-mmw.css",
+			"type": "text/css"
+		}],
+		"settings": {
+			"cssTidyMMWAltCheckbox":{
+				"name": "module-credits.lib-themer.cssTidyMMW.settings.cssTidyMMWAltCheckbox.name",
+				"hint": "module-credits.lib-themer.cssTidyMMW.settings.cssTidyMMWAltCheckbox.hint",
+				"type": "library",
+				"default": false,
+				"files": [{
+					"name": "./modules/module-credits/styles/tidy-mmw-alt-checkbox.css",
+					"type": "text/css"
+				}]
+			}
+		}
+	}
+}

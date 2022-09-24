@@ -1,3 +1,6 @@
+# Version 2.1.2 - Being Clever is Hard...
+- Added Support to theme Module Management Window using libThemer
+
 # Version 2.1.1 - Totalement localisable
 - Went through all of the code and made sure to localize the entire project
 > Please note, I just regoranized and made sure every string was localizable, I did not create any other localizations other than english, cause I only know english

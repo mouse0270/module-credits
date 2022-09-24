@@ -1,0 +1,21 @@
+.window-app .window-content #module-list {
+	border-top-color: var(--app-background-dark-shaded, rgba(0, 0, 0, 0.8));
+	margin-left: -8px;
+	margin-right: -8px;
+	overflow: hidden overlay;
+	padding: 0px;
+}
+#module-list.package-list .package {
+	border-bottom-color: var(--app-background-dark-shaded, rgba(0, 0, 0, 0.8));
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+	position: relative;
+}
+#module-list.package-list .package .package-title {
+	text-decoration: none;
+}
+#module-list.package-list .package .package-title.checkbox > input[type="checkbox"] {
+	margin: 0px;
+	margin-right: 0.5rem;
+	top: 3px;
+}

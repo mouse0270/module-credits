@@ -35,6 +35,13 @@ Hooks.once('socketlib.ready', () => {
 });
 
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+// libThemer HOOKS -> lib-themer.Ready
+/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
+Hooks.once('lib-themer.Ready', (API) => {
+	API.register(`/modules/${MODULE.ID}/styles/TidyMMW.theme`);
+});
+
+/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 // FOUNDRY HOOKS -> READY
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 Hooks.once('init', () => {

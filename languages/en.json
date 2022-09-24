@@ -169,6 +169,18 @@
 				}
 			}
 		},
+		"lib-themer": {
+			"cssTidyMMW": {
+				"name": "Tidy Module Management Window",
+				"hint": "This stylesheet is designed to give the Module Management Window a more modern and cleaner look.",
+				"settings": {
+					"cssTidyMMWAltCheckbox": {
+						"name": "Alternative Checkbox Style",
+						"hint": "This will give the checkbox a cleaner more modern style in Mouse0270 personal opinion."
+					}
+				}
+			}
+		},
 		"migration": {
 			"v204": {
 				"starting": "Migrating Locked Settings, Please wait.",

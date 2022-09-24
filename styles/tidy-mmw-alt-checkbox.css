@@ -1,0 +1,38 @@
+#module-list.package-list .package .package-title.checkbox > input[type="checkbox"] {
+	display: none;
+}
+#module-list.package-list .package .package-title.checkbox:before {
+	border: 2px solid var(--app-background-dark-shaded, rgba(0, 0, 0, 0.8));
+	border-radius: 50%;
+	box-sizing: border-box;
+	content: "";
+	display: inline-block;
+	flex: 0 0 20px;
+	height: 16px;
+	margin-right: 0.25rem;
+	position: relative;
+	top: 2px;
+	width: 16px;
+}
+#module-list.package-list .package.checked .package-title.checkbox:after {
+	background-color: var(--palette-success, #198754FF);
+	border-radius: 50%;
+	box-sizing: border-box;
+	color: var(--palette-success-contrast, black);
+	content: "\f00c";
+	display: flex;
+	flex: 0 0 20px;
+	height: 16px;
+	left: 0.5rem;
+	margin-right: 0.25rem;
+	position: absolute;
+	top: 6px;
+	width: 16px;
+
+	/* ADD FONT AWESOME CHECKMARK */
+	justify-content: center;
+	font-family: "Font Awesome 6 Pro";
+	font-size: 0.6rem;
+    font-weight: 900;
+	line-height: 18px;
+}

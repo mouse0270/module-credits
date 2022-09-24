@@ -711,6 +711,14 @@ export class MMP {
 					}
 				});
 			}
+
+			// Add Checked Class
+			if (moduleData?.active ?? false) {
+				elemPackage.classList.add('checked');
+			}
+			elemPackage.querySelector('input[type="checkbox"]').addEventListener('change', (event) => {
+				elemPackage.classList.toggle('checked', event.target.checked)
+			})
 		}
 		
 		// Handle if Settings Tag is Clicked
