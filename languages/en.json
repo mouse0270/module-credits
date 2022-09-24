@@ -40,108 +40,134 @@
 			},
 			"smartPrefix": {
 				"name": "Smart Prefix",
-				"hint": "This attempts to prefix titles based on what it thinks is best. For example modules with the library flag will be prefixed with Library, and modules with the word UI in the title will be prefixed with UI. This may not correctly prefix modules, you can override the prefix by right clicking and assigning an override name."
+				"hint": "This attempts to prefix titles based on what it thinks is best. For example modules with the library flag will be prefixed with Library, and modules with the word UI in the title will be prefixed with UI. This may not correctly prefix modules, you can override the prefix by right clicking and assigning an override name.",
+				"prefixes": {
+					"library": "Library",
+					"maps": "Maps",
+					"ui": "UI"
+				}
 			}
 		},
-		"tooltips": {
-			"managePresets": "Manage Presets",
-			"exportModules": "Export Modules",
-			"importModules": "Import Modules",
-			"worldSetting": "World Setting",
-			"clientSetting": "Client Setting",
-			"syncSetting": "Sync Setting",
-			"lockSetting": "Lock Setting",
-			"unlockSetting": "Unlock Setting",
-			"moduleLocked": "This module will not be deactivated when deactivating modules."
-		},
-		"tags": {
-			"socket": "Module uses Socket API",
-			"library": "Is a Library Module",
-			"authors": "Authors",
-			"url": "View Website",
-			"readme": "View Readme",
-			"changelog": "View Changelog",
-			"attributions": "View Attributions",
-			"issues": "Report/View Bug(s)",
-			"bugReporter": "Report Bug with 🐛 Bug Reporter"
-		},
 		"dialog": {
+			"generic": {
+				"activeModules": "Active Modules"
+			},
 			"titles": {
 				"export": "Export Modules",
 				"import": "Import Modules",
 				"presets": "Manage Presets"
 			},
-			"activeModules": "Active Modules",
-			"activeModulesCopied": "Active Module List has been Copied to Your Clipboard!",
-			"uninstalledModules": "Uninstalled Modules",
-			"installedModules": "Installed Modules",
-			"bugsUrl": "Bugs URL",
-			"search": "Search Changelogs",
-			"collapseModeLabel": "Collapse Sidebar",
-			"navLabel": "Table of Contents",
-			"markAsSeen": "Mark as Seen",
-			"previousPage": "Previous Page",
-			"nextPage": "Next Page",
+			"moduleManagement": {
+				"lockedModules": "Locked Modules",
+				"rollback": "Restore Previous Module List",
+				"deactivateModules": "Deactivate All Unlocked Modules",
+				"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
+				"contextMenu": {
+					"renameModule": "Rename Module",
+					"restoreModuleName": "Restore Default Modle Name",
+					"lockModule": "Lock Module",
+					"unlockModule": "Unlock Module"
+				},
+				"tooltips": {
+					"managePresets": "Manage Presets",
+					"exportModules": "Export Modules",
+					"importModules": "Import Modules",
+					"moduleLocked": "This module will not be deactivated when deactivating modules."
+				},
+				"tags": {
+					"socket": "Module uses Socket API",
+					"library": "Is a Library Module",
+					"authors": "Authors",
+					"url": "View Website",
+					"readme": "View Readme",
+					"changelog": "View Changelog",
+					"attributions": "View Attributions",
+					"issues": "Report/View Bug(s)",
+					"bugReporter": "Report Bug with 🐛 Bug Reporter"
+				}
+			},
+			"clientSettings": {
+				"syncSetting": {
+					"askPermission": "Allow Your Game master to set the following setting for you?",
+					"sendToAll": "Send this setting to all other users?"
+				},
+				"tooltips": {
+					"worldSetting": "World Setting",
+					"clientSetting": "Client Setting",
+					"syncSetting": "Sync Setting",
+					"lockSetting": "Lock Setting",
+					"unlockSetting": "Unlock Setting"
+				}
+			},
+			"preview": {
+				"search": "Search Changelogs",
+				"collapseModeLabel": "Collapse Sidebar",
+				"navLabel": "Table of Contents",
+				"markAsSeen": "Mark as Seen",
+				"previousPage": "Previous Page",
+				"nextPage": "Next Page"
+			},
 			"presets": {
-				"presetName": "Preset Name",
-				"info": "Info",
-				"update": "Update",
-				"delete": "Delete",
-				"activate": "Activate",
-				"create": "Create New Preset",
-				"modulesIn": "Modules in {name}",
-				"updateWith": "Update this Preset to the following Modules?",
-				"deletePreset": "Are you sure you want to delete the preset labeled <strong>{name}</strong>?",
-				"deletePresetWarning": "This action can <strong>NOT</strong> be undone!",
-				"activatePreset": "This preset will enable the following Modules?",
-				"createNew": {
+				"title": "Preset Name",
+				"tooltips": {
+					"info": "Info",
+					"update": "Update",
+					"delete": "Delete",
+					"activate": "Activate"
+				},
+				"buttons": {
+					"create": "Create New Preset"
+				},
+				"info": {
+					"description": "Modules in <strong>{name}</strong> preset.",
+					"installedModules": "Installed Modules",
+					"uninstalledModules": "Uninstalled Modules"
+				},
+				"update": {
+					"description": "Update this Preset to the following Modules?"
+				},
+				"delete": {
+					"description": "Are you sure you want to delete the preset labeled <strong>{name}</strong>?",
+					"warning": "This action can <strong>NOT</strong> be undone!</div>"
+				},
+				"activate": {
+					"description": "This preset will enable the following Modules?"
+				},
+				"create": {
 					"title": "Create a New Preset",
 					"placeholder": "Preset Title",
-					"noTitleError": "Please enter a Preset Title."
-				},
-				"exports": {
-					"title": "Export your Active Modules!",
-					"buttons": {
-						"copy": "Copy",
-						"export": "Export"
-					}
-				},
-				"imports": {
-					"tidyUI": {
-						"title": "Import Type is TidyUI",
-						"message": "When importing a TidyUI file you will be unable to import Client or World level settings."
-					},
-					"table": {
-						"moduleTitle": "Module Title",
-						"client": "Client",
-						"world": "World"
-					},
-					"notInstalled": "Module Not Installed",
-					"buttons": {
-						"keep": "Keep Current Modules Enabled",
-						"import": "Import"
+					"notification": {
+						"noTitleError": "Please enter a Preset Title."
 					}
 				}
 			},
-			"lockedModules": "Locked Modules",
-			"rollback": "Restore Previous Module List",
-			"deactivateModules": "Deactivate All Unlocked Modules",
-			"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
-			"syncSetting": {
-				"askPermission": "Allow Your Game master to set the following setting for you?",
-				"sendToAll": "Send this setting to all other users?"
+			"export": {
+				"title": "Export your Active Modules!",
+				"bugsUrl": "Bugs URL",
+				"notification": {
+					"copied": "Active Module List has been Copied to Your Clipboard!"
+				},
+				"buttons": {
+					"copy": "Copy",
+					"export": "Export"
+				}
 			},
-			"contextMenu": {
-				"renameModule": "Rename Module",
-				"restoreModuleName": "Restore Default Modle Name",
-				"lockModule": "Lock Module",
-				"unlockModule": "Unlock Module"
+			"import": {
+				"tidyUI": {
+					"title": "Import Type is TidyUI",
+					"message": "When importing a TidyUI file you will be unable to import Client or World level settings."
+				},
+				"table": {
+					"moduleTitle": "Module Title",
+					"client": "Client",
+					"world": "World"
+				},
+				"notInstalled": "Module Not Installed",
+				"buttons": {
+					"keep": "Keep Current Modules Enabled",
+					"import": "Import"
+				}
 			}
-		},
-		"smartPrefix": {
-			"library": "Library",
-			"maps": "Maps",
-			"ui": "UI"
 		},
 		"migration": {
 			"v204": {

@@ -1,23 +1,23 @@
 <div class="dialog-content">
 	<ul id="{{DIALOG.ID}}-presets-header">
 		<li>
-			<div>{{localize 'module-credits.dialog.presets.presetName'}}</div>
+			<div>{{localize 'module-credits.dialog.presets.title'}}</div>
 		</li>
 	</ul>
 	<ul id="{{DIALOG.ID}}-presets-list">
 		{{#each presets}}
 		<li data-preset="{{@key}}">
 			<label for="preset-{{@key}}">{{name}}</label>
-			<button data-action="info" data-tooltip="{{localize 'module-credits.dialog.presets.info'}}">
+			<button data-action="info" data-tooltip="{{localize 'module-credits.dialog.presets.tooltips.info'}}">
 				<i class="fa-solid fa-circle-info"></i>
 			</button>
-			<button data-action="update" data-tooltip="{{localize 'module-credits.dialog.presets.update'}}">
+			<button data-action="update" data-tooltip="{{localize 'module-credits.dialog.presets.tooltips.update'}}">
 				<i class="fa-solid fa-floppy-disk"></i>
 			</button>
-			<button data-action="delete" data-tooltip="{{localize 'module-credits.dialog.presets.delete'}}">
+			<button data-action="delete" data-tooltip="{{localize 'module-credits.dialog.presets.tooltips.delete'}}">
 				<i class="fa-solid fa-trash"></i>
 			</button>
-			<button data-action="activate" data-tooltip="{{localize 'module-credits.dialog.presets.activate'}}">
+			<button data-action="activate" data-tooltip="{{localize 'module-credits.dialog.presets.tooltips.activate'}}">
 				<i class="fa-solid fa-circle-play"></i>
 			</button>
 		</li>
@@ -26,6 +26,6 @@
 </div>
 <div class="dialog-buttons" style="flex: 0 1">
 	<button class="dialog-button create" data-action="create">
-		<i class="fa-solid fa-plus"></i> {{localize 'module-credits.dialog.presets.create'}}
+		<i class="fa-solid fa-plus"></i> {{localize 'module-credits.dialog.presets.buttons.create'}}
 	</button>
 </div>

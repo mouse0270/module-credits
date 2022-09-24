@@ -55,7 +55,7 @@ export class MMP {
 		}else{
 			return await Dialog.confirm({
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top:0px;">${MODULE.localize('dialog.syncSetting.askPermission')}</p> 
+				content: `<p style="margin-top:0px;">${MODULE.localize('dialog.clientSettings.syncSetting.askPermission')}</p> 
 					<p>${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).name)}<br/>
 					${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).hint)}</p>`,
 				yes: () => {
@@ -261,11 +261,11 @@ export class MMP {
 		// Handle for Smart Prefixing
 		if (MODULE.setting('smartPrefix')) {
 			// Merge Library Modules
-			if (module?.library ?? false) return `${MODULE.localize('smartPrefix.library')} - ${module.title.replace('lib - ', '')}`;
+			if (module?.library ?? false) return `${MODULE.localize('settings.smartPrefix.prefixes.library')} - ${module.title.replace('lib - ', '')}`;
 			// Is Module a UI Module
-			if (module.title.includes('UI') ?? false) return `${MODULE.localize('smartPrefix.ui')} - ${module.title}`;
+			if (module.title.includes('UI') ?? false) return `${MODULE.localize('settings.smartPrefix.prefixes.ui')} - ${module.title}`;
 			// Is Module a Map Pack
-			if (module.title.includes('Maps') || module.title.includes('Battlemap'))  return `${MODULE.localize('smartPrefix.maps')} - ${module.title}`;
+			if (module.title.includes('Maps') || module.title.includes('Battlemap'))  return `${MODULE.localize('settings.smartPrefix.prefixes.maps')} - ${module.title}`;
 		}
 		
 		// If Auto Prefix is Disabled, return Module Title
@@ -321,7 +321,7 @@ export class MMP {
 
 		if (game.user.isGM) {
 			// Add Presets Button
-			elem.querySelector('nav.list-filters').insertAdjacentHTML('afterbegin', `<button type="button" class="" data-action="presets" data-tooltip="${MODULE.localize('tooltips.managePresets')}">
+			elem.querySelector('nav.list-filters').insertAdjacentHTML('afterbegin', `<button type="button" class="" data-action="presets" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.managePresets')}">
 				<i class="fa-solid fa-list-check"></i>
 			</button>`);
 			elem.querySelector('nav.list-filters button[data-action="presets"]').addEventListener('click', (event) => {
@@ -329,7 +329,7 @@ export class MMP {
 			});
 
 			// Add Export Button
-			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="export" data-tooltip="${MODULE.localize('tooltips.exportModules')}">
+			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="export" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.exportModules')}">
 				<i class="fa-solid fa-download"></i>
 			</button>`);
 			elem.querySelector('nav.list-filters button[data-action="export"]').addEventListener('click', (event) => {
@@ -338,7 +338,7 @@ export class MMP {
 
 			// Add Import Button
 			// ? Update import logic to be pure javascript
-			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="import" data-tooltip="${MODULE.localize('tooltips.importModules')}">
+			elem.querySelector('nav.list-filters button.expand').insertAdjacentHTML('beforebegin', `<button type="button" class="" data-action="import" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.importModules')}">
 				<i class="fa-solid fa-upload"></i>
 			</button>`);
 			elem.querySelector('nav.list-filters button[data-action="import"]').addEventListener('click', (event) => {
@@ -397,7 +397,7 @@ export class MMP {
 				
 				let lastFilter = Array.from(elem.querySelectorAll('nav.list-filters a.filter')).pop();
 				let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
-				lastFilter.insertAdjacentHTML('afterend', `<a class="filter" data-filter="locked">${MODULE.localize('dialog.lockedModules')} (${lockedCount})</a>`);
+				lastFilter.insertAdjacentHTML('afterend', `<a class="filter" data-filter="locked">${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})</a>`);
 				elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').addEventListener('click', (event) => {
 					elem.querySelector('nav.list-filters a.filter.active').classList.remove('active');
 					event.target.classList.add('active');
@@ -486,13 +486,13 @@ export class MMP {
 
 			// Add Ability to Rename Package Title for Better Sorting
 			new ContextMenu($(elemPackage), '.package-overview ', [{
-				name: `${MODULE.localize('dialog.contextMenu.renameModule')}`,
+				name: `${MODULE.localize('dialog.moduleManagement.contextMenu.renameModule')}`,
 				icon: '<i class="fa-duotone fa-pen-to-square"></i>',
 				condition: game.user.isGM,
 				callback: (packageElem => {
 					return Dialog.confirm({
 						id: `${MODULE.ID}-rename-module`,
-						title: MODULE.localize('title'),
+						title: MODULE.TITLE,
 						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.renameModule')}</p>
 							<input type="text" name="${MODULE.ID}-rename-module-title" value="${packageElem[0].querySelector('label.package-title').textContent.trim()}"/>`,
 						yes: (elemDialog) => {
@@ -511,7 +511,7 @@ export class MMP {
 					});
 				})
 			}, {
-				name: `${MODULE.localize('dialog.contextMenu.restoreModuleName')}`,
+				name: `${MODULE.localize('dialog.moduleManagement.contextMenu.restoreModuleName')}`,
 				icon: '<i class="fa-duotone fa-rotate"></i>',
 				condition: game.user.isGM && (MODULE.setting('renamedModules')[moduleKey] ?? false),
 				callback: (packageElem => {
@@ -522,14 +522,14 @@ export class MMP {
 					})
 				})
 			}, {
-				name: MODULE.localize('dialog.contextMenu.lockModule'),
+				name: MODULE.localize('dialog.moduleManagement.contextMenu.lockModule'),
 				icon: '<i class="fa-duotone fa-lock"></i>',
 				condition: () => game.user.isGM && !MODULE.setting('lockedModules').hasOwnProperty(moduleKey),
 				callback: (packageElem => {
 					let lockedModules = MODULE.setting('lockedModules');
 					lockedModules[moduleKey] = true;
 					MODULE.setting('lockedModules', lockedModules).then(response => {
-						packageElem[0].querySelector('.package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
+						packageElem[0].querySelector('.package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
 							
 						if (MODULE.setting('disableLockedModules')) {
 							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = true;
@@ -538,12 +538,12 @@ export class MMP {
 						packageElem[0].querySelector('.package-title input[type="checkbox"]').dispatchEvent(new Event('change'));
 
 						let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
-						elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
-						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
+						elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').innerHTML = `${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})`;
+						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})`;
 					});
 				})
 			}, {
-				name: MODULE.localize('dialog.contextMenu.unlockModule'),
+				name: MODULE.localize('dialog.moduleManagement.contextMenu.unlockModule'),
 				icon: '<i class="fa-duotone fa-lock-open"></i>',
 				condition: () => game.user.isGM && MODULE.setting('lockedModules').hasOwnProperty(moduleKey),
 				callback: (packageElem => {
@@ -557,8 +557,8 @@ export class MMP {
 						}
 
 						let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
-						elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
-						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.lockedModules')} (${lockedCount})`;
+						elem.querySelector('nav.list-filters a.filter[data-filter="locked"]').innerHTML = `${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})`;
+						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})`;
 					});
 				})
 			}]);
@@ -571,7 +571,7 @@ export class MMP {
 			}
 			// Add Authors Tag
 			if (moduleData?.authors.size >= 1 ?? false) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag authors" data-tooltip="${MODULE.localize("tags.authors")}" aria-describedby="tooltip">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag authors" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.authors")}" aria-describedby="tooltip">
 					<i class="fa-solid ${moduleData?.authors.size == 1 ? 'fa-user' : 'fa-users'}"></i>
 				</span>`);
 				let elements = [];
@@ -598,7 +598,7 @@ export class MMP {
 
 			// Add ReadMe Tag
 			if (readme || ((MMP.getModuleProperty(moduleData.id, 'readme') || "").match(APIs.github) ?? false) || ((MMP.getModuleProperty(moduleData.id, 'readme') || "").match(APIs.rawGithub) ?? false)) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag readme" data-tooltip="${MODULE.localize("tags.readme")}" aria-describedby="tooltip">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag readme" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.readme")}" aria-describedby="tooltip">
 					<i class="fa-solid fa-circle-info"></i>
 				</span>`);
 				elemPackage.querySelector('.package-overview span.tag.readme').addEventListener('click', (event) => {
@@ -614,7 +614,7 @@ export class MMP {
 			}
 			// Add Changelog Tag
 			if (changelog || ((MMP.getModuleProperty(moduleData.id, 'changelog') || "").match(APIs.github) ?? false) || ((MMP.getModuleProperty(moduleData.id, 'changelog') || "").match(APIs.rawGithub) ?? false)) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag changelog" data-tooltip="${MODULE.localize("tags.changelog")}" aria-describedby="tooltip">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag changelog" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.changelog")}" aria-describedby="tooltip">
 					<i class="fa-solid fa-list"></i>
 				</span>`);
 				elemPackage.querySelector('.package-overview span.tag.changelog').addEventListener('click', (event) => {
@@ -630,7 +630,7 @@ export class MMP {
 			}
 			// Add Attributions Tag
 			if (attributions || ((MMP.getModuleProperty(moduleData.id, 'attributions') || "").match(APIs.github) ?? false) || ((MMP.getModuleProperty(moduleData.id, 'attributions') || "").match(APIs.rawGithub) ?? false)) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag attributions" data-tooltip="${MODULE.localize("tags.attributions")}" aria-describedby="tooltip">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag attributions" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.attributions")}" aria-describedby="tooltip">
 					<i class="fa-brands fa-creative-commons-by"></i>
 				</span>`);
 				elemPackage.querySelector('.package-overview span.tag.attributions').addEventListener('click', (event) => {
@@ -646,36 +646,36 @@ export class MMP {
 			}
 			// Add Website Tag
 			if (MMP.getModuleProperty(moduleData.id, 'url') ?? false) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<a href="${MMP.getModuleProperty(moduleData.id, 'url')}" class="tag website" data-tooltip="${MODULE.localize("tags.url")}" aria-describedby="tooltip" target="_blank">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<a href="${MMP.getModuleProperty(moduleData.id, 'url')}" class="tag website" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.url")}" aria-describedby="tooltip" target="_blank">
 					<i class="fa-solid fa-link"></i>
 				</a>`);
 			}
 			// Add Issues Link | Support for 🐛 Bug Reporter Support
 			if (MMP.bugReporterSupport(moduleData)) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag issues bug-reporter" data-tooltip="${MODULE.localize("tags.bugReporter")}" aria-describedby="tooltip" target="_blank">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag issues bug-reporter" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.bugReporter")}" aria-describedby="tooltip" target="_blank">
 					<i class="fa-solid fa-bug"></i>
 				</span>`);
 			}else if (MMP.getModuleProperty(moduleData.id, 'bugs') ?? false) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<a href="${MMP.getModuleProperty(moduleData.id, 'bugs')}" class="tag issues" data-tooltip="${MODULE.localize("tags.issues")}" aria-describedby="tooltip" target="_blank">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<a href="${MMP.getModuleProperty(moduleData.id, 'bugs')}" class="tag issues" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.issues")}" aria-describedby="tooltip" target="_blank">
 					<i class="fa-brands fa-github"></i>
 				</a>`);
 			}
 			// Add Socket Tag
 			if (moduleData?.socket ?? false) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag socket" data-tooltip="${MODULE.localize("tags.socket")}" aria-describedby="tooltip" >
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag socket" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.socket")}" aria-describedby="tooltip" >
 					<i class="fa-solid fa-plug"></i>
 				</span>`);
 			}
 			// Add Library Tag
 			if (moduleData?.library ?? false) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag library" data-tooltip="${MODULE.localize("tags.library")}" aria-describedby="tooltip">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag library" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.library")}" aria-describedby="tooltip">
 					<i class="fa-solid fa-book"></i>
 				</span>`);
 			}
 
 			// Add Locked Status
 			if (MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) {
-				elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
+				elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
 				if (MODULE.setting('disableLockedModules')) {
 					elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').disabled = true;
 				}
@@ -738,8 +738,8 @@ export class MMP {
 			elem.querySelector('footer button[name="deactivate"]').innerHTML = `<span class="fa-stack">
 				<i class="fa-regular fa-square-check fa-stack-1x"></i>
 				<i class="fa-sharp fa-solid fa-slash fa-stack-1x"></i>
-			</span>${MODULE.localize('dialog.deactivateModules')}`;
-			elem.querySelector('footer button[name="deactivate"]').dataset.tooltip = MODULE.localize('dialog.deactivateModulesAlt');
+			</span>${MODULE.localize('dialog.moduleManagement.deactivateModules')}`;
+			elem.querySelector('footer button[name="deactivate"]').dataset.tooltip = MODULE.localize('dialog.moduleManagement.deactivateModulesAlt');
 
 			elem.querySelector('footer button[name="deactivate"]').addEventListener('click', (event) => {
 				if (event.ctrlKey) {
@@ -756,7 +756,7 @@ export class MMP {
 		if (game.user.isGM) {
 			MODULE.setting('storedRollback', game.settings.get(`core`, `${ModuleManagement.CONFIG_SETTING}`));
 			if (MODULE.setting('presetsRollbacks').length > 0) {
-				elem.querySelector('footer button[type="submit"]').insertAdjacentHTML('beforebegin', `<button type="button" name="rollback" data-tooltip="${MODULE.localize('dialog.rollback')}">
+				elem.querySelector('footer button[type="submit"]').insertAdjacentHTML('beforebegin', `<button type="button" name="rollback" data-tooltip="${MODULE.localize('dialog.moduleManagement.rollback')}">
 					<i class="fa-regular fa-rotate-left"></i>
 				</button>`);
 
@@ -764,9 +764,9 @@ export class MMP {
 					let rollBackModules = MODULE.setting('presetsRollbacks').pop();
 					Dialog.confirm({
 						id: `${MODULE.ID}-rollback-modules`,
-						title: MODULE.localize('title'),
-						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.rollback')}</p>
-						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### ${MODULE.log('dialog.activeModules')}\n${Object.entries(rollBackModules).filter(([key, value]) => {
+						title: MODULE.TITLE,
+						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.moduleManagement.rollback')}</p>
+						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### ${MODULE.log('dialog.generic.activeModules')}\n${Object.entries(rollBackModules).filter(([key, value]) => {
 							return (game.modules.get(key)?.title ?? '') != '' && (value != false);
 						}).map(([key, value]) => {
 							return game.modules.get(key)?.title;
@@ -820,14 +820,14 @@ export class MMP {
 				}
 
 				if (settingDetails.scope == "client" && game.user.isGM && settingID) {
-					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-user" data-tooltip="${MODULE.localize('tooltips.clientSetting')}" data-tooltip-direction="UP"></i>`);
+					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-user" data-tooltip="${MODULE.localize('dialog.clientSettings.tooltips.clientSetting')}" data-tooltip-direction="UP"></i>`);
 					if (this.socket) {
-						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-arrows-rotate" data-tooltip="${MODULE.localize('tooltips.syncSetting')}" data-tooltip-direction="UP" data-action="sync"></i>`);
+						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-arrows-rotate" data-tooltip="${MODULE.localize('dialog.clientSettings.tooltips.syncSetting')}" data-tooltip-direction="UP" data-action="sync"></i>`);
 
 						settingLabel.querySelector('[data-action="sync"]').addEventListener('click', (event) => {
 							Dialog.confirm({
-								title: MODULE.localize('title'),
-								content: `<p style="margin-top:0px;">${MODULE.localize('syncSetting.sendToAll')}</p>`,
+								title: MODULE.TITLE,
+								content: `<p style="margin-top:0px;">${MODULE.localize('dialog.clientSettings.syncSetting.sendToAll')}</p>`,
 								yes: () => {
 									this.socket.executeForOthers("setUserSetting", {
 										moduleId: settingDetails.namespace,
@@ -865,14 +865,14 @@ export class MMP {
 
 						new ContextMenu($(settingLabel), '[data-action="sync"]', getActiveUser());
 					}
-					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? MODULE.localize('tooltips.unlockSetting') : MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
+					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? MODULE.localize('dialog.clientSettings.tooltips.unlockSetting') : MODULE.localize('dialog.clientSettings.tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
 					settingLabel.querySelector('[data-action="lock"]').addEventListener('click', (event) => {
 						if (isLocked(settingID)) {
 							delete MMP.#LockedSettings[`${settingID}`];
 							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-lock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-unlock');
-								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.lockSetting');
+								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('dialog.clientSettings.tooltips.lockSetting');
 							});
 						}else{
 							MMP.#LockedSettings[`${settingID}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
@@ -880,7 +880,7 @@ export class MMP {
 							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
 								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-unlock');
 								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-lock');
-								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('tooltips.unlockSetting');
+								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('dialog.clientSettings.tooltips.unlockSetting');
 							})
 						}
 					});
@@ -889,7 +889,7 @@ export class MMP {
 						settingLabel.closest('.form-group').querySelectorAll('input, select, button').forEach(input => {
 							input.disabled = true;
 						});
-						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
+						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('dialog.clientSettings.tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
 						if (MODULE.setting('hideLockedSettings')) {
 							settingLabel.closest('.form-group').classList.add('hidden');
 						}
@@ -897,7 +897,7 @@ export class MMP {
 				}
 				
 				if (settingDetails.scope == "world") {
-					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-regular fa-earth-americas" data-tooltip="${MODULE.localize('tooltips.worldSetting')}" data-tooltip-direction="UP"></i>`);
+					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-regular fa-earth-americas" data-tooltip="${MODULE.localize('dialog.clientSettings.tooltips.worldSetting')}" data-tooltip-direction="UP"></i>`);
 				}
 			}
 		})
@@ -931,7 +931,7 @@ export class MMP {
 						});
 						if (isLocked(settingID)) {
 							if (!settingLabel.querySelector('[data-action="lock"]') ?? false) {
-								settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
+								settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-lock" data-tooltip="${MODULE.localize('dialog.clientSettings.tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
 							}
 						}else{
 							settingLabel.querySelector('[data-action="lock"]')?.remove() ?? false;
@@ -997,8 +997,8 @@ export class MMP {
 			if (readme || changelog || attributions || license) {
 				elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterend', '<li class="system-buttons"></li>');
 				if (readme  || ((game.system.readme || "").match(APIs.github) ?? false) || ((game.system.readme || "").match(APIs.rawGithub) ?? false)) {
-					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="readme" data-tooltip="${MODULE.localize('tags.readme')}">
-						<i class="fa-solid fa-circle-info"></i> ${MODULE.localize('tags.readme')}
+					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="readme" data-tooltip="${MODULE.localize('dialog.moduleManagement.tags.readme')}">
+						<i class="fa-solid fa-circle-info"></i> ${MODULE.localize('dialog.moduleManagement.tags.readme')}
 					</button>`);
 					
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="readme"]').addEventListener('click', (event) => {
@@ -1015,8 +1015,8 @@ export class MMP {
 				}
 
 				if (changelog  || ((game.system.changelog || "").match(APIs.github) ?? false) || ((game.system.changelog || "").match(APIs.rawGithub) ?? false)) {
-					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="changelog" data-tooltip="${MODULE.localize('tags.changelog')}">
-						<i class="fa-solid fa-list"></i> ${MODULE.localize('tags.changelog')}
+					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="changelog" data-tooltip="${MODULE.localize('dialog.moduleManagement.tags.changelog')}">
+						<i class="fa-solid fa-list"></i> ${MODULE.localize('dialog.moduleManagement.tags.changelog')}
 					</button>`);
 					
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="changelog"]').addEventListener('click', (event) => {
@@ -1033,8 +1033,8 @@ export class MMP {
 				}
 
 				if (attributions  || ((game.system.flags.attributions || "").match(APIs.github) ?? false) || ((game.system.flags.attributions || "").match(APIs.rawGithub) ?? false)) {
-					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="attributions" data-tooltip="${MODULE.localize('tags.attributions')}">
-						<i class="fa-brands fa-creative-commons-by"></i> ${MODULE.localize('tags.attributions')}
+					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="attributions" data-tooltip="${MODULE.localize('dialog.moduleManagement.tags.attributions')}">
+						<i class="fa-brands fa-creative-commons-by"></i> ${MODULE.localize('dialog.moduleManagement.tags.attributions')}
 					</button>`);
 					
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="attributions"]').addEventListener('click', (event) => {

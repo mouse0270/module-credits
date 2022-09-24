@@ -2,11 +2,11 @@
 	<aside class="sidebar journal-sidebar directory flexcol{{#unless IsMultipleItems}} hidden{{/unless}}">
 		<header class="directory-header">
 			<div class="header-search flexrow">
-				<input type="text" name="search" value="" autocomplete="off" placeholder="{{localize 'module-credits.dialog.search'}}">
-				<a class="action-button collapse-toggle" data-action="toggleCollapse" data-tooltip="{{localize 'module-credits.dialog.collapseModeLabel'}}"><i class="fa-solid fa-caret-right"></i></a>
+				<input type="text" name="search" value="" autocomplete="off" placeholder="{{localize 'module-credits.dialog.preview.search'}}">
+				<a class="action-button collapse-toggle" data-action="toggleCollapse" data-tooltip="{{localize 'module-credits.dialog.preview.collapseModeLabel'}}"><i class="fa-solid fa-caret-right"></i></a>
 			</div>
 		</header>
-		<nav class="pages-list" aria-label="{{localize 'module-credits.dialog.NavLabel'}}" data-tooltip-direction="RIGHT">
+		<nav class="pages-list" aria-label="{{localize 'module-credits.dialog.preview.NavLabel'}}" data-tooltip-direction="RIGHT">
 			<ol class="directory-list scrollable">
 				{{#each items}}
 				<li class="directory-item level1" data-module-id="{{@key}}" data-file-type="{{this.type}}" draggable="true">
@@ -21,12 +21,12 @@
 		</nav>
 		<div class="action-buttons flexrow">
 			<button class="create{{#unless @root.IsGM}} hidden{{/unless}}" type="button" data-action="markAsSeen">
-				{{localize 'module-credits.dialog.markAsSeen'}}
+				{{localize 'module-credits.dialog.preview.markAsSeen'}}
 			</button>
-			<button class="previous" type="button" data-action="previous" data-tooltip="{{localize 'module-credits.dialog.previousPage'}}" disabled="">
+			<button class="previous" type="button" data-action="previous" data-tooltip="{{localize 'module-credits.dialog.preview.previousPage'}}" disabled="">
 				<i class="fa-solid fa-chevron-left"></i>
 			</button>
-			<button class="next" type="button" data-action="next" data-tooltip="{{localize 'module-credits.dialog.nextPage'}}">
+			<button class="next" type="button" data-action="next" data-tooltip="{{localize 'module-credits.dialog.preview.nextPage'}}">
 				<i class="fa-solid fa-chevron-right"></i>
 			</button>
 		</div>

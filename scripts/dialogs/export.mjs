@@ -53,9 +53,9 @@ export class ExportDialog extends FormApplication {
 			}, 
 			activeModules: () => {
 				// Build Markdown Display
-				let markdown = [`### ${MODULE.localize('dialog.activeModules')}`];
+				let markdown = [`### ${MODULE.localize('dialog.generic.activeModules')}`];
 				for (const [key, value] of Object.entries(this.moduleData)) {
-					markdown.push(`${value.title} v${value.version}` + (value.bugs ? ` [${MODULE.localize('dialog.bugsUrl')}](${value.bugs})` : ''));
+					markdown.push(`${value.title} v${value.version}` + (value.bugs ? ` [${MODULE.localize('dialog.export.bugsUrl')}](${value.bugs})` : ''));
 				}
 				return markdown.join('\n');
 			}
@@ -68,7 +68,7 @@ export class ExportDialog extends FormApplication {
 		$(html).find('[data-button="copy"]').on('click', (event) => {
 			$(html).find(`#${MODULE.ID}-copy-export`).select();
 			document.execCommand('copy');
-			ui.notifications.info(`<strong>${MODULE.TITLE}</strong>: ${MODULE.localize('activeModulesCopied')}`);
+			ui.notifications.info(`<strong>${MODULE.TITLE}</strong>: ${MODULE.localize('dialog.export.notification.copied')}`);
 		})
 
 		$(html).find('[data-button="export"]').on('click', (event) => {
