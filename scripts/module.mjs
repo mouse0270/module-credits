@@ -263,9 +263,9 @@ export class MMP {
 			// Merge Library Modules
 			if (module?.library ?? false) return `${MODULE.localize('settings.smartPrefix.prefixes.library')} - ${module.title.replace('lib - ', '')}`;
 			// Is Module a UI Module
-			if (module.title.includes('UI') ?? false) return `${MODULE.localize('settings.smartPrefix.prefixes.ui')} - ${module.title}`;
+			if ([' UI', 'UI '].some(checkfor => (module?.title ?? '').toUpperCase().includes(checkfor) ?? false) || (module?.title ?? '').toUpperCase().endsWith('UI')) return `${MODULE.localize('settings.smartPrefix.prefixes.ui')} - ${module.title}`;
 			// Is Module a Map Pack
-			if (module.title.includes('Maps') || module.title.includes('Battlemap'))  return `${MODULE.localize('settings.smartPrefix.prefixes.maps')} - ${module.title}`;
+			if (['MAPS', 'BATTLEMAP'].some(checkfor => (module?.title ?? '').toUpperCase().includes(checkfor)))  return `${MODULE.localize('settings.smartPrefix.prefixes.maps')} - ${module.title}`;
 		}
 		
 		// If Auto Prefix is Disabled, return Module Title
@@ -533,6 +533,7 @@ export class MMP {
 							
 						if (MODULE.setting('disableLockedModules')) {
 							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = true;
+							elemPackage.classList.add('disabled');
 						}
 						packageElem[0].querySelector('.package-title input[type="checkbox"]').checked = true;
 						packageElem[0].querySelector('.package-title input[type="checkbox"]').dispatchEvent(new Event('change'));
@@ -554,6 +555,7 @@ export class MMP {
 							
 						if (MODULE.setting('disableLockedModules')) {
 							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = false;
+							elemPackage.classList.remove('disabled');
 						}
 
 						let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
@@ -678,6 +680,7 @@ export class MMP {
 				elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
 				if (MODULE.setting('disableLockedModules')) {
 					elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').disabled = true;
+					elemPackage.classList.add('disabled');
 				}
 			}
 
@@ -753,8 +756,12 @@ export class MMP {
 				if (event.ctrlKey) {
 					MODULE.log('USER WAS HOLDING DOWN CONTROL KEY')
 				}else{
+					Array.from(elem.querySelectorAll('#module-list.package-list .package.checked')).forEach(elemPackage => {
+						elemPackage.classList.remove('checked');
+					})
 					for (const [key, value] of Object.entries(MODULE.setting('lockedModules'))) {
 						elem.querySelector(`.package-list .package[data-module-id="${key}"] input[type="checkbox"]`).checked = true;
+						elem.querySelector(`.package-list .package[data-module-id="${key}"]`).classList.add('checked');
 					}
 				}
 			});

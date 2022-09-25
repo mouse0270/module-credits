@@ -1,5 +1,6 @@
 # Version 2.1.2 - Being Clever is Hard...
 - Added Support to theme Module Management Window using libThemer
+- Updated `Smart Prefix` to batter handle catching UI modules. It now checks for a space before/after the word UI or if the would ends with UI.
 
 # Version 2.1.1 - Totalement localisable
 - Went through all of the code and made sure to localize the entire project
