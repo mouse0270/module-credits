@@ -41,5 +41,5 @@
 }
 #module-list.package-list .package.disabled .package-title.checkbox:after {
 	background-color: var(--app-background-dark-shaded, rgba(0, 0, 0, 0.8));
-	content: "";
+	color: var(--app-background-dark-shaded-contrast, white);
 }
