@@ -4,6 +4,7 @@
 - Added Global Conflicts Back. This new system handles for both core and system conflicts. Please keep in mind this system uses a publicly available google sheet. Using this feature will mean that Google will receive your IP address. If you are uncomfortable with this, turn off this feature.
 - Fixed issue with rollbacks that would delete the rollback when the dialog opens instead of only when you hit yes.
 - Fixed when creating a new preset, the input is focused so you can start typing.
+- Fixed Presets Setting being a `world` scope variable over a `client` variable. Changed back to client setting.
 
 # Version 2.1.1 - Totalement localisable
 - Went through all of the code and made sure to localize the entire project

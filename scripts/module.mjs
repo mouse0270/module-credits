@@ -641,7 +641,7 @@ export class MMP {
 			}, {
 				name: MODULE.localize('dialog.moduleManagement.contextMenu.reportConflict'),
 				icon: '<i class="fa-solid fa-bug"></i>',
-				condition: () => game.user.isGM && (game.modules.get("bug-reporter")?.active ?? false),
+				condition: () => game.user.isGM && (game.modules.get("bug-reporter")?.active ?? false) && false,
 				callback: (packageElem => { 
 					const moduleDetails = game.modules.get(packageElem[0].closest('li').dataset.moduleId);
 					Hooks.once('renderBugReportForm', (app, elem, options) => {
@@ -681,7 +681,7 @@ export class MMP {
 						elem.querySelector('input[type="text"][name="formFields.issuer"]').closest('.flexrow').classList.add('hidden');
 
 						// Fill Description
-						elem.querySelector('textarea[name="formFields.bugDescription"]').value = `### Reason\n- `;
+						elem.querySelector('textarea[name="formFields.bugDescription"]').value = `- `;
 						elem.querySelector('textarea[name="formFields.bugDescription"]').insertAdjacentHTML('afterend', `<div class="${MODULE.ID}-bug-reporter-preview hidden"></div>`);
 
 						// Add Toggle Button
@@ -711,7 +711,7 @@ export class MMP {
 							};
 							
 							let markdown = [elemTextarea.value];
-							markdown.push(`&nbsp;`);
+							markdown.push(`\n\n`);
 							markdown.push(`### Conflicts With`);
 							if (packageDetails.id != '') markdown.push(`**Package ID:** ${packageDetails.id}`);
 							markdown.push(`**Package Name:** ${packageDetails.name}`);

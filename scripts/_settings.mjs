@@ -125,7 +125,6 @@ Hooks.once('setup', () => {
 		type: Object,
 		default: {},
 		config: false,
-		scope: 'world',
 	}
 	const showNewChangelogsOnLoad = {
 		name: `${MODULE.ID}.settings.showNewChangelogsOnLoad.name`,
