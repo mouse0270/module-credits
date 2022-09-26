@@ -229,6 +229,11 @@ export class PresetDialog extends FormApplication {
 				},
 				no: () => {
 					return 'Player Rejected Setting'
+				},
+				render: (elem) => {
+					setTimeout(() => {
+						elem[0].querySelector(`input[type="text"][name="${MODULE.ID}-preset-title"]`).focus();
+					}, 1);
 				}
 			}).then(response => {
 			});

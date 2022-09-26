@@ -28,7 +28,7 @@
 			},
 			"enableGlobalConflicts": {
 				"name": "Enable Global Conflicts",
-				"hint": "Disabling this setting will prevent MM+ from reaching out to the web and grabbing a live list of global conflicts. If this feature is disabled you may be missing known issues and/or conflicts that were not including in modules manifest file."
+				"hint": "When this setting is enabled, MM+ will grab conflicts from a publicly available google sheet. Using this feature will mean that Google will receive your IP address. If you are uncomfortable with this, turn off this feature."
 			},
 			"disableSyncPrompt": {
 				"name": "Disable Prompt when Syncing Settings",
@@ -62,11 +62,16 @@
 				"rollback": "Restore Previous Module List",
 				"deactivateModules": "Deactivate All Unlocked Modules",
 				"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
+				"conflicts": {
+					"core": "Core",
+					"system": "System"
+				},
 				"contextMenu": {
 					"renameModule": "Rename Module",
-					"restoreModuleName": "Restore Default Modle Name",
+					"restoreModuleName": "Restore Default Module Name",
 					"lockModule": "Lock Module",
-					"unlockModule": "Unlock Module"
+					"unlockModule": "Unlock Module",
+					"reportConflict": "Report Conflict"
 				},
 				"tooltips": {
 					"managePresets": "Manage Presets",
@@ -167,6 +172,18 @@
 					"keep": "Keep Current Modules Enabled",
 					"import": "Import"
 				}
+			},
+			"bugReporter": {
+				"selectLabel": "Select Conflicting Package*",
+				"optGroup": {
+					"core": "Core",
+					"system": "System",
+					"modules": "Modules"
+				},
+				"toggle": {
+					"preview": "Preview",
+					"write": "Write"
+				}
 			}
 		},
 		"lib-themer": {
@@ -185,6 +202,11 @@
 			"v204": {
 				"starting": "Migrating Locked Settings, Please wait.",
 				"complete": "Migration to v2.0.3 is complete and requires you to reload your page."
+			},
+			"v212": {
+				"enableGlobalConflicts": "Would you like to Enable Global Conflicts?",
+				"googleIPWarning": "Please note MM+ will grab conflicts from a publicly available google sheet. Using this feature will mean that Google will receive your IP address. If you are uncomfortable with this, do not enable this feature.",
+				"developersAreFriends": "Global Conflicts is not meant to be an accurate way to track issues, instead its meant to inform you of issues that may exists. The issues provided via Global Conflicts may be outdated. Please don't harass developers over information provided via MM+."
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 // GET REQUIRED LIBRARIES
 import './libraries/popper.min.js';
 import './libraries/tippy.umd.min.js';
+import './libraries/public-google-sheets-parser.min.js'
 
 // GET MODULE CORE
 import { MODULE } from './_module.mjs';
@@ -13,6 +14,7 @@ import { PresetDialog } from './dialogs/presets.mjs';
 export class MMP {
 	static socket = false;
 	static #LockedSettings = {};
+	static #GlobalConflicts = [];
 
 	/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 	// MODULE SUPPORT CODE
@@ -89,6 +91,7 @@ export class MMP {
 
 		this.getChangelogs();
 
+		MODULE.setting('storedRollback', {});
 		MMP.#LockedSettings = MODULE.setting('lockedSettings');
 	}
 
@@ -187,6 +190,34 @@ export class MMP {
 				return false;
 			})
 		}
+	}
+
+	static async globalConflicts() {
+		return new PublicGoogleSheetsParser().parse('1eRcaqt8VtgDRC-iWP3SfOnXh-7kIw2k7po9-3dcftAk').then((items) => {
+			let globalConflicts = [];
+			items.forEach(conflict => {
+				if (conflict?.['Module ID'] ?? false) {
+					if (
+						((conflict?.['Type']  ?? '').toLowerCase() == 'system' && game.system.id == (conflict?.['Package ID'] ?? '')) 
+						|| (conflict?.['Type'] ?? '').toLowerCase() != 'system'
+					) {
+						globalConflicts.push({
+							"id": conflict?.['Module ID'],
+							"packageId": conflict?.['Package ID'] ?? undefined,
+							"type": conflict?.['Type'] ?? false,
+							"manifest": conflict?.['Manifest URL'] ?? '',
+							"reason": conflict?.['Reason'] ?? '',
+							"compatibility": {
+								"minimum": conflict?.['Compatibility Minimum'] ?? '0.0.0',
+								"maximum": conflict?.['Compatibility Maximum'] ?? undefined,
+								"version": conflict?.['Compatibility Version'] ?? undefined
+							}
+						});
+					}
+				}
+			});
+			return globalConflicts;
+		});
 	}
 
 	static getModuleProperty(moduleID, property) {
@@ -470,6 +501,50 @@ export class MMP {
 				icon: '<i class="fa-brands fa-reddit"></i>'
 			}
 		}
+
+		// Add Conflicts
+		const conflictVersionCheck = (conflict) => {
+			let conflictVersion = false;
+			if ((conflict?.type ?? '').toLowerCase() == 'core') conflictVersion = game.version;
+			else if ((conflict?.type ?? '').toLowerCase() == 'system') conflictVersion = game.system.version;
+			else if ((conflict?.type ?? '').toLowerCase() == 'module') conflictVersion = game.modules.get(conflict.id)?.version ?? '0.0.0';
+
+			if (!conflictVersion) return false;
+
+			if ((conflict?.type ?? '').toLowerCase() == 'core' || (conflict?.type ?? '').toLowerCase() == 'system') {
+				if (foundry.utils.isNewerVersion((game.modules.get(conflict.id)?.version ?? '0.0.0'), (conflict.compatibility.version ?? '0.0.0'))) return false;
+				return (
+					(foundry.utils.isNewerVersion(conflictVersion, conflict.compatibility.minimum ?? '0.0.0') || conflictVersion == conflict.compatibility.minimum) 
+					&& (foundry.utils.isNewerVersion(conflict.compatibility.maximum ?? conflictVersion, conflictVersion) || (conflict.compatibility.maximum ?? conflictVersion) == conflictVersion)
+				) 
+			}
+
+			return (
+				(foundry.utils.isNewerVersion(conflictVersion, conflict.compatibility.minimum ?? '0.0.0') || conflictVersion == conflict.compatibility.minimum) 
+				&& (foundry.utils.isNewerVersion(conflict.compatibility.maximum, conflictVersion) || conflict.compatibility.maximum == conflictVersion)
+			) 
+		}
+
+		const addConflict = (module, conflict) => {
+			let conflictElem = elem.querySelector(`#module-list > li.package[data-module-id="${conflict.id}"]`) ?? false;
+			if (conflictElem) {
+				let moduleTitle = game.modules.get(module?.id ?? conflict.id)?.title ?? '';
+				//if ((conflict?.type ?? '').toLowerCase() == 'system') moduleTitle = game?.system?.title ?? '';
+				if ((conflict?.type ?? '').toLowerCase() == 'core') moduleTitle += ` - ${MODULE.localize('dialog.moduleManagement.conflicts.core')}`;
+				if ((conflict?.type ?? '').toLowerCase() == 'system') moduleTitle += ` - ${game.system.title}`;
+				let content = new DOMParser().parseFromString(conflictElem.querySelector('.conflicts')?.dataset?.tooltip ?? `<ul class='${MODULE.ID}-tooltip-list'></ul>`, "text/html");
+				content.querySelector('ul').insertAdjacentHTML('beforeend', `<li><strong>${moduleTitle}</strong><br/>${conflict.reason.replaceAll(`"`, `'`)}</li>`);
+
+				if (conflictElem.querySelectorAll('.package-overview .package-title input[type="checkbox"] + span.conflicts')?.length > 0) {
+					conflictElem.querySelector('.package-overview .package-title input[type="checkbox"] + span.conflicts').dataset.tooltip = content.querySelector('ul').outerHTML.replaceAll(`"`, `'`);
+				}else{
+					conflictElem.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<span class="conflicts" data-tooltip="${content.querySelector('ul').outerHTML.replaceAll(`"`, `'`)}" aria-describedby="tooltip">
+						<i class="fa-solid fa-triangle-exclamation"></i>
+					</span>`);
+				}
+			}
+		}
+
 		for await (const elemPackage of elem.querySelectorAll('#module-list > li.package')) {
 		//elem.querySelectorAll('#module-list > li.package').forEach((elemPackage) => {
 			let moduleKey = elemPackage.dataset.moduleId;
@@ -563,6 +638,129 @@ export class MMP {
 						elem.querySelector('#module-management nav.list-filters select option[value="locked"]').innerHTML = `${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})`;
 					});
 				})
+			}, {
+				name: MODULE.localize('dialog.moduleManagement.contextMenu.reportConflict'),
+				icon: '<i class="fa-solid fa-bug"></i>',
+				condition: () => game.user.isGM && (game.modules.get("bug-reporter")?.active ?? false),
+				callback: (packageElem => { 
+					const moduleDetails = game.modules.get(packageElem[0].closest('li').dataset.moduleId);
+					Hooks.once('renderBugReportForm', (app, elem, options) => {
+						elem = elem[0];
+
+						// Add Confliction Package Dropdown
+						elem.querySelector('input[type="text"][name="formFields.bugTitle"]').closest('.form-group-stacked').insertAdjacentHTML('afterend', `<div class="form-group-stacked">
+							<div class="form-group-stacked">
+								<label>${MODULE.localize('dialog.bugReporter.selectLabel')}</label>
+								<select name="${MODULE.ID}.formFields.selectLabel">
+									<optgroup label="${MODULE.localize('dialog.bugReporter.optGroup.core')}">
+										<option value="core" data-type="core">${game.i18n.localize('Foundry Virtual Tabletop')}</option>
+									</optgroup>
+									<optgroup label="${MODULE.localize('dialog.bugReporter.optGroup.system')}">
+										<option value="${game.system.id}" data-type="system">${game.system.title}</option>
+									</optgroup>
+									<optgroup label="${MODULE.localize('dialog.bugReporter.optGroup.modules')}"></optgroup>
+								</select>
+							</div>
+						</div>`);
+						
+						// Add Modules to Dropdown
+						let elemOptGroup = elem.querySelector(`select[name="${MODULE.ID}.formFields.selectLabel"] optgroup[label="${MODULE.localize('dialog.bugReporter.optGroup.modules')}"]`);
+						for (const module of game.modules) {
+							//MODULE.log(module);
+							elemOptGroup.insertAdjacentHTML('beforeend', `<option value="${module.id}" data-type="module">${module.title}</option>`);
+						}
+
+						// Uncheck Checkboxes
+						elem.querySelector('input[type="checkbox"][name="formFields.sendActiveModules"]').checked = false;
+						elem.querySelector('input[type="checkbox"][name="formFields.sendModSettings"]').checked = false;
+
+						// Hide Checkboxes
+						elem.querySelector('input[type="checkbox"][name="formFields.sendActiveModules"]').closest('.flexrow').classList.add('hidden');
+
+						// Hide Discord and Label
+						elem.querySelector('input[type="text"][name="formFields.issuer"]').closest('.flexrow').classList.add('hidden');
+
+						// Fill Description
+						elem.querySelector('textarea[name="formFields.bugDescription"]').value = `### Reason\n- `;
+						elem.querySelector('textarea[name="formFields.bugDescription"]').insertAdjacentHTML('afterend', `<div class="${MODULE.ID}-bug-reporter-preview hidden"></div>`);
+
+						// Add Toggle Button
+						let elemLabel = elem.querySelector('textarea[name="formFields.bugDescription"]').closest('div.form-group-stacked').querySelector('label');
+						elemLabel.insertAdjacentHTML('beforeend', `<button type="button" data-action="toggle">${MODULE.localize('dialog.bugReporter.toggle.preview')}</button>`);
+						elemLabel.querySelector('button[data-action="toggle"]').addEventListener('click', (event) => {
+							const elemTextarea = elem.querySelector('textarea[name="formFields.bugDescription"]')
+							const elemPreview = elem.querySelector(`div.${MODULE.ID}-bug-reporter-preview`)
+							const isPreview = elemTextarea.classList.contains('hidden');
+							
+							// Set Preview Height to Textarea Height
+							elemPreview.style.minHeight = `${elemTextarea.offsetHeight}px`;
+
+							// Toggle View State
+							elemTextarea.classList.toggle('hidden', !isPreview)
+							elemPreview.classList.toggle('hidden', isPreview)
+							
+							// Convert Textarea into HTML
+							const selectedPackage = elem.querySelector(`select[name="${MODULE.ID}.formFields.selectLabel"] option:checked`);
+							let packageDetails = { id: '', name: '' , version: '0.0.0 '};
+							if (selectedPackage.dataset.type == 'core') packageDetails = { id: '', name: game.i18n.localize('Foundry Virtual Tabletop'), version: game.version };
+							else if (selectedPackage.dataset.type == 'system') packageDetails = { id: game.system.id, name: game.system.title, version: game.system.version };
+							else if (selectedPackage.dataset.type == 'module')  packageDetails = { 
+								id: game.modules.get(selectedPackage.value).id, 
+								name: game.modules.get(selectedPackage.value).title, 
+								version:  game.modules.get(selectedPackage.value).version 
+							};
+							
+							let markdown = [elemTextarea.value];
+							markdown.push(`&nbsp;`);
+							markdown.push(`### Conflicts With`);
+							if (packageDetails.id != '') markdown.push(`**Package ID:** ${packageDetails.id}`);
+							markdown.push(`**Package Name:** ${packageDetails.name}`);
+							markdown.push(`**Package Version:** ${packageDetails.version}`);
+							markdown.push(`**Package Type:** ${selectedPackage.dataset.type}`);
+
+							elemPreview.innerHTML = new showdown.Converter().makeHtml(markdown.join('\n\n'));
+
+							// Toggle Text
+							event.target.innerHTML = MODULE.localize(`dialog.bugReporter.toggle.${isPreview ? 'preview' : 'write'}`);
+
+							app.setPosition();
+						});
+
+						// Hide Submit Button
+						elem.querySelector('button[type="submit"]').classList.add('hidden');
+						elem.querySelector('button[type="submit"]').insertAdjacentHTML('beforebegin', `<button type="button" data-type="submit">${elem.querySelector('button[type="submit"]').innerHTML}</button>`);
+
+						elem.querySelector('button[data-type="submit"]').addEventListener('click', (event) => {
+							const elemTextarea = elem.querySelector('textarea[name="formFields.bugDescription"]');
+
+							// Get Conflict Package Details
+							const selectedPackage = elem.querySelector(`select[name="${MODULE.ID}.formFields.selectLabel"] option:checked`);
+							let packageDetails = { id: '', name: '' , version: '0.0.0 '};
+							if (selectedPackage.dataset.type == 'core') packageDetails = { id: '', name: game.i18n.localize('Foundry Virtual Tabletop'), version: game.version };
+							else if (selectedPackage.dataset.type == 'system') packageDetails = { id: game.system.id, name: game.system.title, version: game.system.version };
+							else if (selectedPackage.dataset.type == 'module')  packageDetails = { 
+								id: game.modules.get(selectedPackage.value).id, 
+								name: game.modules.get(selectedPackage.value).title, 
+								version:  game.modules.get(selectedPackage.value).version 
+							};
+							
+							let markdown = [elemTextarea.value];
+							markdown.push(`\n`);
+							markdown.push(`### Conflicts With`);
+							if (packageDetails.id != '') markdown.push(`**Package ID:** ${packageDetails.id}`);
+							markdown.push(`**Package Name:** ${packageDetails.name}`);
+							markdown.push(`**Package Version:** ${packageDetails.version}`);
+							markdown.push(`**Package Type:** ${selectedPackage.dataset.type}`);
+
+							elemTextarea.value = markdown.join('\n');
+							elem.querySelector('button[type="submit"]').click();
+						})
+
+						MODULE.log(app, elem, options)
+						app.setPosition();
+					});
+					game.modules.get("bug-reporter").api.bugWorkflow(MODULE.ID, `Module Conflict - ${moduleDetails.title} v${moduleDetails.version}`, ``);
+				})
 			}]);
 
 			// Add Setting Tag if Module has Editable Tags
@@ -597,7 +795,6 @@ export class MMP {
 					trigger: 'click',
 				});
 			}
-
 			// Add ReadMe Tag
 			if (readme || ((MMP.getModuleProperty(moduleData.id, 'readme') || "").match(APIs.github) ?? false) || ((MMP.getModuleProperty(moduleData.id, 'readme') || "").match(APIs.rawGithub) ?? false)) {
 				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag readme" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.readme")}" aria-describedby="tooltip">
@@ -684,33 +881,15 @@ export class MMP {
 				}
 			}
 
-			// Add Conflicts
-			const addConflict = (module, conflict) => {
-				let conflictElem = elem.querySelector(`#module-list > li.package[data-module-id="${conflict.id}"]`) ?? false;
-				if (conflictElem) {
-					let content = new DOMParser().parseFromString(conflictElem.querySelector('.conflicts')?.dataset?.tooltip ?? `<ul class='${MODULE.ID}-tooltip-list'></ul>`, "text/html");
-					content.querySelector('ul').insertAdjacentHTML('beforeend', `<li><strong>${game.modules.get(module.id).title}</strong><br/>${conflict.reason.replaceAll(`"`, `'`)}</li>`);
-
-					if (conflictElem.querySelectorAll('.package-overview .package-title input[type="checkbox"] + span.conflicts')?.length > 0) {
-						conflictElem.querySelector('.package-overview .package-title input[type="checkbox"] + span.conflicts').dataset.tooltip = content.querySelector('ul').outerHTML.replaceAll(`"`, `'`);
-					}else{
-						conflictElem.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<span class="conflicts" data-tooltip="${content.querySelector('ul').outerHTML.replaceAll(`"`, `'`)}" aria-describedby="tooltip">
-							<i class="fa-solid fa-triangle-exclamation"></i>
-						</span>`);
-					}
-				}
-			}
+			// Handle Conflicts Registered in Manifest.json
 			if (moduleData?.relationships?.conflicts?.size > 0) {
 				moduleData?.relationships?.conflicts.forEach(conflict => {
-					if (game.modules.get(conflict.id) ?? false) {
-						// Version Checking
-						if ((foundry.utils.isNewerVersion(game.modules.get(conflict.id).version, conflict.compatibility.minimum ?? '0.0.0') || game.modules.get(conflict.id).version == conflict.compatibility.minimum) 
-							&& foundry.utils.isNewerVersion(conflict.compatibility.maximum, game.modules.get(conflict.id).version)) {
-							if (conflict.id != moduleData.id) {
-								addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: moduleData.id}, { inplace: false }));
-							}
-							addConflict(moduleData, conflict);
+					// Version Checking
+					if (conflictVersionCheck(conflict)) {
+						if (conflict.id != moduleData.id) {
+							addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: moduleData.id}, { inplace: false }));
 						}
+						addConflict(moduleData, conflict);
 					}
 				});
 			}
@@ -722,6 +901,21 @@ export class MMP {
 			elemPackage.querySelector('input[type="checkbox"]').addEventListener('change', (event) => {
 				elemPackage.classList.toggle('checked', event.target.checked)
 			})
+		}
+
+		// Handle Global Conflicts
+		if (MODULE.setting('enableGlobalConflicts') && game.user.isGM) {
+			MMP.globalConflicts().then(response => {
+				response.forEach(conflict => {
+					// Version Checking
+					if (conflictVersionCheck(conflict)) {
+						if (conflict.id != (conflict?.packageId ?? '') && (conflict?.packageId ?? false)) {
+							addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: conflict.packageId}, { inplace: false }));		
+						}
+						addConflict(game.modules.get(conflict?.packageId ?? conflict?.id), conflict);
+					}
+				})
+			});
 		}
 		
 		// Handle if Settings Tag is Clicked
@@ -776,12 +970,12 @@ export class MMP {
 				</button>`);
 
 				elem.querySelector('footer button[name="rollback"]').addEventListener('click', (event) => {
-					let rollBackModules = MODULE.setting('presetsRollbacks').pop();
+					let rollBackModules = [...MODULE.setting('presetsRollbacks')].pop();
 					Dialog.confirm({
 						id: `${MODULE.ID}-rollback-modules`,
 						title: MODULE.TITLE,
 						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.moduleManagement.rollback')}</p>
-						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### ${MODULE.log('dialog.generic.activeModules')}\n${Object.entries(rollBackModules).filter(([key, value]) => {
+						<textarea readonly rows="15" style="margin-bottom: 0.5rem;">### ${MODULE.localize('dialog.generic.activeModules')}\n${Object.entries(rollBackModules).filter(([key, value]) => {
 							return (game.modules.get(key)?.title ?? '') != '' && (value != false);
 						}).map(([key, value]) => {
 							return game.modules.get(key)?.title;
@@ -806,7 +1000,10 @@ export class MMP {
 		// HIDE TOOLTIPS WHEN USER SCROLLS IN MODULE LIST
 		$("#module-management #module-list").on('scroll', (event) => {
 			tippy.hideAll();
-		 });
+		});
+
+		//new ModuleManagement().render(true);
+		app.setPosition();
 	}
 
 	static renderSettingsConfig = (app, elem, options) => {

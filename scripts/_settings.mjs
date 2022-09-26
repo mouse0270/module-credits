@@ -143,21 +143,39 @@ Hooks.once('setup', () => {
 		name: `${MODULE.ID}.settings.autoPrefixModules.name`,
 		hint: `${MODULE.ID}.settings.autoPrefixModules.hint`,
 		type: Boolean,
-		default: {},
+		default: true,
 		config: true
 	}
 	const smartPrefix = {
 		name: `${MODULE.ID}.settings.smartPrefix.name`,
 		hint: `${MODULE.ID}.settings.smartPrefix.hint`,
 		type: Boolean,
-		default: {},
+		default: true,
 		config: true
+	}
+	const enableGlobalConflicts = {
+		name: `${MODULE.ID}.settings.enableGlobalConflicts.name`,
+		hint: `${MODULE.ID}.settings.enableGlobalConflicts.hint`,
+		type: Boolean,
+		default: false,
+		scope: 'world',
+		config: true
+	}
+	const disableCoreConflicts = {
+		name: `${MODULE.ID}.settings.disableCoreConflicts.name`,
+		hint: `${MODULE.ID}.settings.disableCoreConflicts.hint`,
+		type: Boolean,
+		default: false,
+		scope: 'world',
+		config: false
 	}
 	if (game.modules.get('lib-server-setting')?.active ?? false) {
 		Hooks.once('lib-server-setting.Setup', async (SETTING) => {
 			SETTING(MODULE.ID, 'trackedChangelogs', trackedChangelogs);
 			SETTING(MODULE.ID, 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
 			SETTING(MODULE.ID, 'renamedModules', renamedModules);
+			SETTING(MODULE.ID, 'enableGlobalConflicts', enableGlobalConflicts);
+			SETTING(MODULE.ID, 'disableCoreConflicts', disableCoreConflicts);
 			SETTING(MODULE.ID, 'autoPrefixModules', autoPrefixModules);
 			SETTING(MODULE.ID, 'smartPrefix', smartPrefix);
 			SETTING(MODULE.ID, 'presets', presets);
@@ -166,6 +184,8 @@ Hooks.once('setup', () => {
 		MODULE.setting('register', 'trackedChangelogs', trackedChangelogs);
 		MODULE.setting('register', 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
 		MODULE.setting('register', 'renamedModules', renamedModules);
+		MODULE.setting('register', 'enableGlobalConflicts', enableGlobalConflicts);
+		MODULE.setting('register', 'disableCoreConflicts', disableCoreConflicts);
 		MODULE.setting('register', 'autoPrefixModules', autoPrefixModules);
 		MODULE.setting('register', 'smartPrefix', smartPrefix);
 		MODULE.setting('register', 'presets', presets);
@@ -174,7 +194,7 @@ Hooks.once('setup', () => {
 	// Handle Module Management Config onChange Event
 	game.settings.settings.set(`core.${ModuleManagement.CONFIG_SETTING}`, foundry.utils.mergeObject(game.settings.settings.get(`core.${ModuleManagement.CONFIG_SETTING}`), {
 		onChange: (moduleManagementData) => {
-			if (Object.keys(MODULE.setting('storedRollback')).length > 0) {
+			if (!foundry.utils.isEmpty(MODULE.setting('storedRollback'))) {
 				let rollbacks = MODULE.setting('presetsRollbacks') ?? [];
 				rollbacks.push(MODULE.setting('storedRollback'));
 				
@@ -188,6 +208,9 @@ Hooks.once('setup', () => {
 				MODULE.setting('presetsRollbacks', rollbacks);
 			}
 		}
-	}, {inplace: false}))
+	}, {inplace: false}));
 });
 
+/*
+
+*/
