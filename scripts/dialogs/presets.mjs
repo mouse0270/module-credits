@@ -216,6 +216,9 @@ export class PresetDialog extends FormApplication {
 							</button>
 						</li>`);
 						
+						// INFO
+						html[0].querySelector(`#${MODULE.ID}-presets-list li:last-of-type button[data-action="info"]`).addEventListener('click', presetInfo);
+						
 						// UPDATE
 						html[0].querySelector(`#${MODULE.ID}-presets-list li:last-of-type button[data-action="update"]`).addEventListener('click', updatePreset);
 

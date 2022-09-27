@@ -124,7 +124,7 @@ Hooks.once('setup', () => {
 	const presets = {
 		type: Object,
 		default: {},
-		config: false,
+		config: false
 	}
 	const showNewChangelogsOnLoad = {
 		name: `${MODULE.ID}.settings.showNewChangelogsOnLoad.name`,
