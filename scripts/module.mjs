@@ -666,7 +666,6 @@ export class MMP {
 						// Add Modules to Dropdown
 						let elemOptGroup = elem.querySelector(`select[name="${MODULE.ID}.formFields.selectLabel"] optgroup[label="${MODULE.localize('dialog.bugReporter.optGroup.modules')}"]`);
 						for (const module of game.modules) {
-							//MODULE.log(module);
 							elemOptGroup.insertAdjacentHTML('beforeend', `<option value="${module.id}" data-type="module">${module.title}</option>`);
 						}
 
@@ -755,8 +754,7 @@ export class MMP {
 							elemTextarea.value = markdown.join('\n');
 							elem.querySelector('button[type="submit"]').click();
 						})
-
-						MODULE.log(app, elem, options)
+						
 						app.setPosition();
 					});
 					game.modules.get("bug-reporter").api.bugWorkflow(MODULE.ID, `Module Conflict - ${moduleDetails.title} v${moduleDetails.version}`, ``);
