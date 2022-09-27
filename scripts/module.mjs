@@ -641,7 +641,7 @@ export class MMP {
 			}, {
 				name: MODULE.localize('dialog.moduleManagement.contextMenu.reportConflict'),
 				icon: '<i class="fa-solid fa-bug"></i>',
-				condition: () => game.user.isGM && (game.modules.get("bug-reporter")?.active ?? false) && false,
+				condition: () => game.user.isGM && (game.modules.get("bug-reporter")?.active ?? false),
 				callback: (packageElem => { 
 					const moduleDetails = game.modules.get(packageElem[0].closest('li').dataset.moduleId);
 					Hooks.once('renderBugReportForm', (app, elem, options) => {
