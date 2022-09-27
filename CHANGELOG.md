@@ -5,6 +5,7 @@
 - Fixed issue with rollbacks that would delete the rollback when the dialog opens instead of only when you hit yes.
 - Fixed when creating a new preset, the input is focused so you can start typing.
 - Presets were moved from a `world` to a `client` setting so that your presets will travel between worlds. I do apologize that this will remove all of your current presets. I'll do my best to avoid this mishap in future updates.
+- Added the ability to report conflicts via [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter)
 
 # Version 2.1.1 - Totalement localisable
 - Went through all of the code and made sure to localize the entire project
