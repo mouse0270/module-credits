@@ -91,7 +91,7 @@ export class MMP {
 
 		this.getChangelogs();
 
-		MODULE.setting('storedRollback', {});
+		if (game.user.isGM) MODULE.setting('storedRollback', {});
 		MMP.#LockedSettings = MODULE.setting('lockedSettings');
 	}
 
