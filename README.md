@@ -37,6 +37,9 @@ MM+ expands the Manage Module window by adding additional tags and functionality
 - Adds the ability for you to view conflicts that may be listed by a module developer or via the Global Conflicts system, so you can quickly and see any issues that may be known.
 - You can report a conflict when using [🐛 Bug Reporter](https://foundryvtt.com/packages/bug-reporter) by right Clicking on the module in the module management window and selecting `Report Conflict`
 
+![image](https://user-images.githubusercontent.com/564874/192642397-50d2fbff-3382-4666-ac30-bd52369d7a4d.png)
+
+
 Not only has MM+ added all of these new tags, it has take steps to help managing your modules easier by providing the ability to Define Module Presets, Export and Import Module lists with settings. Module Presets are custom lists of active modules you can quickly toggle between. So if you run multiple worlds with different active modules you can toggle between them in just a few clicks. When exporting a module list, it will export all active modules and settings it can export. When importing a MM+ Export file, you will be prompted to choose which modules and settings you would like to import. MM+ Does provide support for [Tidy UI - Game Settings](https://github.com/sdenec/tidy-ui_game-settings) exported modules file.
 
 Lastly, MM+ changes a few designs on the Module Management window to make it a little more clean. To do this it removes the text at the top that tells you about this screen. MM+ also removes the individual filter options in favor of a dropdown to choose what you want to filter to.
@@ -47,6 +50,9 @@ This expands Foundry's Module Dependency Dialog:
 - Adding a checkbox to determine which modules you'd like to enable/disable
 - Supporting `relationships.flags.optional` and `relationships.optional` (If/When foundry adds this relationship)
 - Checking to see if a module is either active or if its already checked in the module management window to cut back on popups when a module is already checked but you haven't saved your module list yet.
+
+![image](https://user-images.githubusercontent.com/564874/192641796-c8366087-4c1c-4321-9eb3-c6ed5835087a.png)
+
 
 # Configure Settings
 MM+ adds icons to show if a setting is a `client` or `world` setting to make it easier for Game Masters to know which settings are which. It also adds the ability to lock a setting so that only Game Masters can change this setting. If you have [socketlib](https://github.com/manuelVo/foundryvtt-socketlib) active you will be able to sync a setting to all players by left clicking on the `Sync Setting` icon or to a specific player by right clicking on the `Sync Setting` icon and choosing an active player from the list, if not other players are logged in, right clicking will do nothing.
@@ -83,6 +89,8 @@ Module Management+ adds support for [socketlib](https://github.com/manuelVo/foun
 
 ### [libThemer](https://foundryvtt.com/packages/lib-themer)
 Module Management+ adds support for [libThemer](https://foundryvtt.com/packages/lib-themer). If libThemer is Enabled then MM+ will register custom themes to allow you to clean up your Module Management Window. Take a look at the theme below:
+
+![image](https://user-images.githubusercontent.com/564874/192642576-72d1b3d9-232d-42ac-876a-24055d725034.png)
 
 ### [Tidy UI - Game Settings](https://github.com/sdenec/tidy-ui_game-settings)
 Module Management+ supports importing module lists that were exported from [Tidy UI - Game Settings](https://github.com/sdenec/tidy-ui_game-settings). Please keep in mind that Tidy UI - Game Settings and MM+ do very similar things and both should not be active at the same time. I will not fix issues related to Tidy UI - Game Settings with the exception of importing module lists.
