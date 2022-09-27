@@ -914,6 +914,14 @@ export class MMP {
 					}
 				})
 			});
+			if ((elem.querySelector('footer button[name="deactivate"]') ?? false) && MODULE.setting('addGoogleSheetButton')) {
+				elem.querySelector('footer button[name="deactivate"]').insertAdjacentHTML('afterend', `<button type="button" name="global-conflicts-spreadsheet">
+					<i class="fa-regular fa-table"></i> ${MODULE.localize('dialog.moduleManagement.buttons.spreadsheet')}
+				</button>`);
+				elem.querySelector('footer button[name="global-conflicts-spreadsheet"]').addEventListener('click', (event) => {
+					window.open("https://docs.google.com/spreadsheets/d/1eRcaqt8VtgDRC-iWP3SfOnXh-7kIw2k7po9-3dcftAk/", "_blank");
+				});
+			};
 		}
 		
 		// Handle if Settings Tag is Clicked
@@ -941,8 +949,8 @@ export class MMP {
 			elem.querySelector('footer button[name="deactivate"]').innerHTML = `<span class="fa-stack">
 				<i class="fa-regular fa-square-check fa-stack-1x"></i>
 				<i class="fa-sharp fa-solid fa-slash fa-stack-1x"></i>
-			</span>${MODULE.localize('dialog.moduleManagement.deactivateModules')}`;
-			elem.querySelector('footer button[name="deactivate"]').dataset.tooltip = MODULE.localize('dialog.moduleManagement.deactivateModulesAlt');
+			</span>${MODULE.localize('dialog.moduleManagement.buttons.deactivateModules')}`;
+			elem.querySelector('footer button[name="deactivate"]').dataset.tooltip = MODULE.localize('dialog.moduleManagement.buttons.deactivateModulesAlt');
 
 			elem.querySelector('footer button[name="deactivate"]').addEventListener('click', (event) => {
 				if (event.ctrlKey) {

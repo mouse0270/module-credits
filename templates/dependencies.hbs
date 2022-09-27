@@ -1,0 +1,45 @@
+
+<p>
+{{#if enabling}}
+    {{ localize "MODMANAGE.DepEnable" number=numberOfDependencies }}
+{{else}}
+    {{ localize "MODMANAGE.DepDisable" number=numberOfDependencies }}
+{{/if}}
+</p>
+
+<ul class="{{id}}-dependencies">
+    {{#if showRequires}}
+    <li class="{{id}}-dependencies-header">
+        <h3>{{ localize 'module-credits.dialog.moduleManagement.dependencies.requires'}}</h3>
+    </li>
+    {{/if}}
+    {{#each requires}}
+    <li>
+        <input type="checkbox" id="{{@root.id}}-dependencies-{{this.id}}" name="{{this.id}}" checked />
+        <label for="{{@root.id}}-dependencies-{{this.id}}">
+            <strong>{{this.title}}</strong> <small>{{this.id}}</small><br/>{{this.reason}}
+        </label>
+    </li>
+    {{/each}}
+    {{#if optionals}}
+    <li class="{{id}}-dependencies-header">
+        <h3>{{ localize 'module-credits.dialog.moduleManagement.dependencies.optional'}}</h3>
+    </li>
+    {{/if}}
+    {{#each optionals}}
+    <li>
+        <input type="checkbox" id="{{@root.id}}-dependencies-{{this.id}}" name="{{this.id}}" checked />
+        <label for="{{@root.id}}-dependencies-{{this.id}}">
+            <strong>{{this.title}}</strong> <small>{{this.id}}</small><br/>{{this.reason}}
+        </label>
+    </li>
+    {{/each}}
+</ul>
+
+<p>
+{{#if enabling}}
+    {{ localize "MODMANAGE.DepEnableCheck" }}
+{{else}}
+    {{ localize "MODMANAGE.DepDisableCheck" }}
+{{/if}}
+</p>

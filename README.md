@@ -15,6 +15,7 @@ The Features Included in MM+ Are
 - Sync a setting to all players (left clicking) or specfic player (right clicking)
 - Lock a setting, preventing players from adjusting it.
 - Converted Module Filter to Dropdown for Simplier look and feel.
+- 
 
 ## Manage Modules
 MM+ expands the Manage Module window by adding additional tags and functionality. Some of the new tags are: 

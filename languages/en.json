@@ -30,6 +30,10 @@
 				"name": "Enable Global Conflicts",
 				"hint": "When this setting is enabled, MM+ will grab conflicts from a publicly available google sheet. Using this feature will mean that Google will receive your IP address. If you are uncomfortable with this, turn off this feature."
 			},
+			"addGoogleSheetButton": {
+				"name": "Add Google Spreadsheet",
+				"hint": "When enabled this will add a link to the google spreadsheet to the Module Management Window."
+			},
 			"disableSyncPrompt": {
 				"name": "Disable Prompt when Syncing Settings",
 				"hint": "This will prevent users from getting a notification asking them to confirm if a setting should be synced or not. Instead it will force the setting with no prompt."
@@ -60,8 +64,15 @@
 			"moduleManagement": {
 				"lockedModules": "Locked Modules",
 				"rollback": "Restore Previous Module List",
-				"deactivateModules": "Deactivate All Unlocked Modules",
-				"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
+				"dependencies": {
+					"requires": "Requires",
+					"optional": "Optional"
+				},
+				"buttons": {
+					"deactivateModules": "Deactivate All Unlocked Modules",
+					"deactivateModulesAlt": "Hold ctrl to Disable All Modules",
+					"spreadsheet": "Global Conflicts Spreadsheet"
+				},
 				"conflicts": {
 					"core": "Core",
 					"system": "System"

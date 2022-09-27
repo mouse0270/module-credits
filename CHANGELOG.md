@@ -1,3 +1,12 @@
+# Version 2.1.3 
+- Added **Expanded Module Dependencies**. This expands Foundry's Module Dependency Dialog:
+  - By allowing you to see the `title`, `id` and `reason` fields for a module.
+  - Adding a checkbox to determine which modules you'd like to enable/disable
+  - Supporting `relationships.flags.optional` and `relationships.optional` (If/When foundry adds this relationship)
+  - Checking to see if a module is either active or if its already checked in the module management window to cut back on popups when a module is already checked but you haven't saved your module list yet.
+- Added setting to create a button to the google spreadsheet used for Global Conflicts
+- Updated Readme with a list of all of the new features.
+
 # Version 2.1.2 - Being Clever is Hard...
 - Added Support to theme Module Management Window using libThemer
 - Updated `Smart Prefix` to batter handle catching UI modules. It now checks for a space before/after the word UI or if the would ends with UI.

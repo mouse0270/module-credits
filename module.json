@@ -31,6 +31,21 @@
 	"relationships": {
 		"systems": [],
 		"requires": [],
+		"optional": [
+			{
+				"id": "lib-wrapper",
+				"type": "module",
+				"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
+				"reason": "Provides a compatibility layer for checking if other Modules are overriding similar functionality.",
+				"compatibility": {}
+			}, {
+				"id": "lib-themer",
+				"type": "module",
+				"manifest": "https://github.com/mouse0270/lib-themer/releases/latest/download/module.json",
+				"reason": "Provides the ability to apply optional styles for a more modern and clean look.",
+				"compatibility": {}
+			}
+		],
 		"conflicts": [
 			{
 				"id": "tidy-ui_game-settings",
@@ -47,7 +62,24 @@
 					"minimum": "0.7.7"
 				}
 			}
-		]
+		],
+		"flags": {
+			"optional": [
+				{
+					"id": "lib-wrapper",
+					"type": "module",
+					"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
+					"reason": "Provides a compatibility layer for checking if other Modules are overriding similar functionality.",
+					"compatibility": {}
+				}, {
+					"id": "lib-themer",
+					"type": "module",
+					"manifest": "https://github.com/mouse0270/lib-themer/releases/latest/download/module.json",
+					"reason": "Provides the ability to apply optional styles for a more modern and clean look.",
+					"compatibility": {}
+				}
+			]
+		}
 	},
 	"esmodules": [
         "/scripts/init.mjs"

@@ -453,7 +453,34 @@ input[name="module-credits-preset-title"] + textarea {
 
 
 
-
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+/* BETTER DEPENDENCIES                                                */
+/* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
+.module-credits-dependencies {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+.module-credits-dependencies li {
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: start;
+    padding: 0.25rem 0rem;
+}
+.module-credits-dependencies li.module-credits-dependencies-header {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.module-credits-dependencies li.module-credits-dependencies-header h3 {
+    border-bottom: 0px;
+    margin: 0px;
+    padding: 0px 0.5rem;
+}
+.module-credits-dependencies li label {
+    cursor: pointer;
+    flex: 1;
+    padding: 0rem 0.25rem;
+}
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 /* BUG REPORTER REPORT CONFLICT                                       */
