@@ -64,7 +64,12 @@ export class MODULE {
 			let setting = args[0];
 			// If only one value is passed in, get setting
 			if (typeof args[1] == 'undefined') {
-				return game.settings.get(this.ID, setting);
+				try {
+					return game.settings.get(this.ID, setting);
+				}catch{
+					MODULE.error(`${setting} is not a registered game setting`);
+					return undefined;
+				}
 			} else { 
 				// If two values are passed in, then set setting
 				return game.settings.set(this.ID, setting, args[1]);

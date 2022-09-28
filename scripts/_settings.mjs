@@ -138,16 +138,16 @@ Hooks.once('setup', () => {
 		default: {},
 		config: false
 	}
-	const smartLabels = {
-		name: `${MODULE.ID}.settings.smartLabels.name`,
-		hint: `${MODULE.ID}.settings.smartLabels.hint`,
-		type: Boolean,
-		default: true,
-		config: true
-	}
 	const autoPrefixModules = {
 		name: `${MODULE.ID}.settings.autoPrefixModules.name`,
 		hint: `${MODULE.ID}.settings.autoPrefixModules.hint`,
+		type: Boolean,
+		default: true,
+		config: false
+	}
+	const smartLabels = {
+		name: `${MODULE.ID}.settings.smartLabels.name`,
+		hint: `${MODULE.ID}.settings.smartLabels.hint`,
 		type: Boolean,
 		default: true,
 		config: true
@@ -191,7 +191,7 @@ Hooks.once('setup', () => {
 			SETTING(MODULE.ID, 'disableCoreConflicts', disableCoreConflicts);
 			SETTING(MODULE.ID, 'enableGlobalConflicts', enableGlobalConflicts);
 			SETTING(MODULE.ID, 'addGoogleSheetButton', addGoogleSheetButton);
-			//SETTING(MODULE.ID, 'autoPrefixModules', autoPrefixModules);
+			SETTING(MODULE.ID, 'autoPrefixModules', autoPrefixModules);
 			SETTING(MODULE.ID, 'smartLabels', smartLabels);
 			SETTING(MODULE.ID, 'smartPrefix', smartPrefix);
 			SETTING(MODULE.ID, 'presets', presets);
@@ -203,7 +203,7 @@ Hooks.once('setup', () => {
 		MODULE.setting('register', 'disableCoreConflicts', disableCoreConflicts);
 		MODULE.setting('register', 'enableGlobalConflicts', enableGlobalConflicts);
 		MODULE.setting('register', 'addGoogleSheetButton', addGoogleSheetButton);
-		//MODULE.setting('register', 'autoPrefixModules', autoPrefixModules);
+		MODULE.setting('register', 'autoPrefixModules', autoPrefixModules);
 		MODULE.setting('register', 'smartLabels', smartLabels);
 		MODULE.setting('register', 'smartPrefix', smartPrefix);
 		MODULE.setting('register', 'presets', presets);

@@ -222,6 +222,9 @@
 				"enableGlobalConflicts": "Would you like to Enable Global Conflicts?",
 				"googleIPWarning": "Please note MM+ will grab conflicts from a publicly available google sheet. Using this feature will mean that Google will receive your IP address. If you are uncomfortable with this, do not enable this feature.",
 				"developersAreFriends": "Global Conflicts is not meant to be an accurate way to track issues, instead its meant to inform you of issues that may exists. The issues provided via Global Conflicts may be outdated. Please don't harass developers over information provided via MM+."
+			},
+			"v214": {
+				"smartLabels": "Migrating Auto Prefix Modules to Smart Labels. This will set Smart Labels to your previous Auto Prefix setting. You can change this settings in the settings window."
 			}
 		}
 	}

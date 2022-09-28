@@ -578,7 +578,7 @@ export class MMP {
 					return Dialog.confirm({
 						id: `${MODULE.ID}-rename-module`,
 						title: MODULE.TITLE,
-						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.renameModule')}</p>
+						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.moduleManagement.contextMenu.renameModule')}</p>
 							<input type="text" name="${MODULE.ID}-rename-module-title" value="${packageElem[0].querySelector('label.package-title').textContent.trim()}"/>`,
 						yes: (elemDialog) => {
 							if (elemDialog[0].querySelector(`input[name="${MODULE.ID}-rename-module-title"]`).value.length >= 0) {
