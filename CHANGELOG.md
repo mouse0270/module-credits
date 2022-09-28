@@ -1,4 +1,9 @@
-# Version 2.1.3 
+# Version 2.1.4 - Smart Labels
+- Auto Prefixing labels has been replaced with Smart Labels.
+ - Instead of prefixing all required modules to the start of the module title, you will instead get a little arrow, showing you this module is being grouped together with the one(s) above it.
+ - Hovering this arrow will show you all required modules.
+
+# Version 2.1.3 - Dependencies Who?
 - Added **Expanded Module Dependencies**. This expands Foundry's Module Dependency Dialog:
   - By allowing you to see the `title`, `id` and `reason` fields for a module.
   - Adding a checkbox to determine which modules you'd like to enable/disable

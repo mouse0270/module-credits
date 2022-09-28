@@ -300,26 +300,36 @@ export class MMP {
 		}
 		
 		// If Auto Prefix is Disabled, return Module Title
-		if (!MODULE.setting('autoPrefixModules')) return module.title;
+		if (!MODULE.setting('smartLabels')) return module.title;
 		// If Module does not require any other modules, return Module title
 		if ((module?.relationships?.requires ?? []).length == 0) return module.title;
 
 		// Build Prefix based off Module Requirements
-		let prefix = "";
+		let prefixes = [];
 		(module?.relationships?.requires ?? []).forEach(requiredModule => {
 			// Exclude Library Modules
 			if ((!game.modules.get(requiredModule?.id)?.library ?? false) && (game.modules.get(requiredModule?.id)?.title ?? false)) {
-				prefix += `${MODULE.setting('renamedModules')[requiredModule?.id] ?? game.modules.get(requiredModule?.id).title} - `;
+				let labelDetails = MMP.smartLabel(game.modules.get(requiredModule?.id));
+				prefixes = prefixes.concat(labelDetails)
+				prefixes.push(game.modules.get(requiredModule?.id)?.title);
+				prefixes = [...new Set(prefixes)];
 			}
 		});
 
-		return `${prefix}${module.title}`;
+		return prefixes ?? []
 	}
 
 	static screwYourEmoji(elements, titleSelector) {
 		$(elements).each((index, element) => {
-			$(element.querySelector(titleSelector)).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(this.smartLabel(game.modules.get(element.dataset.moduleId)));
-			$(element).attr('data-sort-title', $(element).find(titleSelector).text().toUpperCase().replace(/[^\w]/gi, ''));
+			let smartLabel = this.smartLabel(game.modules.get(element.dataset.moduleId));
+			let sortLabel = (typeof smartLabel == 'string') ? smartLabel : smartLabel.join('') + game.modules.get(element.dataset.moduleId).title;
+			if (typeof smartLabel != 'string') {
+				let tooltips = smartLabel.join(' / ')
+				smartLabel = `${smartLabel.length > 0 ? '<i class="fa-regular fa-arrow-turn-down-right" data-tooltip="'+tooltips+'"></i> ' : ''}${game.modules.get(element.dataset.moduleId).title}`;
+			}
+
+			$(element.querySelector(titleSelector)).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(smartLabel ?? '');
+			$(element).attr('data-sort-title', sortLabel.toUpperCase().replace(/[^\w]/gi, ''));
 		});
 
 		// Sort Elements and Append To parent to Replace Order
@@ -591,7 +601,7 @@ export class MMP {
 				condition: game.user.isGM && (MODULE.setting('renamedModules')[moduleKey] ?? false),
 				callback: (packageElem => {
 					let renamedModules = MODULE.setting('renamedModules');
-					delete MODULE.setting('renamedModules')[moduleKey];
+					delete renamedModules[moduleKey];
 					MODULE.setting('renamedModules', renamedModules).then(response => {
 						new ModuleManagement().render(true);
 					})

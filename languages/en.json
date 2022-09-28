@@ -42,6 +42,10 @@
 				"name": "Auto Prefix Modules",
 				"hint": "This will prefix the modules title with any required module titles."
 			},
+			"smartLabels": {
+				"name": "Smart Labels",
+				"hint": "When enabled this will prefix modules with an arrow icon, to indicate that it is grouped with the module(s) above it. Hovering over this icon will show all required Modules."
+			},
 			"smartPrefix": {
 				"name": "Smart Prefix",
 				"hint": "This attempts to prefix titles based on what it thinks is best. For example modules with the library flag will be prefixed with Library, and modules with the word UI in the title will be prefixed with UI. This may not correctly prefix modules, you can override the prefix by right clicking and assigning an override name.",

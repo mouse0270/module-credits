@@ -39,7 +39,6 @@ Hooks.once('socketlib.ready', () => {
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 Hooks.once('ready', async () => {
 	async function expandedModuleDependencies(event) {
-		MODULE.log('OVERRIDE DEPENDENCIES CHECK');
 		const input = event.target;
 		const module = game.modules.get(input.name);
 
