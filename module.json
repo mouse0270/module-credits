@@ -35,14 +35,17 @@
 			{
 				"id": "lib-wrapper",
 				"type": "module",
-				"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
 				"reason": "Provides a compatibility layer for checking if other Modules are overriding similar functionality.",
 				"compatibility": {}
 			}, {
 				"id": "lib-themer",
 				"type": "module",
-				"manifest": "https://github.com/mouse0270/lib-themer/releases/latest/download/module.json",
 				"reason": "Provides the ability to apply optional styles for a more modern and clean look.",
+				"compatibility": {}
+			}, {
+				"id": "socketlib",
+				"type": "module",
+				"reason": "Provides the ability for non-GM users to view Readme, Changelogs and Attribution files. If this module is uninstalled or disabled, only GM will be able to use this functionality.",
 				"compatibility": {}
 			}
 		],

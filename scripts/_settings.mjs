@@ -183,11 +183,23 @@ Hooks.once('setup', () => {
 		scope: 'world',
 		config: true
 	}
+	const dependencyDialogType = {
+		name: `${MODULE.ID}.settings.dependencyDialogType.name`,
+		hint: `${MODULE.ID}.settings.dependencyDialogType.hint`,
+		type: String,
+		default: 'prompt',
+		config: true,
+		choices: {
+			'prompt': `${MODULE.ID}.settings.dependencyDialogType.choices.prompt`,
+			'confirm': `${MODULE.ID}.settings.dependencyDialogType.choices.confirm`
+		}
+	}
 	if (game.modules.get('lib-server-setting')?.active ?? false) {
 		Hooks.once('lib-server-setting.Setup', async (SETTING) => {
 			SETTING(MODULE.ID, 'trackedChangelogs', trackedChangelogs);
 			SETTING(MODULE.ID, 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
 			SETTING(MODULE.ID, 'renamedModules', renamedModules);
+			SETTING(MODULE.ID, 'dependencyDialogType', dependencyDialogType);
 			SETTING(MODULE.ID, 'disableCoreConflicts', disableCoreConflicts);
 			SETTING(MODULE.ID, 'enableGlobalConflicts', enableGlobalConflicts);
 			SETTING(MODULE.ID, 'addGoogleSheetButton', addGoogleSheetButton);
@@ -200,6 +212,7 @@ Hooks.once('setup', () => {
 		MODULE.setting('register', 'trackedChangelogs', trackedChangelogs);
 		MODULE.setting('register', 'showNewChangelogsOnLoad', showNewChangelogsOnLoad);
 		MODULE.setting('register', 'renamedModules', renamedModules);
+		MODULE.setting('register', 'dependencyDialogType', dependencyDialogType);
 		MODULE.setting('register', 'disableCoreConflicts', disableCoreConflicts);
 		MODULE.setting('register', 'enableGlobalConflicts', enableGlobalConflicts);
 		MODULE.setting('register', 'addGoogleSheetButton', addGoogleSheetButton);

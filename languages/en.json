@@ -54,6 +54,14 @@
 					"maps": "Maps",
 					"ui": "UI"
 				}
+			},
+			"dependencyDialogType": {
+				"name": "Dialog Type for Extended Module Dependencies",
+				"hint": "This allows you to choose the type of dialog that will be used when enabling/disabling modules using Extended Module Dependencies.",
+				"choices": {
+					"prompt": "Prompt",
+					"confirm": "Confirm"
+				}
 			}
 		},
 		"dialog": {
@@ -70,7 +78,11 @@
 				"rollback": "Restore Previous Module List",
 				"dependencies": {
 					"requires": "Requires",
-					"optional": "Optional"
+					"optional": "Optional",
+					"headerTextEnable": "{title} has {number} inactive dependencies which may no longer be required. They are listed below.",
+					"headerTextDisable": "{title} has {number} active dependencies which may no longer be required. They are listed below.",
+					"actionTextEnable": "Enable the selected modules?",
+					"actionTextDisable": "Disable the selected modules?"
 				},
 				"buttons": {
 					"deactivateModules": "Deactivate All Unlocked Modules",
@@ -79,7 +91,8 @@
 				},
 				"conflicts": {
 					"core": "Core",
-					"system": "System"
+					"system": "System",
+					"undefinedReason": "REASON WAS NOT LISTED"
 				},
 				"contextMenu": {
 					"renameModule": "Rename Module",

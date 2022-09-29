@@ -1,7 +1,18 @@
+# Version 2.1.5 - 99 Bugs in the Code, Take One Down, Patch it Around, 127 Bugs in the Code
+- Fixed Big Picture Mode so that it properly fits if there are multiple rows of buttons.
+- Fixed Expanded Module Dependencies trying to disable required/optional modules that are already disabled.
+- Added Locked Modules will not show up in Expanded Module Dependencies when disabling modules
+- Added custom localization text for Expanded Module Dependencies.
+- Added a setting to allow you to choose between a `prompt` or `confirm` dialog for Expanded Module Dependencies
+- Fixed Rollbacks not removing instance preventing you from rollback back more than once.
+- Fixed issue if reason for conflict is missing.
+- MM+ Will Disable its Locked Settings feature in favor of Forced Client Settings features if it is installed and active.
+
 # Version 2.1.4 - Smart Labels
 - Auto Prefixing labels has been replaced with Smart Labels.
  - Instead of prefixing all required modules to the start of the module title, you will instead get a little arrow, showing you this module is being grouped together with the one(s) above it.
  - Hovering this arrow will show you all required modules.
+- Fixed Restoring Module Default Name
 
 # Version 2.1.3 - Dependencies Who?
 - Added **Expanded Module Dependencies**. This expands Foundry's Module Dependency Dialog:

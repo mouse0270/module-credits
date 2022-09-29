@@ -543,7 +543,7 @@ export class MMP {
 				if ((conflict?.type ?? '').toLowerCase() == 'core') moduleTitle += ` - ${MODULE.localize('dialog.moduleManagement.conflicts.core')}`;
 				if ((conflict?.type ?? '').toLowerCase() == 'system') moduleTitle += ` - ${game.system.title}`;
 				let content = new DOMParser().parseFromString(conflictElem.querySelector('.conflicts')?.dataset?.tooltip ?? `<ul class='${MODULE.ID}-tooltip-list'></ul>`, "text/html");
-				content.querySelector('ul').insertAdjacentHTML('beforeend', `<li><strong>${moduleTitle}</strong><br/>${conflict.reason.replaceAll(`"`, `'`)}</li>`);
+				content.querySelector('ul').insertAdjacentHTML('beforeend', `<li><strong>${moduleTitle}</strong><br/>${(conflict?.reason ?? MODULE.localize('dialog.moduleManagement.conflicts.undefinedReason')).replaceAll(`"`, `'`)}</li>`);
 
 				if (conflictElem.querySelectorAll('.package-overview .package-title input[type="checkbox"] + span.conflicts')?.length > 0) {
 					conflictElem.querySelector('.package-overview .package-title input[type="checkbox"] + span.conflicts').dataset.tooltip = content.querySelector('ul').outerHTML.replaceAll(`"`, `'`);
@@ -998,11 +998,12 @@ export class MMP {
 						}).join('\n')}</textarea>`,
 						yes: (elemDialog) => {			
 							// Update Modules and Reload Game
-							MODULE.setting('storedRollback', {});
-							game.settings.set(`core`, `${ModuleManagement.CONFIG_SETTING}`, rollBackModules).then((response) => {
-								MODULE.setting('presetsRollbacks', MODULE.setting('presetsRollbacks').slice(-1) ?? []).then(response => {
-									SettingsConfig.reloadConfirm({world: true});
-								})
+							MODULE.setting('storedRollback', {}).then(response => {;
+								game.settings.set(`core`, `${ModuleManagement.CONFIG_SETTING}`, rollBackModules).then((response) => {
+									MODULE.setting('presetsRollbacks', MODULE.setting('presetsRollbacks').slice(0, -1) ?? []).then(response => {
+										SettingsConfig.reloadConfirm({world: true});
+									})
+								});
 							});
 						},
 						no: (elemDialog) => {
@@ -1093,26 +1094,29 @@ export class MMP {
 
 						new ContextMenu($(settingLabel), '[data-action="sync"]', getActiveUser());
 					}
-					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? MODULE.localize('dialog.clientSettings.tooltips.unlockSetting') : MODULE.localize('dialog.clientSettings.tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
-					settingLabel.querySelector('[data-action="lock"]').addEventListener('click', (event) => {
-						if (isLocked(settingID)) {
-							delete MMP.#LockedSettings[`${settingID}`];
-							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
-								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-lock');
-								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-unlock');
-								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('dialog.clientSettings.tooltips.lockSetting');
-							});
-						}else{
-							MMP.#LockedSettings[`${settingID}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
 
-							MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
-								settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-unlock');
-								settingLabel.querySelector('[data-action="lock"]').classList.add('fa-lock');
-								settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('dialog.clientSettings.tooltips.unlockSetting');
-							})
-						}
-					});
-				}else if (settingDetails.scope == "client" && !game.user.isGM) {
+					if (!(game.modules.get('force-client-settings')?.active ?? false)) {
+						settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-solid fa-${isLocked(settingID) ? 'lock' : 'unlock'}" data-tooltip="${isLocked(settingID) ? MODULE.localize('dialog.clientSettings.tooltips.unlockSetting') : MODULE.localize('dialog.clientSettings.tooltips.lockSetting')}" data-tooltip-direction="UP" data-action="lock"></i>`);
+						settingLabel.querySelector('[data-action="lock"]').addEventListener('click', (event) => {
+							if (isLocked(settingID)) {
+								delete MMP.#LockedSettings[`${settingID}`];
+								MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
+									settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-lock');
+									settingLabel.querySelector('[data-action="lock"]').classList.add('fa-unlock');
+									settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('dialog.clientSettings.tooltips.lockSetting');
+								});
+							}else{
+								MMP.#LockedSettings[`${settingID}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
+
+								MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
+									settingLabel.querySelector('[data-action="lock"]').classList.remove('fa-unlock');
+									settingLabel.querySelector('[data-action="lock"]').classList.add('fa-lock');
+									settingLabel.querySelector('[data-action="lock"]').dataset.tooltip = MODULE.localize('dialog.clientSettings.tooltips.unlockSetting');
+								})
+							}
+						});
+					}
+				}else if (settingDetails.scope == "client" && !game.user.isGM && !(game.modules.get('force-client-settings')?.active ?? false)) {
 					if (isLocked(settingID)) {
 						settingLabel.closest('.form-group').querySelectorAll('input, select, button').forEach(input => {
 							input.disabled = true;

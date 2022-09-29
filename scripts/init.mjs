@@ -49,73 +49,85 @@ Hooks.once('ready', async () => {
 		const allPackages = Array.from(game.modules).concat([game.system, game.world]);
 
 		// Get All Required Packages
-		const getValidRelationship = (relationship, type = 'requires') => (relationship).filter(requirement => {
-			// Exclude Systems
-			if ((requirement?.type ?? '').toLowerCase() == 'system') return false;
+		const getValidRelationship = (relationship) => (relationship.reduce((filtered, requirement) => {
+			// If required Module is already enabled or checked, then exclude
+			const isEnabled = (requirementID) => {
+				return input.form.querySelector(`.package input[type="checkbox"][name="${requirementID}"]`).checked;
+			}
 
-			// Get Requirement Details
-			const requiredModule = game.modules.get(requirement.id);
+			// Exclude Systems
+			if ((requirement?.type ?? '').toLowerCase() == 'system') return filtered.concat([]);
 
 			// If Required Module is not installed
-			if (!requiredModule ?? false) {
+			if (!game.modules.get(requirement.id) ?? false) {
 				ui.notifications.error(game.i18n.format("MODMANAGE.DepNotInstalled", {missing: requirement.id}));
-				return false;
+				return filtered.concat([]);
 			}
 
-			// If required Module is already enabled or checked, then exclude
-			const checkIfEnabled = (requirement) => {
-				return input.form.querySelector(`#module-list .package[data-module-id="${requirement?.id}"] input[type="checkbox"]`).checked;
-			}
-			
-			if (input.checked && checkIfEnabled(requiredModule)) return false
+			// If Enabling 
+			if (input.checked && isEnabled(requirement.id)) return filtered.concat([]);
+
+			// If Disabling
 			if (!input.checked) {
-				// Check if other modules depend on this dependency, and if so, remove it from the to-disable list.
-				return !(allPackages.filter(aRequiredModule => {
-					if (aRequiredModule.id == input.name) return false;
-					if ((aRequiredModule?.type ?? '').toLowerCase() == "module" && !checkIfEnabled(aRequiredModule)) return false;
+				let requirements = (allPackages.reduce((relationships, aRequirement) => {
+					// Check if Module is Enabled
+					if ((aRequirement?.type ?? '').toLowerCase() == 'module' && !isEnabled(aRequirement?.id)) return relationships.concat([]);
+					
+					return relationships.concat((Array.from(aRequirement?.relationships?.requires ?? []).concat(
+						Array.from(aRequirement?.relationships?.optional ?? (Array.from(aRequirement?.relationships?.flags?.optional ?? [])))
+					)).filter(relationship => {
+						return requirement.id == relationship.id && isEnabled(relationship.id);
+					}) ?? []);
+				}, []))
 
-					let requiredModules = (Array.from(aRequiredModule.relationships?.requires).concat(
-						(Array.from(aRequiredModule.relationships?.optional ?? []) ?? []).concat(
-							(aRequiredModule.relationships?.flags?.optional ?? [])
-						)
-					));
-
-					if (requiredModules.length == 0) return false;
-
-					return requiredModules.filter(bRequiredModule => {
-						return requirement.id == bRequiredModule.id && checkIfEnabled(bRequiredModule);
-					}).length > 0;
-				}).length > 0);
+				if ((requirements.length ?? 0) > 0) return filtered.concat([]);
 			}
 
-			// Dependency Required and not Active
-			return true;
-		}).map(requirement => {
-			return foundry.utils.mergeObject(requirement, {
-				title: game.modules.get(requirement?.id)?.title ?? ''
-			}, {inplace: false});
-		});
+			// Check if Requirement is already in same state as input
+			if (isEnabled(requirement.id) == input.checked) return filtered.concat([]);
 
-		const requires = getValidRelationship(module?.relationships?.requires ?? []);
-		const optionals = getValidRelationship(Array.from(module?.relationships?.optional ?? []).concat(Array.from(module?.relationships?.flags?.optional ?? [])), 'optional');
+			// Check if Requirement is Locked
+			//if (!input.checked && (MODULE.setting('lockedModules').hasOwnProperty(requirement.id) ?? false)) return filtered.concat([]);
+
+			MODULE.log(input.checked, !(MODULE.setting('lockedModules').hasOwnProperty(requirement.id) ?? false))
+			return filtered.concat([foundry.utils.mergeObject(requirement, {
+				title: game.modules.get(requirement?.id)?.title ?? '',
+				isChecked: () => {
+					if (input.checked) return true;
+					return !(MODULE.setting('lockedModules').hasOwnProperty(requirement.id) ?? false)
+				},
+				isDisabled: () => {
+					if (MODULE.setting('disableLockedModules') && (MODULE.setting('lockedModules').hasOwnProperty(requirement.id) ?? false)) return true;
+					return false;
+				}
+			}, { inplace: false })]);
+		}, []));
+
+		const requires = getValidRelationship(Array.from(module?.relationships?.requires ?? []));
+		const optionals = getValidRelationship(Array.from(module?.relationships?.optional ?? (Array.from(module?.relationships?.flags?.optional ?? []))));
 
 		// If Dependencies is Empty
-		if (!requires.size && !(optionals.size ?? (optionals?.length ?? 0))) return false;
+		if (!(requires?.length ?? 0) && !(optionals?.length ?? 0)) return false;
 
 		// Add Required Module Details to Requires;
 		const content = await renderTemplate(`/modules/${MODULE.ID}/templates/dependencies.hbs`, {
 			id: MODULE.ID,
+			moduleTitle: module.title,
 			enabling: input.checked,
-			numberOfDependencies: (requires?.size ?? 0) + (optionals.size ?? (optionals?.length ?? 0)),
-			showRequires: (requires?.size ?? 0) > 0,
-			showOptional: (optionals.size ?? (optionals?.length ?? 0)) > 0,
+			numberOfDependencies: (requires?.length ?? 0) + (optionals?.length ?? 0),
+			showRequires: (requires?.length ?? 0) > 0,
+			showOptional: (optionals?.length ?? 0) > 0,
 			requires, optionals
 		});
 
-		return Dialog.prompt({
+		return Dialog[MODULE.setting('dependencyDialogType')]({
 			title: game.i18n.localize("MODMANAGE.Dependencies"),
 			content: content,
-			callback: (elem) => {
+			render: (elem) => {
+				MODULE.log('render', elem);
+			},
+			[`${MODULE.setting('dependencyDialogType') == 'prompt' ? 'callback' : 'yes'}`]: (elem) => {
+				MODULE.log('callback', elem);
 				elem[0].querySelectorAll('input[type="checkbox"]').forEach(requirementInput => {
 					if (requirementInput.checked) {
 						input.form.querySelector(`#module-list .package[data-module-id="${requirementInput?.name}"] input[type="checkbox"]`).checked = input.checked;
@@ -153,6 +165,12 @@ Hooks.once('ready', async () => {
 	//await MIGRATE.init();
 	
 	MMP.init();
+	
+	// Enable MM+ Locked Settings if FCS is inactive
+	if (!(game.modules.get('force-client-settings')?.active ?? false)) {
+		Hooks.on('renderApplication', MMP.renderApplication);
+		Hooks.on('closeSettingsConfig', MMP.closeSettingsConfig);
+	}
 });
 
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
@@ -160,8 +178,6 @@ Hooks.once('ready', async () => {
 /* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
 Hooks.on('renderModuleManagement', MMP.renderModuleManagement);
 Hooks.on('renderSettingsConfig', MMP.renderSettingsConfig);
-Hooks.on('renderApplication', MMP.renderApplication);
-Hooks.on('closeSettingsConfig', MMP.closeSettingsConfig);
 
 Handlebars.registerHelper("incIndex", function(value, options) {
     return parseInt(value) + 1;
