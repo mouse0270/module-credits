@@ -4,8 +4,8 @@
 - Added Locked Modules will not show up in Expanded Module Dependencies when disabling modules
 - Added custom localization text for Expanded Module Dependencies.
 - Added a setting to allow you to choose between a `prompt` or `confirm` dialog for Expanded Module Dependencies
-- Fixed Rollbacks not removing instance preventing you from rollback back more than once.
-- Fixed issue if reason for conflict is missing.
+- Fixed Rollbacks not removing instances preventing you from rollback back more than once.
+- Fixed issue if the reason for conflict is missing.
 - MM+ Will Disable its Locked Settings feature in favor of Forced Client Settings features if it is installed and active.
 
 # Version 2.1.4 - Smart Labels
