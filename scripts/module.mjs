@@ -880,6 +880,32 @@ export class MMP {
 				</span>`);
 			}
 
+			// Add Expand Module Button
+			elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<button class="tag expand" data-tooltip="${game.i18n.localize("Expand")}" aria-describedby="tooltip">
+				<i class="fa-solid fa-circle-caret-up"></i>
+			</button>`);
+			elemPackage.querySelector('.package-overview button.tag.expand').addEventListener('click', (event) => {
+				const currentElem = event.target.closest('button.tag.expand');
+				const parentElem = event.target.closest('.package');
+
+				// Toggle Package Description
+				parentElem.querySelector('.package-description').classList.toggle('hidden');
+
+				// Update Expand Button Tooltip
+				currentElem.dataset.tooltip = parentElem.querySelector('.package-description').classList.contains('hidden') ? game.i18n.localize("Expand") : game.i18n.localize("Collapse");
+
+				// Update Expand Button If All Modules Are Expanded
+				const isExpanded = document.querySelectorAll('#module-management .package-description:not(.hidden)').length == document.querySelectorAll('#module-management .package-description').length;
+				// Update Expand Button Title and Tooltip
+				document.querySelector('#module-management .list-filters button.expand').setAttribute('title', isExpanded ? game.i18n.localize("Collapse") : game.i18n.localize("Expand"));
+				document.querySelector('#module-management .list-filters button.expand').dataset.tooltip = isExpanded ? game.i18n.localize("Collapse") : game.i18n.localize("Expand");
+				// Toggle Expand Button Icon
+				document.querySelector('#module-management .list-filters button.expand i').classList.toggle('fa-angle-double-up', !isExpanded);
+				document.querySelector('#module-management .list-filters button.expand i').classList.toggle('fa-angle-double-down', isExpanded);
+				// Update Expand Button If All Modules Are Expanded
+				Object.values(ui.windows).find((window) => window.id === 'module-management')._expanded = isExpanded;
+			});
+
 			// Add Locked Status
 			if (MODULE.setting('lockedModules').hasOwnProperty(moduleKey) ?? false) {
 				elemPackage.querySelector('.package-overview .package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
@@ -1184,7 +1210,14 @@ export class MMP {
 		if (game.user.isGM) {
 			for (const [key, value] of Object.entries(MMP.#LockedSettings)) {
 				const settingDetails = game.settings.settings.get(key);
-				MMP.#LockedSettings[`${key}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
+
+				// Check if Setting is Still Valid, Otherwise Remove it from the Locked Settings
+				// Fix provided by @PepijnMC (https://github.com/mouse0270/module-credits/issues/89#issue-1530854149)
+				if (settingDetails) {
+					MMP.#LockedSettings[`${key}`] = game.settings.get(settingDetails.namespace, settingDetails.key);
+				}else{
+					delete MMP.#LockedSettings[`${key}`];
+				}
 			}
 
 			MODULE.setting('lockedSettings', MMP.#LockedSettings).then(response => {
@@ -1223,9 +1256,18 @@ export class MMP {
 
 			// Cleanup General Information
 			elem[0].querySelector('#game-details li.build').classList.add('hidden');
-			elem[0].querySelector('#game-details li.version span').innerHTML = `v${game.version}`;
+			elem[0].querySelector('#game-details li.version span').innerHTML = `${game.data.coreUpdate.hasUpdate ? `<i class="notification-pip update fas fa-exclamation-circle" data-action="core-update" data-tooltip="${game.i18n.format("SETUP.UpdateAvailable", {
+				type: game.i18n.localize("Software"),
+				channel: game.data.coreUpdate.channel,
+				version: game.data.coreUpdate.version
+			  })}"></i> ` : ''}v${game.version}`;
 
-			elem[0].querySelector('#game-details li.system span').innerHTML = `v${game.system.version}`;
+			elem[0].querySelector('#game-details li.system span').innerHTML = `${game.data.systemUpdate.hasUpdate ? `<i class="notification-pip update fas fa-exclamation-circle" data-action="system-update" data-tooltip="${game.i18n.format("SETUP.UpdateAvailable", {
+				type: game.i18n.localize("System"),
+				channel: game.data.system.title,
+				version: game.data.systemUpdate.version
+			  })}"></i> ` : ''}v${game.system.version}`;
+			
 			if (readme || changelog || attributions || license) {
 				elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterend', '<li class="system-buttons"></li>');
 				if (readme  || ((game.system.readme || "").match(APIs.github) ?? false) || ((game.system.readme || "").match(APIs.rawGithub) ?? false)) {
@@ -1284,7 +1326,15 @@ export class MMP {
 			}
 
 			// Hide Active Modules
-			elem[0].querySelector('#game-details li.modules').classList.add('hidden');
+			MODULE.log('Show Active Modules', MODULE.setting('showActiveModules'));
+
+			// If Hidden or Button, hide default Active Modules
+			if (['hidden', 'button'].includes(MODULE.setting('showActiveModules'))) elem[0].querySelector('#game-details li.modules').classList.add('hidden');
+
+			// If Button, add active modules / total modules text to button
+			if (MODULE.setting('showActiveModules') === 'button') {
+				elem[0].querySelector('#settings-game button[data-action="modules"]').insertAdjacentHTML('beforeend', ` <small><span class="modules-count-active">${game.modules.filter(module => module.active).length}</span><span class="modules-count-total">${game.modules.size}</span></small>`);
+			}
 		}
 	}
 }

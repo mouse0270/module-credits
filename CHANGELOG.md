@@ -1,3 +1,10 @@
+# Version 2.1.6 - Hey Listen! You have an update waiting
+- Added Notification for when an Update for Core or System are waiting for you
+- Fixed Missing Active Modules Count. By Default this is hidden, however there is a setting to display it either on the button or in its default location
+- Fixed Locked Settings not being checked if the setting no longer exists after closing.
+  - Fix provided by [@PepijnMC](https://github.com/mouse0270/module-credits/issues/89#issue-1530854149)
+- Added Individual Expand Button for Module Details
+
 # Version 2.1.5 - 99 Bugs in the Code, Take One Down, Patch it Around, 127 Bugs in the Code
 - Fixed Big Picture Mode so that it properly fits if there are multiple rows of buttons.
 - Fixed Expanded Module Dependencies trying to disable required/optional modules that are already disabled.

@@ -113,6 +113,16 @@ Hooks.once('setup', () => {
 		default: true,
 		config: true,
 	});
+	MODULE.setting('register', 'showActiveModules', {
+		type: String,
+		default: 'hidden',
+		config: true,
+		choices: {
+			'hidden': `${MODULE.ID}.settings.showActiveModules.choices.hidden`,
+			'button': `${MODULE.ID}.settings.showActiveModules.choices.button`,
+			'default': `${MODULE.ID}.settings.showActiveModules.choices.default`
+		}
+	});
 
 	const trackedChangelogs =  {
 		name: `${MODULE.ID}.settings.trackedChangelogs.name`,
@@ -241,7 +251,3 @@ Hooks.once('setup', () => {
 		}
 	}, {inplace: false}));
 });
-
-/*
-
-*/

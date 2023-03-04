@@ -154,6 +154,22 @@
 	cursor: pointer;
 }
 
+#module-management .package-list .package .package-overview .tag.expand {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--color-border-light-primary);
+    color: buttontext;
+    margin: 0px;
+    margin-bottom: -5px;
+    margin-top: -5px;
+    margin-left: 6px;
+}
+.package-list .package .package-overview .tag.expand i {
+    margin: 0px;
+}
+#module-management .package-list .package:has(.package-description:not(.hidden)) .package-overview .tag.expand i:before {
+    content: '\f32d';
+}
+
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */
 /* ORDER TAGS */
 .package-list .package .package-overview .tag.author {
@@ -197,6 +213,10 @@
 }
 .package-list .package .package-overview .tag.version {
     order: 14;
+    margin-right: 0px !important;
+}
+.package-list .package .package-overview .tag.expand {
+    order: 99;
     margin-right: 0px !important;
 }
 #module-credits-dialog.sheet.journal-entry .sidebar.hidden {
@@ -453,6 +473,15 @@ input[name="module-credits-preset-title"] + textarea {
     margin-right: 0.25rem;
 }
 
+#settings div#settings-game button[data-action="modules"] small:before {
+    content: '(';
+}
+#settings div#settings-game button[data-action="modules"] small:after {
+    content: ')';
+}
+#settings div#settings-game button[data-action="modules"] small .modules-count-total:before {
+    content: ' / ';
+}
 
 
 /* ────────────────────────────── ⋆⋅☆⋅⋆ ────────────────────────────── */

@@ -26,6 +26,15 @@
 				"name": "Big Picture Mode",
 				"hint": "Enabling this feature will set the Module Management and Configure Settings windows to the full height of the foundry window."
 			},
+			"showActiveModules": {
+				"name": "Show Active Modules",
+				"hint": "When enabled this will show a list of active modules in the settings tab of the sidebar.",
+				"choices": {
+					"hidden": "Hidden",
+					"button": "On Button",
+					"default": "Core Default"
+				}
+			},
 			"enableGlobalConflicts": {
 				"name": "Enable Global Conflicts",
 				"hint": "When this setting is enabled, MM+ will grab conflicts from a publicly available google sheet. Using this feature will mean that Google will receive your IP address. If you are uncomfortable with this, turn off this feature."
