@@ -62,6 +62,15 @@
 			"enableGlobalConflicts": {
 				"name": "Activer Conflits globaux",
 				"hint": "Lorsque ce réglage est activé, MM+ ira chercher les conflits d'une google sheet disponible publiquement. Utiliser cette fonctionnalié signifie que Google recevra votre adresse IP. Si cela vous ennuie, désactiver cette fonctionnalité."
+			},
+			"showActiveModules": {
+				"choices": {
+					"hidden": "Caché",
+					"button": "Sur le bouton",
+					"default": "par défaut"
+				},
+				"name": "Montrer les modules actifs",
+				"hint": "Lorsqu'il est activé, cela montrera une liste des modules actifs dans l'onglet des réglages de la barre latérale."
 			}
 		},
 		"dialog": {
