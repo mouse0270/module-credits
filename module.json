@@ -102,6 +102,11 @@
 			"lang": "fr",
 			"name": "Français",
 			"path": "languages/fr.json"
+		},
+		{
+			"lang": "pt-BR",
+			"name": "Português (Brasil)",
+			"path": "languages/pt_BR.json"
 		}
 	],
 	"url": "This is auto replaced",
