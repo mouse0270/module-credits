@@ -5,8 +5,8 @@
 	"version": "2.1.2",
 	"compatibility": {
 		"minimum": 10,
-		"verified": 10,
-		"maximum": 10
+		"verified": 11,
+		"maximum": 11
 	},
 	"authors": [
 		{
@@ -14,7 +14,6 @@
 			"url": "https://github.com/mouse0270/module-credits",
 			"email": "rmcintosh@websitesbyfatdudes.com",
 			"discord": "Mouse0270#0270",
-
 			"flags": {
 				"twitter": "Mouse0270",
 				"patreon": "Mouse0270",
@@ -24,14 +23,12 @@
 			}
 		}
 	],
-
 	"library": false,
 	"socket": true,
-
 	"relationships": {
 		"systems": [],
 		"requires": [],
-		"optional": [
+		"recommends": [
 			{
 				"id": "lib-wrapper",
 				"type": "module",
@@ -112,7 +109,7 @@
 		}
 	],
 	"flags": {
-		"allowBugReporter": true, 
+		"allowBugReporter": true,
 		"attributions": "https://github.com/mouse0270/module-credits/blob/master/ATTRIBUTIONS.md"
 	}
 }
