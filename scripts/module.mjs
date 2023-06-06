@@ -38,7 +38,7 @@ export class MMP {
 		this.socket.register("setUserSetting", this.setUserSetting);
 		this.socket.register("getGMSetting", this.getGMSetting)
 	}
-	
+
 	static async getGMSetting({moduleId, settingName}) {
 		return await game.settings.get(moduleId, settingName);
 	}
@@ -53,11 +53,11 @@ export class MMP {
 		}
 
 		if (MODULE.setting('disableSyncPrompt')) {
-			return await setSetting(moduleId, settingName, settingValue); 
+			return await setSetting(moduleId, settingName, settingValue);
 		}else{
 			return await Dialog.confirm({
 				title: MODULE.localize('title'),
-				content: `<p style="margin-top:0px;">${MODULE.localize('dialog.clientSettings.syncSetting.askPermission')}</p> 
+				content: `<p style="margin-top:0px;">${MODULE.localize('dialog.clientSettings.syncSetting.askPermission')}</p>
 					<p>${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).name)}<br/>
 					${game.i18n.localize(game.settings.settings.get(moduleId +'.' + settingName).hint)}</p>`,
 				yes: () => {
@@ -123,7 +123,7 @@ export class MMP {
 			return false;
 		});
 	}
-	
+
 	static async useFetch(url, options ={}) {
 		return await fetch(url).then(response => {
 			if (response.status >= 200 && response.status <= 299) {
@@ -198,7 +198,7 @@ export class MMP {
 			items.forEach(conflict => {
 				if (conflict?.['Module ID'] ?? false) {
 					if (
-						((conflict?.['Type']  ?? '').toLowerCase() == 'system' && game.system.id == (conflict?.['Package ID'] ?? '')) 
+						((conflict?.['Type']  ?? '').toLowerCase() == 'system' && game.system.id == (conflict?.['Package ID'] ?? ''))
 						|| (conflict?.['Type'] ?? '').toLowerCase() != 'system'
 					) {
 						globalConflicts.push({
@@ -270,10 +270,10 @@ export class MMP {
 
 		// Clean Up changelogs
 		await this.cleanUpRemovedChangelogs();
-		
+
 		// If the user is the GM and has show New Changelogs on Load
 		if (MODULE.setting('showNewChangelogsOnLoad') && game.user.isGM) {
-			let unSeenChangelogs = Object.keys(MODULE.setting('trackedChangelogs')).reduce((result, key) => {    
+			let unSeenChangelogs = Object.keys(MODULE.setting('trackedChangelogs')).reduce((result, key) => {
 				if (!MODULE.setting('trackedChangelogs')[key].hasSeen) result[key] = MODULE.setting('trackedChangelogs')[key];
 				return result;
 			}, {});
@@ -298,7 +298,7 @@ export class MMP {
 			// Is Module a Map Pack
 			if (['MAPS', 'BATTLEMAP'].some(checkfor => (module?.title ?? '').toUpperCase().includes(checkfor)))  return `${MODULE.localize('settings.smartPrefix.prefixes.maps')} - ${module.title}`;
 		}
-		
+
 		// If Auto Prefix is Disabled, return Module Title
 		if (!MODULE.setting('smartLabels')) return module.title;
 		// If Module does not require any other modules, return Module title
@@ -355,7 +355,8 @@ export class MMP {
 		// F### Your Emoji (Better Title Sorting)
 		// ? Needs to be rewritten to use plain JS
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
-		MMP.screwYourEmoji($(elem).find('#module-list .package'), '.package-title');
+		const titleQuerySelector = isNewerVersion(game.version, 10.291) ? '.title-group .title' : '.package-title';
+		MMP.screwYourEmoji($(elem).find('#module-list .package'), titleQuerySelector);
 
 		// Focus on Filter
 		elem.querySelector('nav.list-filters input[type="search"]').focus();
@@ -386,7 +387,7 @@ export class MMP {
 				$('<input type="file">').on('change', (event) => {
 					const fileData = event.target.files[0];
 					// Check if User Selected a File.
-					if (!fileData) return false; 
+					if (!fileData) return false;
 					// Check if User Selected JSON File
 					if (fileData.type != 'application/json') {
 						ui.notifications.error(`<strong>${MODULE.TITLE}</strong> Please select a JSON file.`);
@@ -404,7 +405,7 @@ export class MMP {
 							// Check if Import is for TidyUI
 							if (responseJSON.hasOwnProperty('activeModules') ?? false) {
 								importType = 'tidy-ui_game-settings';
-								responseJSON.activeModules.forEach((module, index) => {								
+								responseJSON.activeModules.forEach((module, index) => {
 									moduleData[module.id] = {
 										title: module.title,
 										version: module.version,
@@ -435,7 +436,7 @@ export class MMP {
 
 			// Convert Filters To Dropdown
 			if (elem.querySelectorAll(`nav.list-filters a.filter`)?.length > 0 ?? false) {
-				
+
 				let lastFilter = Array.from(elem.querySelectorAll('nav.list-filters a.filter')).pop();
 				let lockedCount = Object.keys(MODULE.setting('lockedModules')).length;
 				lastFilter.insertAdjacentHTML('afterend', `<a class="filter" data-filter="locked">${MODULE.localize('dialog.moduleManagement.lockedModules')} (${lockedCount})</a>`);
@@ -446,7 +447,7 @@ export class MMP {
 					elem.querySelectorAll(`.package-list .package`).forEach(elemPackage => {
 						elemPackage.classList.add('hidden');
 					});
-					
+
 					for (const [key, value] of Object.entries(MODULE.setting('lockedModules'))) {
 						elem.querySelector(`.package-list .package[data-module-id="${key}"]`).classList.remove('hidden');
 					}
@@ -524,15 +525,15 @@ export class MMP {
 			if ((conflict?.type ?? '').toLowerCase() == 'core' || (conflict?.type ?? '').toLowerCase() == 'system') {
 				if (foundry.utils.isNewerVersion((game.modules.get(conflict.id)?.version ?? '0.0.0'), (conflict.compatibility.version ?? '0.0.0'))) return false;
 				return (
-					(foundry.utils.isNewerVersion(conflictVersion, conflict.compatibility.minimum ?? '0.0.0') || conflictVersion == conflict.compatibility.minimum) 
+					(foundry.utils.isNewerVersion(conflictVersion, conflict.compatibility.minimum ?? '0.0.0') || conflictVersion == conflict.compatibility.minimum)
 					&& (foundry.utils.isNewerVersion(conflict.compatibility.maximum ?? conflictVersion, conflictVersion) || (conflict.compatibility.maximum ?? conflictVersion) == conflictVersion)
-				) 
+				)
 			}
 
 			return (
-				(foundry.utils.isNewerVersion(conflictVersion, conflict.compatibility.minimum ?? '0.0.0') || conflictVersion == conflict.compatibility.minimum) 
+				(foundry.utils.isNewerVersion(conflictVersion, conflict.compatibility.minimum ?? '0.0.0') || conflictVersion == conflict.compatibility.minimum)
 				&& (foundry.utils.isNewerVersion(conflict.compatibility.maximum, conflictVersion) || conflict.compatibility.maximum == conflictVersion)
-			) 
+			)
 		}
 
 		const addConflict = (module, conflict) => {
@@ -569,6 +570,7 @@ export class MMP {
 			// Get License File
 			let license = false; // Foundry File Picker Does not Display this File
 
+			const titleQuerySelector = isNewerVersion(game.version, 10.291) ? '.title-group .title' : 'label.package-title';
 			// Add Ability to Rename Package Title for Better Sorting
 			new ContextMenu($(elemPackage), '.package-overview ', [{
 				name: `${MODULE.localize('dialog.moduleManagement.contextMenu.renameModule')}`,
@@ -579,7 +581,7 @@ export class MMP {
 						id: `${MODULE.ID}-rename-module`,
 						title: MODULE.TITLE,
 						content: `<p style="margin-top: 0px;">${MODULE.localize('dialog.moduleManagement.contextMenu.renameModule')}</p>
-							<input type="text" name="${MODULE.ID}-rename-module-title" value="${packageElem[0].querySelector('label.package-title').textContent.trim()}"/>`,
+							<input type="text" name="${MODULE.ID}-rename-module-title" value="${packageElem[0].querySelector(titleQuerySelector).textContent.trim()}"/>`,
 						yes: (elemDialog) => {
 							if (elemDialog[0].querySelector(`input[name="${MODULE.ID}-rename-module-title"]`).value.length >= 0) {
 								MODULE.setting('renamedModules', foundry.utils.mergeObject(MODULE.setting('renamedModules'), {
@@ -615,7 +617,7 @@ export class MMP {
 					lockedModules[moduleKey] = true;
 					MODULE.setting('lockedModules', lockedModules).then(response => {
 						packageElem[0].querySelector('.package-title input[type="checkbox"]').insertAdjacentHTML('afterend', `<i class="fa-duotone fa-lock" data-tooltip="${MODULE.localize('dialog.moduleManagement.tooltips.moduleLocked')}" style="margin-right: 0.25rem;"></i>`);
-							
+
 						if (MODULE.setting('disableLockedModules')) {
 							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = true;
 							elemPackage.classList.add('disabled');
@@ -637,7 +639,7 @@ export class MMP {
 					delete lockedModules[moduleKey];
 					MODULE.setting('lockedModules', lockedModules).then(response => {
 						packageElem[0].querySelector('.package-title i.fa-duotone.fa-lock').remove();
-							
+
 						if (MODULE.setting('disableLockedModules')) {
 							packageElem[0].querySelector('.package-title input[type="checkbox"]').disabled = false;
 							elemPackage.classList.remove('disabled');
@@ -652,7 +654,7 @@ export class MMP {
 				name: MODULE.localize('dialog.moduleManagement.contextMenu.reportConflict'),
 				icon: '<i class="fa-solid fa-bug"></i>',
 				condition: () => game.user.isGM && (game.modules.get("bug-reporter")?.active ?? false),
-				callback: (packageElem => { 
+				callback: (packageElem => {
 					const moduleDetails = game.modules.get(packageElem[0].closest('li').dataset.moduleId);
 					Hooks.once('renderBugReportForm', (app, elem, options) => {
 						elem = elem[0];
@@ -672,7 +674,7 @@ export class MMP {
 								</select>
 							</div>
 						</div>`);
-						
+
 						// Add Modules to Dropdown
 						let elemOptGroup = elem.querySelector(`select[name="${MODULE.ID}.formFields.selectLabel"] optgroup[label="${MODULE.localize('dialog.bugReporter.optGroup.modules')}"]`);
 						for (const module of game.modules) {
@@ -700,25 +702,25 @@ export class MMP {
 							const elemTextarea = elem.querySelector('textarea[name="formFields.bugDescription"]')
 							const elemPreview = elem.querySelector(`div.${MODULE.ID}-bug-reporter-preview`)
 							const isPreview = elemTextarea.classList.contains('hidden');
-							
+
 							// Set Preview Height to Textarea Height
 							elemPreview.style.minHeight = `${elemTextarea.offsetHeight}px`;
 
 							// Toggle View State
 							elemTextarea.classList.toggle('hidden', !isPreview)
 							elemPreview.classList.toggle('hidden', isPreview)
-							
+
 							// Convert Textarea into HTML
 							const selectedPackage = elem.querySelector(`select[name="${MODULE.ID}.formFields.selectLabel"] option:checked`);
 							let packageDetails = { id: '', name: '' , version: '0.0.0 '};
 							if (selectedPackage.dataset.type == 'core') packageDetails = { id: '', name: game.i18n.localize('Foundry Virtual Tabletop'), version: game.version };
 							else if (selectedPackage.dataset.type == 'system') packageDetails = { id: game.system.id, name: game.system.title, version: game.system.version };
-							else if (selectedPackage.dataset.type == 'module')  packageDetails = { 
-								id: game.modules.get(selectedPackage.value).id, 
-								name: game.modules.get(selectedPackage.value).title, 
-								version:  game.modules.get(selectedPackage.value).version 
+							else if (selectedPackage.dataset.type == 'module')  packageDetails = {
+								id: game.modules.get(selectedPackage.value).id,
+								name: game.modules.get(selectedPackage.value).title,
+								version:  game.modules.get(selectedPackage.value).version
 							};
-							
+
 							let markdown = [elemTextarea.value];
 							markdown.push(`\n\n`);
 							markdown.push(`### Conflicts With`);
@@ -747,12 +749,12 @@ export class MMP {
 							let packageDetails = { id: '', name: '' , version: '0.0.0 '};
 							if (selectedPackage.dataset.type == 'core') packageDetails = { id: '', name: game.i18n.localize('Foundry Virtual Tabletop'), version: game.version };
 							else if (selectedPackage.dataset.type == 'system') packageDetails = { id: game.system.id, name: game.system.title, version: game.system.version };
-							else if (selectedPackage.dataset.type == 'module')  packageDetails = { 
-								id: game.modules.get(selectedPackage.value).id, 
-								name: game.modules.get(selectedPackage.value).title, 
-								version:  game.modules.get(selectedPackage.value).version 
+							else if (selectedPackage.dataset.type == 'module')  packageDetails = {
+								id: game.modules.get(selectedPackage.value).id,
+								name: game.modules.get(selectedPackage.value).title,
+								version:  game.modules.get(selectedPackage.value).version
 							};
-							
+
 							let markdown = [elemTextarea.value];
 							markdown.push(`\n`);
 							markdown.push(`### Conflicts With`);
@@ -764,7 +766,7 @@ export class MMP {
 							elemTextarea.value = markdown.join('\n');
 							elem.querySelector('button[type="submit"]').click();
 						})
-						
+
 						app.setPosition();
 					});
 					game.modules.get("bug-reporter").api.bugWorkflow(MODULE.ID, `Module Conflict - ${moduleDetails.title} v${moduleDetails.version}`, ``);
@@ -944,7 +946,7 @@ export class MMP {
 					// Version Checking
 					if (conflictVersionCheck(conflict)) {
 						if (conflict.id != (conflict?.packageId ?? '') && (conflict?.packageId ?? false)) {
-							addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: conflict.packageId}, { inplace: false }));		
+							addConflict(game.modules.get(conflict.id), foundry.utils.mergeObject(conflict, { id: conflict.packageId}, { inplace: false }));
 						}
 						addConflict(game.modules.get(conflict?.packageId ?? conflict?.id), conflict);
 					}
@@ -959,7 +961,7 @@ export class MMP {
 				});
 			};
 		}
-		
+
 		// Handle if Settings Tag is Clicked
 		elem.querySelectorAll('#module-list > li.package .package-overview .tag.settings').forEach((elemPackage) => {
 			elemPackage.addEventListener('click', async (pointerEventData) => {
@@ -1022,7 +1024,7 @@ export class MMP {
 						}).map(([key, value]) => {
 							return game.modules.get(key)?.title;
 						}).join('\n')}</textarea>`,
-						yes: (elemDialog) => {			
+						yes: (elemDialog) => {
 							// Update Modules and Reload Game
 							MODULE.setting('storedRollback', {}).then(response => {;
 								game.settings.set(`core`, `${ModuleManagement.CONFIG_SETTING}`, rollBackModules).then((response) => {
@@ -1153,7 +1155,7 @@ export class MMP {
 						}
 					}
 				}
-				
+
 				if (settingDetails.scope == "world") {
 					settingLabel.insertAdjacentHTML('afterbegin', `<i class="fa-regular fa-earth-americas" data-tooltip="${MODULE.localize('dialog.clientSettings.tooltips.worldSetting')}" data-tooltip-direction="UP"></i>`);
 				}
@@ -1267,14 +1269,14 @@ export class MMP {
 				channel: game.data.system.title,
 				version: game.data.systemUpdate.version
 			  })}"></i> ` : ''}v${game.system.version}`;
-			
+
 			if (readme || changelog || attributions || license) {
 				elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterend', '<li class="system-buttons"></li>');
 				if (readme  || ((game.system.readme || "").match(APIs.github) ?? false) || ((game.system.readme || "").match(APIs.rawGithub) ?? false)) {
 					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="readme" data-tooltip="${MODULE.localize('dialog.moduleManagement.tags.readme')}">
 						<i class="fa-solid fa-circle-info"></i> ${MODULE.localize('dialog.moduleManagement.tags.readme')}
 					</button>`);
-					
+
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="readme"]').addEventListener('click', (event) => {
 						new PreviewDialog({
 							[game.system.id]: {
@@ -1292,7 +1294,7 @@ export class MMP {
 					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="changelog" data-tooltip="${MODULE.localize('dialog.moduleManagement.tags.changelog')}">
 						<i class="fa-solid fa-list"></i> ${MODULE.localize('dialog.moduleManagement.tags.changelog')}
 					</button>`);
-					
+
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="changelog"]').addEventListener('click', (event) => {
 						new PreviewDialog({
 							[game.system.id]: {
@@ -1310,7 +1312,7 @@ export class MMP {
 					elem[0].querySelector('#game-details li.system-buttons').insertAdjacentHTML('beforeend', `<button data-action="attributions" data-tooltip="${MODULE.localize('dialog.moduleManagement.tags.attributions')}">
 						<i class="fa-brands fa-creative-commons-by"></i> ${MODULE.localize('dialog.moduleManagement.tags.attributions')}
 					</button>`);
-					
+
 					elem[0].querySelector('#game-details li.system-buttons button[data-action="attributions"]').addEventListener('click', (event) => {
 						new PreviewDialog({
 							[game.system.id]: {
