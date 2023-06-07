@@ -327,8 +327,8 @@ export class MMP {
 				let tooltips = smartLabel.join(' / ')
 				smartLabel = `${smartLabel.length > 0 ? '<i class="fa-regular fa-arrow-turn-down-right" data-tooltip="'+tooltips+'"></i> ' : ''}${game.modules.get(element.dataset.moduleId).title}`;
 			}
+			$(Array.from(element.querySelectorAll(titleSelector)).pop()).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(smartLabel ?? '');
 
-			$(element.querySelector(titleSelector)).contents().filter(function(){ return this.nodeType == 3; }).last().replaceWith(smartLabel ?? '');
 			$(element).attr('data-sort-title', sortLabel.toUpperCase().replace(/[^\w]/gi, ''));
 		});
 
@@ -355,7 +355,7 @@ export class MMP {
 		// F### Your Emoji (Better Title Sorting)
 		// ? Needs to be rewritten to use plain JS
 		/* ─────────────── ⋆⋅☆⋅⋆ ─────────────── */
-		MMP.screwYourEmoji($(elem).find('#module-list .package'), '.package-title');
+		MMP.screwYourEmoji($(elem).find('#module-list .package'), '.package-title .title-group .title, .package-title');
 
 		// Focus on Filter
 		elem.querySelector('nav.list-filters input[type="search"]').focus();
@@ -802,7 +802,25 @@ export class MMP {
 					interactive: true,
 					trigger: 'click',
 				});
+
+				// Remove Foundrys Author Tag cause I dislike it.
+				elemPackage.querySelector('.package-overview span.tag i.fas.fa-user').closest('span.tag').remove();
 			}
+
+			// Why have a tag that says this is okay?
+			if (elemPackage.querySelector('.package-overview span.tag.safe')) elemPackage.querySelector('.package-overview span.tag.safe').remove();
+			
+
+			// Add Version Tag if one Does not exist
+			if (!elemPackage.querySelector('.package-overview span.tag.version')) {		
+				// Add Version Tag
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag version"><i class="fas fa-code-branch"></i> ${moduleData?.version}</span>`);
+
+				// Remove Foundrys Info Tag cause I dislike it and because I use the same icon from the Readme Tag
+				// Also my Website Tag already does this.
+				elemPackage.querySelector('.package-overview span.tag i.fas.fa-circle-info').closest('span.tag').remove();
+			}
+
 			// Add ReadMe Tag
 			if (readme || ((MMP.getModuleProperty(moduleData.id, 'readme') || "").match(APIs.github) ?? false) || ((MMP.getModuleProperty(moduleData.id, 'readme') || "").match(APIs.rawGithub) ?? false)) {
 				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag readme" data-tooltip="${MODULE.localize("dialog.moduleManagement.tags.readme")}" aria-describedby="tooltip">

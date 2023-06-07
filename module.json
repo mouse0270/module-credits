@@ -2,11 +2,11 @@
 	"id": "module-credits",
 	"title": "Module Management+",
 	"description": "Is packed with features and design improvements designed to make managing large module list easy. MM+ provides more detailed information about modules at a glance and allows you to read packages changelogs/readmes directly in foundry meant to help you find answers quickly. Some of the notable features of Module Management+ is the Addition of new tags such as readme, changelog, issues and authors. A cleaner easier list view of the modules with stripped rows and more spacing to make the viewing experiance easier on the eyes. The ability to see conflicts and known issues with your installed modules.",
-	"version": "2.1.2",
+	"version": "2.2.0",
 	"compatibility": {
 		"minimum": 10,
 		"verified": 10,
-		"maximum": 10
+		"maximum": 11
 	},
 	"authors": [
 		{

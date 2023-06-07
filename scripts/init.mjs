@@ -49,7 +49,7 @@ Hooks.once('ready', async () => {
 		const allPackages = Array.from(game.modules).concat([game.system, game.world]);
 
 		// Get All Required Packages
-		const getValidRelationship = (relationship) => (relationship.reduce((filtered, requirement) => {
+		const getValidRelationship = (relationship, isOptional) => (relationship.reduce((filtered, requirement) => {
 			// If required Module is already enabled or checked, then exclude
 			const isEnabled = (requirementID) => {
 				return input.form.querySelector(`.package input[type="checkbox"][name="${requirementID}"]`).checked;
@@ -60,7 +60,7 @@ Hooks.once('ready', async () => {
 
 			// If Required Module is not installed
 			if (!game.modules.get(requirement.id) ?? false) {
-				ui.notifications.error(game.i18n.format("MODMANAGE.DepNotInstalled", {missing: requirement.id}));
+				if (!isOptional) ui.notifications.error(game.i18n.format("MODMANAGE.DepNotInstalled", {missing: requirement.id}));
 				return filtered.concat([]);
 			}
 
@@ -103,8 +103,8 @@ Hooks.once('ready', async () => {
 			}, { inplace: false })]);
 		}, []));
 
-		const requires = getValidRelationship(Array.from(module?.relationships?.requires ?? []));
-		const optionals = getValidRelationship(Array.from(module?.relationships?.optional ?? (Array.from(module?.relationships?.flags?.optional ?? []))));
+		const requires = getValidRelationship(Array.from(module?.relationships?.requires ?? []), false);
+		const optionals = getValidRelationship(Array.from(module?.relationships?.optional ?? (Array.from(module?.relationships?.flags?.optional ?? []))), true);
 
 		// If Dependencies is Empty
 		if (!(requires?.length ?? 0) && !(optionals?.length ?? 0)) return false;

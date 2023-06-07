@@ -1,3 +1,14 @@
+# Version 2.2.0 - Foundry v11 Compatibility
+- Increased `compatibility.maximum` to `11`
+- Fixed package title selector to handle for v10 and v11 of foundry Module Management Window
+- Replaced Foundry's `Info` and `Author` tags because, I disagree with their current implementation
+  - Not saying either mine or theirs is the proper way, this is completely a personal opinion of mine
+- Removed Safe Tag, because its useless information. (Once again, personal opinion)
+- Added Version back to the Modules Tags
+- Fixed **Expanded Module Dependencies** to not throw an error when Optional modules are not installed.
+> I left `compatibility.verified` as I only did a quick test to make sure most features worked as expected.
+> If I get reports that most features work as expected then I will update this to version 11
+
 # Version 2.1.6 - Hey Listen! You have an update waiting
 - Added Notification for when an Update for Core or System are waiting for you
 - Fixed Missing Active Modules Count. By Default this is hidden, however there is a setting to display it either on the button or in its default location
