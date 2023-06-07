@@ -1,6 +1,10 @@
+# Version 2.2.1 -
+- Added Credit for @kristianserrano for pull request related to title in module management window
+
 # Version 2.2.0 - Foundry v11 Compatibility
 - Increased `compatibility.maximum` to `11`
 - Fixed package title selector to handle for v10 and v11 of foundry Module Management Window
+  - Credit to @kristianserrano for making a pull request pointing this out.
 - Replaced Foundry's `Info` and `Author` tags because, I disagree with their current implementation
   - Not saying either mine or theirs is the proper way, this is completely a personal opinion of mine
 - Removed Safe Tag, because its useless information. (Once again, personal opinion)
