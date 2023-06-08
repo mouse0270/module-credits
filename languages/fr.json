@@ -1,0 +1,253 @@
+{
+	"module-credits": {
+		"title": "Module Management+",
+		"settings": {
+			"keepPresetsRollbacks": {
+				"name": "Nombre de retours en arrière à conserver ?",
+				"hint": "Ce réglage indique le nombre de retours en arrière de modules que vous pouvez faire (entre 0 et 10). Si la valeur est à 0, cela conservera un nombre infini de retours en arrière. Il est suggéré de ne pas faire çà car cela causerait un surplus de données."
+			},
+			"disableLockedModules": {
+				"name": "Désactiver les modules verrouillés ?",
+				"hint": "Ce réglage désactivera la case à cocher des modules verrouillés. C'est utilisé pour empêcher de décocher un module verrouillé par accident."
+			},
+			"showNewChangelogsOnLoad": {
+				"name": "Montrer les changements nouveaux au chargement",
+				"hint": "Si un changement est marqué pour ne pas être montré et que ce réglage est activé, une fenêtre de dialogue apparaîtra montrant tous les changements que vous n'aurez pas marqué comme vus."
+			},
+			"bigPictureMode": {
+				"name": "Mode Grosse image",
+				"hint": "Activer cette fonctionnalité règlera les fenêtres de Module Management et de configuration des réglages à la taille totale de la fenêtre de Foundry."
+			},
+			"addGoogleSheetButton": {
+				"name": "Ajouter la spreadsheet Google",
+				"hint": "Si vous l'activez, cela ajoutera un lien avec la spreadsheet google à la fenêtre de Module management."
+			},
+			"disableSyncPrompt": {
+				"name": "Désactiver les demandes lorsque vous synchronisez les réglages",
+				"hint": "Cela empêchera de recevoir une notification vous demandant de confirmer si un réglage doit ou non être synchronisé. Cela forcera le réglage sans confirmation."
+			},
+			"smartLabels": {
+				"name": "Étiquettes intelligentes",
+				"hint": "Si activé, les modules présenteront une icône en forme de flèche pour indiquer que c'est groupé avec le(s) module(s) au-dessus. Au survol, cette icône affichera tous les modules requis."
+			},
+			"smartPrefix": {
+				"name": "Préfixe intelligent",
+				"prefixes": {
+					"library": "Bibliothèque",
+					"maps": "Cartes",
+					"ui": "IU"
+				},
+				"hint": "Ceci tente de préfixer les titres au mieux. Par exemple, des modules portant l'étiquette bibliothèques seront préfixés avec Bibliothèque et les modules avec le mot UI dans leur titre seront préfixés avec IU. Cela pourrait ne pas préfixer correctement les modules, vous pourrez changer le préfixe avec clic droit et en assignant un autre nom."
+			},
+			"autoPrefixModules": {
+				"name": "Donner automatiquement un préfixe aux modules",
+				"hint": "Cela donnera un préfixe aux titre des modules avec tous les autres titres requis du module."
+			},
+			"dependencyDialogType": {
+				"name": "Type de dialogue pour les dépendances de modules étendues",
+				"choices": {
+					"prompt": "Invitation",
+					"confirm": "Confirmation"
+				},
+				"hint": "Cela vous permet de choisir le type de dialogue qui sera utilisé lorsque vous activez/désactivez les modules utilisant Dépendances de modules étendues."
+			},
+			"storePreviousOnPreset": {
+				"name": "Conserver le retour en arrière lorsque vous chargez un réglage",
+				"hint": "En cas d'activation, un retour à l'état initial sera créé lorsque vous activez un réglage ou lorsque vous importez un réglage"
+			},
+			"hideLockedSettings": {
+				"name": "Cacher les réglages verrouillés",
+				"hint": "Ce réglage cachera les réglages qui sont verrouillés pour les joueurs."
+			},
+			"enableGlobalConflicts": {
+				"name": "Activer Conflits globaux",
+				"hint": "Lorsque ce réglage est activé, MM+ ira chercher les conflits d'une google sheet disponible publiquement. Utiliser cette fonctionnalié signifie que Google recevra votre adresse IP. Si cela vous ennuie, désactiver cette fonctionnalité."
+			},
+			"showActiveModules": {
+				"choices": {
+					"hidden": "Caché",
+					"button": "Sur le bouton",
+					"default": "par défaut"
+				},
+				"name": "Montrer les modules actifs",
+				"hint": "Lorsqu'il est activé, cela montrera une liste des modules actifs dans l'onglet des réglages de la barre latérale."
+			}
+		},
+		"dialog": {
+			"generic": {
+				"activeModules": "Activer les modules"
+			},
+			"titles": {
+				"export": "Exporter les modules",
+				"import": "Importer les modules",
+				"presets": "Gérer les réglages"
+			},
+			"moduleManagement": {
+				"lockedModules": "Modules verrouillés",
+				"rollback": "Revenir à la liste de modules précédente",
+				"dependencies": {
+					"requires": "Requiert",
+					"optional": "Optionnel",
+					"headerTextDisable": "{title} possède {number} dépendances actives qui pourraient ne plus être requises. Elles sont listées en dessous.",
+					"actionTextEnable": "Activer les modules sélectionnés ?",
+					"actionTextDisable": "Désactiver les modules sélectionnés ?",
+					"headerTextEnable": "{title} possède {number} dépendances inactives qui pourraient ne plus être requises. Elles sont listées en dessous."
+				},
+				"buttons": {
+					"deactivateModules": "Désactiver tous les modules déverrouillés",
+					"spreadsheet": "Spreadsheet Conflits globaux",
+					"deactivateModulesAlt": "Maintenir Ctrl pour désactiver tous les modules"
+				},
+				"conflicts": {
+					"core": "Base",
+					"undefinedReason": "RAISON N'A PAS ÉTÉ LISTÉE",
+					"system": "Système"
+				},
+				"contextMenu": {
+					"renameModule": "Renommer le module",
+					"lockModule": "Verrouiller le module",
+					"unlockModule": "Déverrouiller le module",
+					"reportConflict": "Rapporter le conflit",
+					"restoreModuleName": "Revenir au nom du module par défaut"
+				},
+				"tooltips": {
+					"managePresets": "Gérer les réglages",
+					"exportModules": "Exporter les modules",
+					"importModules": "Importer les modules",
+					"moduleLocked": "Ce module ne sera pas désactivé lorsque vous désactiverez les modules."
+				},
+				"tags": {
+					"socket": "Le module utilise le socket de l'API",
+					"library": "Est un module bibliothèque",
+					"authors": "Auteurs",
+					"url": "Voir le site internet",
+					"readme": "Voir le Readme",
+					"attributions": "Voir les attributions",
+					"issues": "Rapporter/voir le(s) bug(s)",
+					"changelog": "Voir le log des changements",
+					"bugReporter": "Rapporter les bugs avec 🐛 Rapporteur de bug"
+				}
+			},
+			"clientSettings": {
+				"syncSetting": {
+					"askPermission": "Permettre à votre MJ de gérer les réglages suivants à votre place ?",
+					"sendToAll": "Envoyer ce réglage à tous les autres utilisateurs ?"
+				},
+				"tooltips": {
+					"worldSetting": "Réglage du monde",
+					"clientSetting": "Réglage du client",
+					"syncSetting": "Réglage de la Sync",
+					"lockSetting": "Verrouiller le réglage",
+					"unlockSetting": "Déverrouiller le réglage"
+				}
+			},
+			"preview": {
+				"navLabel": "Table des matières",
+				"markAsSeen": "Marquer comme vu",
+				"nextPage": "Page suivante",
+				"search": "Chercher dans les logs de changements",
+				"collapseModeLabel": "Diminuer la barre de côté",
+				"previousPage": "Page précédente"
+			},
+			"presets": {
+				"title": "Régler le nom",
+				"tooltips": {
+					"info": "Info",
+					"update": "Mise à jour",
+					"delete": "Effacer",
+					"activate": "Activer"
+				},
+				"buttons": {
+					"create": "Créer un nouveau réglage"
+				},
+				"info": {
+					"description": "Modules en réglage <strong>{name}</strong>.",
+					"installedModules": "Modules installés",
+					"uninstalledModules": "Modules désinstallés"
+				},
+				"update": {
+					"description": "Mettre à jour le réglage pour les modules suivants ?"
+				},
+				"delete": {
+					"warning": "Cette action ne pourra <strong>PAS</strong> être annulée !</div>",
+					"description": "Êtes vous certain de vouloir effacer le réglage étiquetté <strong>{name}</strong> ?"
+				},
+				"activate": {
+					"description": "Ce réglage activera les modules suivants ?"
+				},
+				"create": {
+					"title": "Créer un nouveau réglage",
+					"placeholder": "Titre du réglage",
+					"notification": {
+						"noTitleError": "Entrez un titre de réglage."
+					}
+				}
+			},
+			"export": {
+				"title": "Exporter vos modules actifs !",
+				"bugsUrl": "URL des bugs",
+				"buttons": {
+					"copy": "Copier",
+					"export": "Exporter"
+				},
+				"notification": {
+					"copied": "La liste des modules actifs a été copiée dans votre presse-papier !"
+				}
+			},
+			"import": {
+				"tidyUI": {
+					"title": "Le type d'import est TidyUI",
+					"message": "Lorsque vous importez un fichier TidyUI vous serez incapable d'importer les réglages du client ou du monde."
+				},
+				"table": {
+					"moduleTitle": "Titre du module",
+					"client": "Client",
+					"world": "Monde"
+				},
+				"notInstalled": "Module pas installé",
+				"buttons": {
+					"keep": "Conserver les modules actuels activés",
+					"import": "Importer"
+				}
+			},
+			"bugReporter": {
+				"optGroup": {
+					"core": "Base",
+					"system": "Système",
+					"modules": "Modules"
+				},
+				"toggle": {
+					"preview": "Prévisualiser",
+					"write": "Écrire"
+				},
+				"selectLabel": "Sélectionnez les packages conflictuels*"
+			}
+		},
+		"lib-themer": {
+			"cssTidyMMW": {
+				"name": "Fenêtre de management du Module Tidy",
+				"hint": "Cette feuille de style est conçue pour donner à la fenêtre de Module Management un environnement plus moderne et plus propre.",
+				"settings": {
+					"cssTidyMMWAltCheckbox": {
+						"name": "Style alternatif de boîte de choix",
+						"hint": "Cela donnera à la fenêtre de choix un style plus moderne (de l'opinion de Mouse 0270)."
+					}
+				}
+			}
+		},
+		"migration": {
+			"v204": {
+				"starting": "Migration des réglages verrouillée. Attendez svp.",
+				"complete": "Migration à v2.0.3 est terminée et nécessite que vous rechargiez votre page."
+			},
+			"v212": {
+				"enableGlobalConflicts": "Voulez vous activer Conflits globaux ?",
+				"googleIPWarning": "Notez que MM+ ira chercher les conflits d'une page google publiquement disponible. Utiliser cette fonctionnalité signifie que Google recevra votre adresse IP. Si vous n'êtes pas à l'aise avec çà, n'activez pas cette fonctionnalité.",
+				"developersAreFriends": "Conflits globaux ne signifie pas que c'est une manière précise de pister les problèmes. Cela vous informe juste de la possibilité qu'ils peuvent exister. Les difficultés fournies par Conflits globaux pourraient être dépassées. Ne harcelez pas les développeurs avec les informations fournies par MM+."
+			},
+			"v214": {
+				"smartLabels": "Migrer Auto préfixer les Modules vers Étiquettes intelligentes. Cela va régler Étiquettes intelligentes à votre réglage Auto préfixer. Vous pouvez changer ces réglages dans la fenêtre de réglages."
+			}
+		}
+	}
+}

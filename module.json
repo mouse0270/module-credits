@@ -14,7 +14,6 @@
 			"url": "https://github.com/mouse0270/module-credits",
 			"email": "rmcintosh@websitesbyfatdudes.com",
 			"discord": "Mouse0270#0270",
-
 			"flags": {
 				"twitter": "Mouse0270",
 				"patreon": "Mouse0270",
@@ -24,10 +23,8 @@
 			}
 		}
 	],
-
 	"library": false,
 	"socket": true,
-
 	"relationships": {
 		"systems": [],
 		"requires": [],
@@ -37,12 +34,14 @@
 				"type": "module",
 				"reason": "Provides a compatibility layer for checking if other Modules are overriding similar functionality.",
 				"compatibility": {}
-			}, {
+			},
+			{
 				"id": "lib-themer",
 				"type": "module",
 				"reason": "Provides the ability to apply optional styles for a more modern and clean look.",
 				"compatibility": {}
-			}, {
+			},
+			{
 				"id": "socketlib",
 				"type": "module",
 				"reason": "Provides the ability for non-GM users to view Readme, Changelogs and Attribution files. If this module is uninstalled or disabled, only GM will be able to use this functionality.",
@@ -56,7 +55,8 @@
 				"manifest": "https://raw.githubusercontent.com/sdenec/tidy-ui_game-settings/master/module.json",
 				"reason": "Tidy UI and MM+ perform many of the same functions. MM+ will not be fixing compatibility issues between the two modules.",
 				"compatibility": {}
-			}, {
+			},
+			{
 				"id": "lib-changelogs",
 				"type": "module",
 				"manifest": "https://github.com/theripper93/libChangelogs/blob/master/module.json",
@@ -74,7 +74,8 @@
 					"manifest": "https://github.com/ruipin/fvtt-lib-wrapper/releases/latest/download/module.json",
 					"reason": "Provides a compatibility layer for checking if other Modules are overriding similar functionality.",
 					"compatibility": {}
-				}, {
+				},
+				{
 					"id": "lib-themer",
 					"type": "module",
 					"manifest": "https://github.com/mouse0270/lib-themer/releases/latest/download/module.json",
@@ -85,17 +86,27 @@
 		}
 	},
 	"esmodules": [
-        "/scripts/init.mjs"
+		"/scripts/init.mjs"
 	],
 	"scripts": [],
 	"styles": [
-        "/styles/module.css"
+		"/styles/module.css"
 	],
 	"languages": [
 		{
 			"lang": "en",
 			"name": "English",
 			"path": "languages/en.json"
+		},
+		{
+			"lang": "fr",
+			"name": "Français",
+			"path": "languages/fr.json"
+		},
+		{
+			"lang": "pt-BR",
+			"name": "Português (Brasil)",
+			"path": "languages/pt_BR.json"
 		}
 	],
 	"url": "This is auto replaced",
@@ -112,7 +123,7 @@
 		}
 	],
 	"flags": {
-		"allowBugReporter": true, 
+		"allowBugReporter": true,
 		"attributions": "https://github.com/mouse0270/module-credits/blob/master/ATTRIBUTIONS.md"
 	}
 }
