@@ -47,7 +47,7 @@ export class MMP {
 		MODULE.log('RECIEVED SETTING', moduleId, settingName, settingValue, game.settings.settings.get(`${moduleId}.${settingName}`).name);
 		const setSetting = (moduleId, settingName, settingValue) => {
 			game.settings.set(moduleId, settingName, settingValue).then(response => {
-				location.reload();
+				if (game.settings.settings.get(`${moduleId}.${settingName}`)?.requiresReload ?? false) location.reload();
 				return response;
 			})
 		}
@@ -903,6 +903,9 @@ export class MMP {
 				<i class="fa-solid fa-circle-caret-up"></i>
 			</button>`);
 			elemPackage.querySelector('.package-overview button.tag.expand').addEventListener('click', (event) => {
+				// Prevent Submitting Form - Saving Changes
+				event.preventDefault();
+
 				const currentElem = event.target.closest('button.tag.expand');
 				const parentElem = event.target.closest('.package');
 

@@ -21,6 +21,23 @@
         </label>
     </li>
     {{/each}}
+    {{#if showRecommends}}
+    <li class="{{id}}-dependencies-header">
+        <h3>{{ localize 'module-credits.dialog.moduleManagement.dependencies.recommends'}}</h3>
+    </li>
+    {{/if}}
+    {{#each recommends}}
+    <li>   
+        {{#if this.isDisabled}}
+        <i class="fa-duotone fa-lock" data-tooltip="" style="width: 30px; text-align: center;"></i>
+        {{else}}
+        <input type="checkbox" id="{{@root.id}}-dependencies-{{this.id}}" name="{{this.id}}"{{#if this.isChecked}} checked{{/if}}{{#if this.isDisabled}} disabled{{/if}} />
+        {{/if}}
+        <label for="{{@root.id}}-dependencies-{{this.id}}">
+            <strong>{{this.title}}</strong> <small>{{this.id}}</small><br/>{{this.reason}}
+        </label>
+    </li>
+    {{/each}}
     {{#if optionals}}
     <li class="{{id}}-dependencies-header">
         <h3>{{ localize 'module-credits.dialog.moduleManagement.dependencies.optional'}}</h3>

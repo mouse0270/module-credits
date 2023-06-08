@@ -87,6 +87,7 @@
 				"rollback": "Restore Previous Module List",
 				"dependencies": {
 					"requires": "Requires",
+					"recommends": "Recommends",
 					"optional": "Optional",
 					"headerTextEnable": "{title} has {number} inactive dependencies which may no longer be required. They are listed below.",
 					"headerTextDisable": "{title} has {number} active dependencies which may no longer be required. They are listed below.",

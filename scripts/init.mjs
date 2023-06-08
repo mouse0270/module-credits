@@ -104,20 +104,23 @@ Hooks.once('ready', async () => {
 		}, []));
 
 		const requires = getValidRelationship(Array.from(module?.relationships?.requires ?? []), false);
+		const recommends = getValidRelationship(Array.from(module?.relationships?.recommends ?? []), true);
 		const optionals = getValidRelationship(Array.from(module?.relationships?.optional ?? (Array.from(module?.relationships?.flags?.optional ?? []))), true);
 
 		// If Dependencies is Empty
 		if (!(requires?.length ?? 0) && !(optionals?.length ?? 0)) return false;
 
 		// Add Required Module Details to Requires;
+		MODULE.log('recommends', recommends);
 		const content = await renderTemplate(`/modules/${MODULE.ID}/templates/dependencies.hbs`, {
 			id: MODULE.ID,
 			moduleTitle: module.title,
 			enabling: input.checked,
-			numberOfDependencies: (requires?.length ?? 0) + (optionals?.length ?? 0),
+			numberOfDependencies: (requires?.length ?? 0) + (recommends?.length ?? 0) + (optionals?.length ?? 0),
 			showRequires: (requires?.length ?? 0) > 0,
+			showRecommends: (recommends?.length ?? 0) > 0,
 			showOptional: (optionals?.length ?? 0) > 0,
-			requires, optionals
+			requires, recommends, optionals
 		});
 
 		return Dialog[MODULE.setting('dependencyDialogType')]({
