@@ -804,7 +804,8 @@ export class MMP {
 				});
 
 				// Remove Foundrys Author Tag cause I dislike it.
-				elemPackage.querySelector('.package-overview span.tag i.fas.fa-user').closest('span.tag').remove();
+				if (elemPackage.querySelector('.package-overview span.tag i.fas.fa-user') ?? false)
+					elemPackage.querySelector('.package-overview span.tag i.fas.fa-user').closest('span.tag').remove();
 			}
 
 			// Why have a tag that says this is okay?

@@ -1,8 +1,9 @@
-# Version 2.2.1 -
+# Version 2.2.1 - Its Late and I am tired... Ship It now, fix it later
 - Added Credit for @kristianserrano for pull request related to title in module management window
 - Added check when syncing player setting that it only force reloads if the setting is has the `requiresReload` property set to `true`
 - Added `event.preventDefault` to expand module details, should prevent the the Module Management window from trying to reload every time you expand a selection.
 - Added Support for Foundry v11 `recommends` module relationships
+- Added check when removing Foundry's Author tag to verify it exists to hopefully prevent an errors
 
 
 # Version 2.2.0 - Foundry v11 Compatibility
