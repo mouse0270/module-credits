@@ -819,7 +819,8 @@ export class MMP {
 
 				// Remove Foundrys Info Tag cause I dislike it and because I use the same icon from the Readme Tag
 				// Also my Website Tag already does this.
-				elemPackage.querySelector('.package-overview span.tag i.fas.fa-circle-info').closest('span.tag').remove();
+				if (elemPackage.querySelector('.package-overview span.tag i.fas.fa-circle-info') ?? false)
+					elemPackage.querySelector('.package-overview span.tag i.fas.fa-circle-info').closest('span.tag').remove();
 			}
 
 			// Add ReadMe Tag

@@ -1,3 +1,6 @@
+# Version 2.2.1.1 - Is it really a changelog with only one change?
+- Attempted fix for Replacing Foundry VTTs v11 Info Tag since it appears my Website Tag already does this.
+
 # Version 2.2.1 - Its Late and I am tired... Ship It now, fix it later
 - Added Credit for @kristianserrano for pull request related to title in module management window
 - Added check when syncing player setting that it only force reloads if the setting is has the `requiresReload` property set to `true`
