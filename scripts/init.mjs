@@ -104,11 +104,11 @@ Hooks.once('ready', async () => {
 		}, []));
 
 		const requires = getValidRelationship(Array.from(module?.relationships?.requires ?? []), false);
-		const recommends = getValidRelationship(Array.from(module?.relationships?.recommends ?? []), true);
+		const recommends = getValidRelationship(Array.from(module?.relationships?.recommends ?? (Array.from(module?.relationships?.flags?.recommends ?? []))), true);
 		const optionals = getValidRelationship(Array.from(module?.relationships?.optional ?? (Array.from(module?.relationships?.flags?.optional ?? []))), true);
 
 		// If Dependencies is Empty
-		if (!(requires?.length ?? 0) && !(optionals?.length ?? 0)) return false;
+		if (!(requires?.length ?? 0) && !(recommends?.length ?? 0) && !(optionals?.length ?? 0)) return false;
 
 		// Add Required Module Details to Requires;
 		MODULE.log('recommends', recommends);

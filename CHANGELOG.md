@@ -1,3 +1,8 @@
+# Version 2.2.1.2 - Wait I didn't push this a week ago?
+- Fixed an issue where I used `game.i18n.translations.SETTINGS.Configure` instead of `game.i18n.localize('SETTINGS.Configure')`
+- Fixed **Expanded Module Dependencies** dialog from not showing when only recommended modules are missing
+- Fixed System name from being overwritten by system version
+
 # Version 2.2.1.1 - Is it really a changelog with only one change?
 - Attempted fix for Replacing Foundry VTTs v11 Info Tag since it appears my Website Tag already does this.
 

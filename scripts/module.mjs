@@ -773,7 +773,7 @@ export class MMP {
 
 			// Add Setting Tag if Module has Editable Tags
 			if (hasSettings?.[moduleKey] ?? false) {
-				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag settings" data-tooltip="${game.i18n.translations.SETTINGS.Configure}" aria-describedby="tooltip">
+				elemPackage.querySelector('.package-overview').insertAdjacentHTML('beforeend', `<span class="tag settings" data-tooltip="${game.i18n.localize('SETTINGS.Configure')}" aria-describedby="tooltip">
 					<i class="fa-solid fa-gear"></i>
 				</span>`);
 			}
@@ -1283,13 +1283,13 @@ export class MMP {
 				type: game.i18n.localize("Software"),
 				channel: game.data.coreUpdate.channel,
 				version: game.data.coreUpdate.version
-			  })}"></i> ` : ''}v${game.version}`;
-
-			elem[0].querySelector('#game-details li.system span').innerHTML = `${game.data.systemUpdate.hasUpdate ? `<i class="notification-pip update fas fa-exclamation-circle" data-action="system-update" data-tooltip="${game.i18n.format("SETUP.UpdateAvailable", {
+			})}"></i> ` : ''}v${game.version}`;
+''
+			elem[0].querySelector(isNewerVersion(game.version, "11") ? '#game-details li.system span.system-info' : '#game-details li.system span').innerHTML = `${game.data.systemUpdate.hasUpdate ? `<i class="notification-pip update fas fa-exclamation-circle" data-action="system-update" data-tooltip="${game.i18n.format("SETUP.UpdateAvailable", {
 				type: game.i18n.localize("System"),
 				channel: game.data.system.title,
 				version: game.data.systemUpdate.version
-			  })}"></i> ` : ''}v${game.system.version}`;
+			})}"></i> ` : ''}v${game.system.version}`;
 			
 			if (readme || changelog || attributions || license) {
 				elem[0].querySelector('#game-details li.system').insertAdjacentHTML('afterend', '<li class="system-buttons"></li>');
