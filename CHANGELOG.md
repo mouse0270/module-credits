@@ -1,3 +1,12 @@
+# Version 2.2.3 - Totally a Real Version
+- Added an invisible feature that nobody will ever notice, but hey, at least it's something, right?
+- Improved the speed by 0.0000000000000000000000000001%. Now you can watch progress slightly faster than before!
+- Implemented a revolutionary feature that predicts the next word you're about to type, but we accidentally deleted it before release. Maybe next time?
+- Removed the bug that was causing imaginary crashes in parallel universes. Our QA team worked really hard on this one.
+- Updated the version number from 2.2.1.2 to 2.2.3 to make it look like something significant happened. We apologize for the confusion caused by this version mistake.
+
+> Please note that the changes listed above may not have any tangible impact on your experience with the software, but we hope they bring a smile to your face as you update to Version 2.2.3!
+
 # Version 2.2.1.2 - Wait I didn't push this a week ago?
 - Fixed an issue where I used `game.i18n.translations.SETTINGS.Configure` instead of `game.i18n.localize('SETTINGS.Configure')`
 - Fixed **Expanded Module Dependencies** dialog from not showing when only recommended modules are missing
