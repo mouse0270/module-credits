@@ -91,7 +91,8 @@
 					"headerTextDisable": "{title} possède {number} dépendances actives qui pourraient ne plus être requises. Elles sont listées en dessous.",
 					"actionTextEnable": "Activer les modules sélectionnés ?",
 					"actionTextDisable": "Désactiver les modules sélectionnés ?",
-					"headerTextEnable": "{title} possède {number} dépendances inactives qui pourraient ne plus être requises. Elles sont listées en dessous."
+					"headerTextEnable": "{title} possède {number} dépendances inactives qui pourraient ne plus être requises. Elles sont listées en dessous.",
+					"recommends": "Recommande"
 				},
 				"buttons": {
 					"deactivateModules": "Désactiver tous les modules déverrouillés",
@@ -119,7 +120,7 @@
 				"tags": {
 					"socket": "Le module utilise le socket de l'API",
 					"library": "Est un module bibliothèque",
-					"authors": "Auteurs",
+					"authors": "Auteurs (cliquez pour voir)",
 					"url": "Voir le site internet",
 					"readme": "Voir le Readme",
 					"attributions": "Voir les attributions",

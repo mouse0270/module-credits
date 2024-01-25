@@ -1,0 +1,254 @@
+{
+	"module-credits": {
+		"settings": {
+			"keepPresetsRollbacks": {
+				"name": "Anzahl der zu behaltenden Rollbacks?",
+				"hint": "Diese Einstellung gibt die Anzahl der Modul-Rollbacks an, die Sie zwischen 0 und 10 durchführen können. Wenn dieser Wert auf 0 gesetzt wird, wird eine unendliche Anzahl von Rollbacks gespeichert. Es wird empfohlen, dies nicht zu tun, da dies zu aufgeblähten Daten führen würde."
+			},
+			"disableLockedModules": {
+				"name": "Gesperrte Module deaktivieren?",
+				"hint": "Mit dieser Einstellung wird das Kontrollkästchen für gesperrte Module deaktiviert. Dies wird verwendet, um zu verhindern, dass ein gesperrtes Modul versehentlich deaktiviert wird."
+			},
+			"hideLockedSettings": {
+				"name": "Gesperrte Einstellungen ausblenden",
+				"hint": "Mit dieser Einstellung werden Einstellungen, die für Spieler gesperrt sind, ausgeblendet."
+			},
+			"showNewChangelogsOnLoad": {
+				"name": "Neue Changelogs beim Laden anzeigen",
+				"hint": "Wenn ein Changelog als ungesehen markiert ist und diese Einstellung aktiviert ist, erscheint ein Dialog, der alle Changelogs anzeigt, die nicht als gesehen markiert wurden."
+			},
+			"bigPictureMode": {
+				"name": "Modus \"Großes Bild\"",
+				"hint": "Wenn Sie diese Funktion aktivieren, werden die Fenster \"Modulverwaltung\" und \"Einstellungen konfigurieren\" auf die volle Höhe des Foundry-Fensters eingestellt."
+			},
+			"showActiveModules": {
+				"name": "Aktive Module anzeigen",
+				"hint": "Wenn diese Option aktiviert ist, wird eine Liste der aktiven Module auf der Registerkarte \"Einstellungen\" in der Seitenleiste angezeigt.",
+				"choices": {
+					"hidden": "Versteckt",
+					"button": "Auf Taste",
+					"default": "Grundeinstellung"
+				}
+			},
+			"enableGlobalConflicts": {
+				"name": "Globale Konflikte aktivieren",
+				"hint": "Wenn diese Einstellung aktiviert ist, greift MM+ auf Konflikte aus einem öffentlich zugänglichen Google Sheet zu. Die Verwendung dieser Funktion bedeutet, dass Google Ihre IP-Adresse erhält. Wenn Sie sich damit nicht wohl fühlen, deaktivieren Sie diese Funktion."
+			},
+			"addGoogleSheetButton": {
+				"name": "Google Spreadsheet hinzufügen",
+				"hint": "Wenn diese Option aktiviert ist, wird dem Modulverwaltungsfenster ein Link zum Google Spreadsheet hinzugefügt."
+			},
+			"disableSyncPrompt": {
+				"name": "Eingabeaufforderung beim Synchronisieren von Einstellungen deaktivieren",
+				"hint": "Dadurch wird verhindert, dass Benutzer eine Benachrichtigung erhalten, in der sie aufgefordert werden, zu bestätigen, ob eine Einstellung synchronisiert werden soll oder nicht. Stattdessen wird die Einstellung ohne Aufforderung erzwungen."
+			},
+			"autoPrefixModules": {
+				"hint": "Dadurch werden dem Modultitel alle notwendigen Module vorangestellt.",
+				"name": "Auto Prefix Module"
+			},
+			"smartLabels": {
+				"name": "Smarte Label",
+				"hint": "Wenn dies aktiviert ist, wird den Modulen ein Pfeilsymbol vorangestellt, um anzuzeigen, dass es mit dem/den darüber liegenden Modulen gruppiert ist. Wenn Sie den Mauszeiger über dieses Symbol bewegen, werden alle erforderlichen Module angezeigt."
+			},
+			"smartPrefix": {
+				"name": "Smartes Prefix",
+				"prefixes": {
+					"library": "Bibliothek",
+					"maps": "Karten",
+					"ui": "UI"
+				},
+				"hint": "Dabei wird versucht, den Titeln das voranzustellen, was es für am besten hält. So wird beispielsweise Modulen mit dem Flag \"Library\" das Präfix \"Library\" vorangestellt, und Modulen mit dem Wort \"UI\" im Titel wird das Präfix \"UI\" vorangestellt. Sie können das Präfix überschreiben, indem Sie mit der rechten Maustaste klicken und einen Überschreibungsnamen zuweisen."
+			},
+			"dependencyDialogType": {
+				"name": "Dialogtyp für erweiterte Modulabhängigkeiten",
+				"hint": "Hier können Sie die Art des Dialogs auswählen, der beim Aktivieren/Deaktivieren von Modulen mit erweiterten Modulabhängigkeiten verwendet wird.",
+				"choices": {
+					"prompt": "Eingabeaufforderung",
+					"confirm": "Bestätigen"
+				}
+			},
+			"storePreviousOnPreset": {
+				"name": "Rollback beim Laden einer Voreinstellung speichern",
+				"hint": "Wenn dieser Wert aktiviert ist, wird beim Aktivieren einer Voreinstellung oder beim Importieren einer Voreinstellung ein Rollback erstellt"
+			}
+		},
+		"dialog": {
+			"generic": {
+				"activeModules": "Aktive Module"
+			},
+			"titles": {
+				"export": "Module exportieren",
+				"import": "Module importieren",
+				"presets": "Voreinstellungen verwalten"
+			},
+			"moduleManagement": {
+				"lockedModules": "Gesperrte Module",
+				"rollback": "Vorherige Modulliste wiederherstellen",
+				"dependencies": {
+					"requires": "Erfordert",
+					"recommends": "Empfiehlt",
+					"optional": "Optional",
+					"headerTextDisable": "{title} hat {number} inaktive Abhängigkeiten, die möglicherweise nicht mehr benötigt werden. Sie sind unten aufgeführt.",
+					"actionTextEnable": "Aktivieren Sie die ausgewählten Module?",
+					"actionTextDisable": "Die ausgewählten Module deaktivieren?",
+					"headerTextEnable": "{title} hat {number} inaktive Abhängigkeiten, die möglicherweise nicht mehr benötigt werden. Sie sind unten aufgeführt."
+				},
+				"buttons": {
+					"deactivateModules": "Deaktivieren Sie alle freigeschalteten Module",
+					"deactivateModulesAlt": "Strg gedrückt halten, um alle Module zu deaktivieren",
+					"spreadsheet": "Tabellenkalkulation Globale Konflikte"
+				},
+				"conflicts": {
+					"core": "Kern",
+					"system": "System",
+					"undefinedReason": "GRUND WURDE NICHT AUFGEFÜHRT"
+				},
+				"contextMenu": {
+					"renameModule": "Modul umbenennen",
+					"restoreModuleName": "Standard-Modulname wiederherstellen",
+					"lockModule": "Modul sperren",
+					"unlockModule": "Modul entsperren",
+					"reportConflict": "Konflikt berichten"
+				},
+				"tooltips": {
+					"managePresets": "Voreinstellungen verwalten",
+					"exportModules": "Module exportieren",
+					"importModules": "Module importieren",
+					"moduleLocked": "Dieses Modul wird beim Deaktivieren von Modulen nicht deaktiviert."
+				},
+				"tags": {
+					"socket": "Modul verwendet Socket API",
+					"library": "Ist ein Bibliotheksmodul",
+					"authors": "Autoren (zum Anzeigen anklicken)",
+					"url": "Website ansehen",
+					"readme": "Readme anzeigen",
+					"changelog": "Changelog anzeigen",
+					"attributions": "Attributions anzeigen",
+					"issues": "Bericht/Ansicht Bug(s)",
+					"bugReporter": "Bug melden mit 🐛 Bug Reporter"
+				}
+			},
+			"clientSettings": {
+				"syncSetting": {
+					"askPermission": "Erlauben Sie Ihrem Game Master, die folgenden Einstellungen für Sie vorzunehmen?",
+					"sendToAll": "Diese Einstellung an alle anderen Benutzer senden?"
+				},
+				"tooltips": {
+					"worldSetting": "Welt Einstellung",
+					"clientSetting": "Client Einstellungen",
+					"syncSetting": "Sync-Einstellung",
+					"lockSetting": "Einstellung sperren",
+					"unlockSetting": "Einstellung entsperrren"
+				}
+			},
+			"preview": {
+				"search": "Changelogs durchsuchen",
+				"markAsSeen": "Als gesehen markieren",
+				"nextPage": "Nächste Seite",
+				"collapseModeLabel": "Seitenleiste einklappen",
+				"navLabel": "Inhaltsübersicht",
+				"previousPage": "Vorherige Seite"
+			},
+			"presets": {
+				"title": "Voreinstellung Name",
+				"tooltips": {
+					"info": "Info",
+					"update": "Update",
+					"delete": "Löschen",
+					"activate": "Aktivieren"
+				},
+				"buttons": {
+					"create": "Neue Voreinstellung erstellen"
+				},
+				"info": {
+					"installedModules": "Installierte Module",
+					"uninstalledModules": "Nicht installierte Module",
+					"description": "Module in der Voreinstellung <strong>{Name}</strong>."
+				},
+				"update": {
+					"description": "Diese Voreinstellung mit den folgenden Modulen aktualisieren?"
+				},
+				"delete": {
+					"warning": "Diese Aktion kann <strong>NICHT</strong> rückgängig gemacht werden!</div>",
+					"description": "Sind Sie sicher, dass Sie die Voreinstellung mit der Bezeichnung <strong>{Name}</strong> löschen möchten?"
+				},
+				"activate": {
+					"description": "Diese Voreinstellung aktiviert die folgenden Module?"
+				},
+				"create": {
+					"title": "Neue Voreinstellung erstellen",
+					"placeholder": "Voreingestellter Titel",
+					"notification": {
+						"noTitleError": "Bitte geben Sie einen Voreinstellungs Titel ein."
+					}
+				}
+			},
+			"export": {
+				"title": "Exportieren Sie Ihre aktiven Module!",
+				"bugsUrl": "Fehler URL",
+				"buttons": {
+					"copy": "Kopieren",
+					"export": "Exportieren"
+				},
+				"notification": {
+					"copied": "Die Liste der aktiven Module wurde in Ihre Zwischenablage kopiert!"
+				}
+			},
+			"import": {
+				"tidyUI": {
+					"title": "Importtyp ist TidyUI",
+					"message": "Wenn Sie eine TidyUI-Datei importieren, können Sie keine Einstellungen auf Client- oder Weltebene importieren."
+				},
+				"table": {
+					"moduleTitle": "Titel des Moduls",
+					"client": "Client",
+					"world": "Welt"
+				},
+				"notInstalled": "Modul nicht installiert",
+				"buttons": {
+					"keep": "Aktuelle Module aktiviert lassen",
+					"import": "Importieren"
+				}
+			},
+			"bugReporter": {
+				"optGroup": {
+					"core": "Kern",
+					"system": "System",
+					"modules": "Module"
+				},
+				"toggle": {
+					"preview": "Vorschau",
+					"write": "Schreiben"
+				},
+				"selectLabel": "Konflikte verursachendes Paket auswählen*"
+			}
+		},
+		"lib-themer": {
+			"cssTidyMMW": {
+				"name": "Tidy Modul Verwaltungsfenster",
+				"hint": "Dieses Stylesheet soll dem Modulverwaltungsfenster ein moderneres und saubereres Aussehen verleihen.",
+				"settings": {
+					"cssTidyMMWAltCheckbox": {
+						"name": "Alternativer Checkbox-Stil",
+						"hint": "Dadurch erhält das Kontrollkästchen nach Ansicht von Mouse0270 einen saubereren, moderneren Stil."
+					}
+				}
+			}
+		},
+		"migration": {
+			"v204": {
+				"starting": "Migrieren gesperrter Einstellungen, Bitte warten.",
+				"complete": "Die Migration auf v2.0.3 ist abgeschlossen und erfordert ein Neuladen der Seite."
+			},
+			"v212": {
+				"enableGlobalConflicts": "Würden Sie gerne globale Konflikte aktivieren?",
+				"googleIPWarning": "Bitte beachten Sie, dass MM+ Konflikte aus einem öffentlich zugänglichen Google-Sheet übernimmt. Die Nutzung dieser Funktion bedeutet, dass Google Ihre IP-Adresse erhält. Wenn Sie sich damit nicht wohl fühlen, aktivieren Sie diese Funktion nicht.",
+				"developersAreFriends": "Global Conflicts ist nicht dazu gedacht, Probleme genau zu verfolgen, sondern soll Sie über möglicherweise bestehende Probleme informieren. Die über Global Conflicts bereitgestellten Probleme können veraltet sein. Bitte belästigen Sie Entwickler nicht wegen Informationen, die über MM+ bereitgestellt werden."
+			},
+			"v214": {
+				"smartLabels": "Auto-Prefix-Module zu Smart Labels migrieren. Dadurch werden Smart Labels auf Ihre vorherige Auto-Prefix-Einstellung gesetzt. Sie können diese Einstellungen im Einstellungsfenster ändern."
+			}
+		},
+		"title": "Modul Management+"
+	}
+}

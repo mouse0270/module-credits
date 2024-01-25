@@ -33,7 +33,8 @@
 				"type": "module",
 				"reason": "Provides a compatibility layer for checking if other Modules are overriding similar functionality.",
 				"compatibility": {}
-			}, {
+			},
+			{
 				"id": "socketlib",
 				"type": "module",
 				"reason": "Provides the ability for non-GM users to view Readme, Changelogs and Attribution files. If this module is uninstalled or disabled, only GM will be able to use this functionality.",
@@ -56,7 +57,8 @@
 				"manifest": "https://raw.githubusercontent.com/sdenec/tidy-ui_game-settings/master/module.json",
 				"reason": "Tidy UI and MM+ perform many of the same functions. MM+ will not be fixing compatibility issues between the two modules.",
 				"compatibility": {}
-			}, {
+			},
+			{
 				"id": "lib-changelogs",
 				"type": "module",
 				"manifest": "https://github.com/theripper93/libChangelogs/blob/master/module.json",
@@ -100,6 +102,11 @@
 			"lang": "pt-BR",
 			"name": "Português (Brasil)",
 			"path": "languages/pt_BR.json"
+		},
+		{
+			"lang": "de",
+			"name": "Deutsch",
+			"path": "languages/de.json"
 		}
 	],
 	"url": "This is auto replaced",
